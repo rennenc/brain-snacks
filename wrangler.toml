@@ -1,0 +1,4 @@
+# Cloudflare Pages project. Deploy with:  npx wrangler@3 pages deploy
+name = "brainsnacks"
+pages_build_output_dir = "site"
+compatibility_date = "2026-10-01"

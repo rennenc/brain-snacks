@@ -1,0 +1,1771 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rotem's Sky Letters</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;800&family=Rubik:wght@500;700&display=swap">
+<style>
+/* Layout: full-screen canvas sky, with chunky toy-like HUD pills floating on top. */
+:root{
+  --ink:#24305E;        /* consonants, text */
+  --vowel-a:#FF5A5F;    /* every A is coral */
+  --vowel-e:#1FB5A8;    /* every E is teal */
+  --sun:#FFC93C;
+  --paper:#FFFFFF;
+  --shadow:rgba(36,48,94,.22);
+  --font-display:"Fredoka","Baloo 2","Arial Rounded MT Bold",ui-rounded,system-ui,sans-serif;
+  --font-body:"Nunito",ui-rounded,system-ui,sans-serif;
+  --font-hebrew:"Rubik","Arial Hebrew","Noto Sans Hebrew",sans-serif;   /* draws nikud cleanly */
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#7FD3FF;color:var(--ink);font-family:var(--font-body);
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+[hidden]{display:none!important}
+button{font-family:var(--font-display);color:var(--ink);cursor:pointer;border:0}
+button:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
+
+/* ---------- HUD ---------- */
+#hud{position:fixed;inset:0;pointer-events:none;
+  padding:max(14px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.top{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.pill{background:var(--paper);border-radius:999px;padding:8px 18px;font-family:var(--font-display);font-weight:700;
+  font-size:clamp(20px,2.6vw,30px);box-shadow:0 5px 0 var(--shadow);display:flex;align-items:center;gap:10px}
+.stars .star-ico{color:var(--sun);font-size:1.15em;line-height:1;text-shadow:0 2px 0 #E0A100}
+#starCount{font-variant-numeric:tabular-nums;min-width:1.6em}
+.bump{animation:bump .35s ease}
+@keyframes bump{40%{transform:scale(1.25)}}
+#dots{display:flex;gap:6px}
+#dots i{width:14px;height:14px;border-radius:50%;background:#DDE3F5;display:block;transition:background .3s,transform .3s}
+#dots i.on{background:var(--sun);transform:scale(1.15);box-shadow:0 0 0 2px #E0A100 inset}
+.combo{color:#E8590C}
+.power{font-size:clamp(18px,2.2vw,26px);padding:8px 14px}
+.powerinfo{margin:0;background:#F3F6FD;border-radius:18px;padding:10px 18px;font:600 18px var(--font-display);display:flex;gap:10px;align-items:center;max-width:100%}
+.powerinfo b{font-size:26px}
+.bird .pw{position:absolute;top:4px;right:6px;font-size:18px}
+.spacer{flex:1}
+.round{pointer-events:auto;width:56px;height:56px;border-radius:50%;background:var(--paper);box-shadow:0 5px 0 var(--shadow);
+  font-size:22px;font-weight:700}
+.round:active{transform:translateY(3px);box-shadow:0 2px 0 var(--shadow)}
+
+.bottom{position:absolute;left:50%;transform:translateX(-50%);bottom:max(18px,env(safe-area-inset-bottom));display:flex;gap:14px;align-items:center}
+.mic{position:relative;background:var(--paper);border-radius:999px;padding:12px 26px 12px 18px;display:flex;align-items:center;gap:12px;
+  font-family:var(--font-display);font-weight:700;font-size:clamp(20px,2.6vw,30px);box-shadow:0 5px 0 var(--shadow);white-space:nowrap}
+.mic-dot{width:34px;height:34px;border-radius:50%;background:#C7CEE6;position:relative;flex:none;display:grid;place-items:center}
+.mic-dot svg{width:20px;height:20px;fill:#fff}
+.mic.live .mic-dot{background:var(--vowel-a)}
+.ring{position:absolute;inset:-10px;border-radius:50%;border:4px solid var(--vowel-a);opacity:0;transform:scale(var(--lvl,1))}
+.mic.live .ring{opacity:.55}
+.mic.cool{opacity:.55}
+.hear{pointer-events:auto;background:var(--sun);border-radius:999px;padding:12px 22px;font-weight:700;font-size:clamp(18px,2.2vw,26px);
+  box-shadow:0 5px 0 #D69A00;display:flex;gap:8px;align-items:center}
+.hear:active{transform:translateY(3px);box-shadow:0 2px 0 #D69A00}
+.hear.nudge{animation:nudge 1.2s ease-in-out infinite}
+@keyframes nudge{50%{transform:scale(1.08) rotate(-2deg)}}
+.hear svg{width:24px;height:24px;fill:var(--ink)}
+
+.parentbar{position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));display:flex;gap:10px;align-items:center;pointer-events:auto}
+#heard{font:600 13px var(--font-body);color:var(--ink);background:rgba(255,255,255,.7);padding:4px 10px;border-radius:8px;max-width:30vw;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#heard:empty{display:none}
+#okBtn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.55);font-size:18px;font-weight:700;opacity:.7}
+#okBtn:hover{opacity:1}
+
+#toast{position:absolute;left:50%;top:22%;transform:translate(-50%,-10px) scale(.9);opacity:0;transition:all .25s ease;
+  font-family:var(--font-display);font-weight:700;font-size:clamp(28px,5vw,56px);color:var(--paper);
+  text-shadow:0 4px 0 var(--ink),0 0 18px rgba(36,48,94,.4);white-space:nowrap;text-align:center}
+#badgePop{position:absolute;left:50%;top:max(84px,calc(env(safe-area-inset-top) + 70px));transform:translate(-50%,-20px);opacity:0;transition:all .35s cubic-bezier(.3,1.6,.5,1);
+  background:var(--paper);border-radius:999px;padding:8px 20px 8px 10px;display:flex;gap:10px;align-items:center;box-shadow:0 5px 0 var(--shadow);
+  font:700 clamp(17px,2.2vw,24px) var(--font-display);white-space:nowrap}
+#badgePop.show{opacity:1;transform:translate(-50%,0)}
+#badgePop .ico{font-size:1.6em;line-height:1}
+.badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:560px}
+.badge{width:46px;height:46px;border-radius:14px;background:#F3F6FD;display:grid;place-items:center;font-size:26px}
+.badge.locked{filter:grayscale(1);opacity:.3}
+.donebadges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.donebadges span{background:#FFF7DC;border-radius:999px;padding:6px 14px;font:600 18px var(--font-display)}
+#toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
+#toast small{display:block;font-size:.5em;margin-top:6px}
+
+/* ---------- screens ---------- */
+.screen{position:fixed;inset:0;display:grid;place-items:center;grid-template-columns:minmax(0,1fr);overflow:auto;
+  padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.screen.dim{background:rgba(36,48,94,.35);backdrop-filter:blur(3px)}
+.card{background:var(--paper);border-radius:36px;padding:clamp(22px,4vw,40px);box-shadow:0 10px 0 var(--shadow);
+  width:min(720px,100%);text-align:center;display:flex;flex-direction:column;gap:20px;align-items:center}
+h1,h2{font-family:var(--font-display);margin:0;line-height:1;text-wrap:balance}
+h1{font-size:clamp(44px,8vw,88px);font-weight:700;letter-spacing:-.01em}
+h1 .a{color:var(--vowel-a)} h1 .e{color:var(--vowel-e)}
+h2{font-size:clamp(32px,5vw,52px)}
+.back{position:fixed;top:max(14px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));background:rgba(255,255,255,.85);border-radius:999px;padding:10px 18px;
+  font:700 18px var(--font-display);color:var(--ink);text-decoration:none;box-shadow:0 4px 0 var(--shadow)}
+.sub{font-size:clamp(17px,2.2vw,22px);margin:0;color:#4A5585;font-weight:800}
+.big{background:var(--vowel-a);color:#fff;font-size:clamp(30px,4.6vw,46px);font-weight:700;padding:16px 64px;border-radius:999px;
+  box-shadow:0 8px 0 #C9363B;transition:transform .1s}
+.big:active{transform:translateY(5px);box-shadow:0 3px 0 #C9363B}
+.big.teal{background:var(--vowel-e);box-shadow:0 8px 0 #12867C}
+.ghost{background:#EEF1FB;font-size:20px;font-weight:600;padding:12px 26px;border-radius:999px}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.birds{display:flex;gap:12px;overflow-x:auto;align-self:stretch;min-width:0;padding:4px 4px 10px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.birds .bird{flex:none;scroll-snap-align:center}
+.bird{position:relative;background:#F3F6FD;border-radius:22px;padding:8px 8px 6px;width:104px;display:flex;flex-direction:column;align-items:center;gap:2px;
+  font:600 16px var(--font-display);border:4px solid transparent}
+.bird canvas{position:static;width:84px;height:70px}
+.bird.sel{border-color:var(--sun);background:#FFF7DC}
+.bird.locked canvas{filter:grayscale(1) brightness(1.15);opacity:.55}
+.bird .cost{font-size:14px;color:#8A93B8}
+.total{font-family:var(--font-display);font-size:22px;font-weight:600}
+.modes{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.mode{background:#F3F6FD;border-radius:22px;padding:10px 22px;border:4px solid transparent;display:flex;flex-direction:column;align-items:center;gap:2px;font:600 18px var(--font-display)}
+.mode b{font-size:32px;line-height:1.1;color:var(--ink)}
+.mode.sel{border-color:var(--vowel-e);background:#E3F7F5}
+[lang="he"]{font-family:var(--font-hebrew)}
+textarea.words{font:500 22px/1.6 var(--font-hebrew);direction:rtl;text-align:right;border:2px solid #DDE3F5;border-radius:14px;padding:10px 14px;min-height:150px;resize:vertical;color:var(--ink);background:var(--paper)}
+.total b{color:#E0A100}
+.gear{position:fixed;top:max(14px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));
+  width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.8);font-size:28px;display:grid;place-items:center}
+.gear svg.prog{position:absolute;inset:0;transform:rotate(-90deg)}
+.gear svg.prog circle{fill:none;stroke:var(--vowel-e);stroke-width:5;stroke-dasharray:188;stroke-dashoffset:188}
+.gear.holding svg.prog circle{transition:stroke-dashoffset .9s linear;stroke-dashoffset:0}
+.hint{font-size:14px;color:#6B76A6;margin:0;font-weight:600}
+.warn{background:#FFF1E6;color:#9A3B00;border-radius:16px;padding:10px 16px;font-weight:700;font-size:15px;margin:0}
+
+.bigstars{display:flex;gap:10px;font-size:clamp(56px,10vw,90px);line-height:1}
+.bigstars span{color:#E3E7F3;transform:scale(.3);transition:transform .4s cubic-bezier(.3,1.8,.5,1),color .2s}
+.bigstars span.on{color:var(--sun);transform:scale(1);text-shadow:0 5px 0 #E0A100}
+.bigstars span.shown{transform:scale(1)}
+.unlock{display:flex;align-items:center;gap:10px;background:#FFF7DC;border-radius:20px;padding:8px 18px;font:600 20px var(--font-display)}
+.unlock canvas{position:static;width:60px;height:50px}
+
+/* parent panel */
+.pcard{text-align:left;align-items:stretch;gap:18px;max-height:calc(100vh - 32px);overflow:auto}
+.pcard h2{font-size:32px}
+.pcard h3{font:700 18px var(--font-display);margin:0 0 8px}
+.pcard section{display:flex;flex-direction:column;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#F3F6FD;padding:8px 14px;border-radius:999px;font:600 20px var(--font-display);cursor:pointer}
+.chip input{width:18px;height:18px;accent-color:var(--vowel-e)}
+.opt{display:flex;align-items:center;gap:10px;font-weight:600;font-size:16px}
+.opt select{font:inherit;padding:6px 10px;border-radius:10px;border:2px solid #DDE3F5}
+.opt input{width:20px;height:20px;accent-color:var(--vowel-e)}
+.note{font-size:14px;color:#5A6490;margin:0;font-weight:600;line-height:1.45}
+table{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+th,td{padding:6px 8px;text-align:left;border-bottom:1px solid #E6EAF5}
+th{font-weight:800;color:#5A6490}
+td.s{font:700 20px var(--font-display)}
+.tblwrap{overflow-x:auto}
+.danger{background:#FFE8E8;color:#B3262B}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="hud" hidden>
+  <div class="top">
+    <div class="pill stars"><span class="star-ico">★</span><span id="starCount">0</span></div>
+    <div class="pill"><span id="levelName">Level 1</span><div id="dots"></div></div>
+    <div class="pill power" id="powerPill" title=""></div>
+    <div class="pill combo" id="combo" hidden>🔥 <span id="comboN">2</span> in a row</div>
+    <div class="spacer"></div>
+    <button id="pauseBtn" class="round" aria-label="Pause">❚❚</button>
+  </div>
+  <div id="toast"></div>
+  <div id="badgePop" role="status"><span class="ico"></span><span></span></div>
+  <div class="bottom">
+    <div class="mic" id="mic"><span class="mic-dot"><span class="ring" id="ring"></span>
+      <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-2.1a7 7 0 0 0 6-6.9h-2z"/></svg></span>
+      <span id="micText">Get ready…</span></div>
+    <button id="hearBtn" class="hear" aria-label="Hear the sound">
+      <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>Hear it</button>
+  </div>
+  <div class="parentbar"><span id="heard"></span><button id="okBtn" title="Grown-up: accept this one (Enter key)" aria-label="Accept answer">✓</button></div>
+</div>
+
+<!-- start screen -->
+<div id="menu" class="screen">
+  <div class="card">
+    <h1>R<span class="e">o</span>tem's <br>Sky L<span class="e">e</span>tt<span class="e">e</span>rs</h1>
+    <p class="sub">Read the letters out loud to help your bird fly!</p>
+    <div class="modes" role="radiogroup" aria-label="What to read">
+      <button class="mode" id="modeSyl" role="radio"><b>BA&nbsp;DE</b>English sounds</button>
+      <button class="mode" id="modeHeb" role="radio"><b lang="he">אבא</b>Hebrew words</button>
+    </div>
+    <div class="birds" id="birdPick"></div>
+    <p class="powerinfo" id="powerInfo"></p>
+    <div class="total">You have <b id="menuStars">0</b> ★ · Level <b id="menuLevel">1</b></div>
+    <div class="badges" id="badgeShelf" aria-label="Badges"></div>
+    <button class="big" id="playBtn">Play!</button>
+    <p class="hint" id="earsStatus"></p>
+    <p class="warn" id="openTip" hidden></p>
+    <p class="warn" id="noSpeech" hidden>This browser can't hear speech. Open the game in Chrome or Safari, or a grown-up can tap ✓ after each answer.</p>
+    <p class="hint">Grown-ups: press and hold ⚙ for settings.</p>
+  </div>
+</div>
+<a class="back" id="backLink" href="../" hidden>← All games</a>
+<button class="gear" id="gear" aria-label="Grown-up settings (press and hold)">
+  <svg class="prog" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30"/></svg>⚙</button>
+
+<!-- pause -->
+<div id="pause" class="screen dim" hidden>
+  <div class="card">
+    <h2>Taking a rest</h2>
+    <div class="row"><button class="big teal" id="resumeBtn">Keep flying</button></div>
+    <button class="ghost" id="homeBtn">Back to start</button>
+  </div>
+</div>
+
+<!-- level done -->
+<div id="done" class="screen dim" hidden>
+  <div class="card">
+    <h2 id="doneTitle">Level 1 done!</h2>
+    <div class="bigstars" id="bigStars"><span>★</span><span>★</span><span>★</span></div>
+    <p class="sub" id="doneSub"></p>
+    <div class="unlock" id="unlock" hidden><canvas width="120" height="100"></canvas><span></span></div>
+    <div class="donebadges" id="doneBadges"></div>
+    <p class="sub" id="doneNext"></p>
+    <button class="big" id="nextBtn">Next level ➜</button>
+    <button class="ghost" id="doneHome">Back to start</button>
+  </div>
+</div>
+
+<!-- parent settings -->
+<div id="parent" class="screen dim" hidden>
+  <div class="card pcard">
+    <h2>Grown-up settings</h2>
+    <section>
+      <h3>Letters to practise</h3>
+      <p class="note">Tick new letters as she learns them. Every gate is one ticked consonant with one ticked vowel.</p>
+      <div class="chips" id="vowelChips"></div>
+      <div class="chips" id="consChips"></div>
+    </section>
+    <section>
+      <h3>Syllables in the game</h3>
+      <div class="chips" id="sylChips"></div>
+      <p class="note">Untick any syllable to leave it out. CE is off at the start because some programs teach it as “keh” and others as “seh”. The game says “keh”.
+        Vowels are said the simple way: A “ah”, E “eh”, I “ee”, O “oh”, U “oo”.</p>
+    </section>
+    <section>
+      <h3>Hebrew words</h3>
+      <p class="note">One word per line. Add new words here as she learns them; they're saved on this computer.</p>
+      <textarea class="words" id="wordsInput" lang="he" dir="rtl" spellcheck="false" aria-label="Hebrew words"></textarea>
+    </section>
+    <section>
+      <h3>How it works</h3>
+      <label class="opt">Letters shown as
+        <select id="caseSel"><option value="mixed">Mixed (BA, ba, Ba)</option><option value="upper">CAPITALS</option><option value="lower">lowercase</option></select></label>
+      <label class="opt">Listening
+        <select id="listenSel"><option value="relaxed">Relaxed: the right first sound is enough</option><option value="normal">Normal: first sound and vowel</option><option value="strict">Strict: exact sounds only</option></select></label>
+      <label class="opt">If the game can't make out what she said, let her through after
+        <select id="passSel"><option value="2">2 tries</option><option value="3">3 tries</option><option value="4">4 tries</option><option value="0">never</option></select></label>
+      <label class="opt">Listener
+        <select id="engineSel"><option value="whisper">Whisper, quick (best for most computers)</option><option value="whisper-base">Whisper, more careful but about 5 seconds per answer</option><option value="chrome">Browser's built-in listener only</option></select></label>
+      <p class="note">Changing the listener takes effect the next time the game is opened.</p>
+      <label class="opt"><input type="checkbox" id="sayBack"> Say the sound back after a right answer</label>
+      <label class="opt"><input type="checkbox" id="sfx"> Sound effects</label>
+      <p class="note">Right on the first try earns 3 ★, second try 2 ★, after that 1 ★. Pressing “Hear it” first also makes it 1 ★.
+        A wrong answer is only counted when the game clearly hears a <em>different</em> sound from the list, so chatting in the room is ignored.
+        After a wrong answer the microphone pauses for a moment, so fast guessing doesn't pay. After two misses the bird says the sound for her.</p>
+      <p class="note">If the game didn't hear a correct answer, press <b>Enter</b> or tap the small ✓ in the corner.</p>
+    </section>
+    <section>
+      <h3>What the game heard lately</h3>
+      <div class="tblwrap"><table><thead><tr><th>Gate</th><th>Heard</th><th>Result</th></tr></thead><tbody id="heardBody"></tbody></table></div>
+      <p class="note">Speech recognition is built for grown-up words, so short syllables often come out as words like “bar” or “bed”. This list shows what it actually wrote down.</p>
+    </section>
+    <section>
+      <h3>How she's doing</h3>
+      <div class="tblwrap"><table><thead><tr><th>Sound</th><th>Seen</th><th>Right first try</th><th>Misses</th></tr></thead><tbody id="statsBody"></tbody></table></div>
+      <p class="note" id="statsNote"></p>
+    </section>
+    <div class="row">
+      <button class="big teal" id="closeParent">Done</button>
+      <button class="ghost danger" id="resetBtn">Reset progress</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const $ = id => document.getElementById(id);
+
+/* ================= Content ================= */
+// Every gate is one consonant + one vowel, built from the letters a grown-up has ticked.
+const VOWELS = ['a','e','i','o','u'];
+const CONSONANTS = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','y','z'];
+const VOWEL_SAY = {a:'ah', e:'eh', i:'ee', o:'oh', u:'oo'};
+const CONS_SAY = {c:'k', q:'kw', x:'ks'};
+const SYL = {};
+for (const c of CONSONANTS) for (const v of VOWELS) SYL[c+v] = {c, v, say:(CONS_SAY[c] || c) + VOWEL_SAY[v]};
+const sylId = (c, v) => c + v;
+
+// The browser's listener only writes down English words, never syllables, so the game
+// looks at how the written word *starts*: "far", "fox" and "huh" all begin with an F sound.
+const FIRST_SOUND = {
+  b:/^(b|p)/,                 c:/^(ch|c|k|q|g)|^(see|sea|si)$/, d:/^(th|d|t)/,
+  f:/^(ph|f|v|h|wh)|^(eff|ef|if)$/,   // a soft F often comes out as "ha", "huh" or "what"
+  g:/^(g|k|c)/,               h:/^(h|wh|f)/,                     j:/^(j|g[eiy]|ch|dj)/,
+  k:/^(k|c|q|g|ch)/,          l:/^(l|r)/,                         m:/^(m|n)/,
+  n:/^(n|m)/,                 p:/^(p|b)/,                         q:/^(qu|kw|k|c)/,
+  r:/^(r|w|l)/,               s:/^(s|c[eiy]|z|sh)/,               t:/^(t|d|th)/,
+  v:/^(v|f|b|w)/,             w:/^(w|wh|r)/,                      x:/^(ex|x|ks|k|s)/,
+  y:/^(y|j)/,                 z:/^(z|s)/,
+};
+// Vowels the rest of the word could stand for; an empty list means "can't tell".
+function vowelGuess(w){
+  const rest = w.replace(/^(ph|th|ch|sh|wh|qu|[b-df-hj-np-tv-z])h?/, '');
+  if (/^(oo|ew|ou)/.test(rest)) return ['u'];
+  if (/^(ee|ea|i|y)/.test(rest)) return ['i','e'];
+  if (/^(e|ai|ay|ei)/.test(rest)) return ['e'];
+  if (/^(a|ar|ah)/.test(rest)) return ['a'];
+  if (/^(o|aw|au)/.test(rest)) return ['o','a'];
+  if (/^u/.test(rest)) return ['u','a','o'];
+  return [];
+}
+// Spellings that count in strict mode.
+const STRICT_V = {a:['a','ah','aa','ar'], e:['e','eh','ay'], i:['i','ee','ea'], o:['o','oh','ow','oe'], u:['u','oo','ou','ew']};
+const STRICT_C = {c:['c','k'], k:['k','c'], f:['f','ph'], q:['q','qu','kw'], x:['x','ks']};
+function strictMatch(w, id){ const s = SYL[id]; return (STRICT_C[s.c] || [s.c]).some(c => STRICT_V[s.v].some(v => w === c + v)); }
+
+function wordsOf(text){ return text.toLowerCase().replace(/[^a-z0-9\s]/g,' ').trim().split(/\s+/).filter(Boolean); }
+// Only the first couple of words count, so long sentences in the room mostly don't.
+function heardWords(text){
+  const ws = wordsOf(text).slice(0, 2);
+  return ws.length > 1 ? [...ws, ws.join('')] : ws;   // "b a" -> "ba"
+}
+function isRight(text, target){
+  const t = SYL[target], ws = heardWords(text);
+  if (settings.listen === 'strict') return ws.some(w => strictMatch(w, target));
+  const starts = ws.filter(w => FIRST_SOUND[t.c].test(w));
+  if (settings.listen === 'relaxed') return starts.length > 0;
+  return starts.some(w => { const g = vowelGuess(w); return !g.length || g.includes(t.v); });
+}
+// A clearly different sound she has learned, or null when it's just unclear.
+function wrongSound(text, target){
+  const ws = wordsOf(text);
+  if (!ws.length || ws.length > 2) return null;
+  const t = SYL[target], w = ws[0];
+  const cons = learned(CONSONANTS), vows = learned(VOWELS);
+  if (settings.listen === 'strict'){
+    for (const c of cons) for (const v of vows) if (sylId(c,v) !== target && strictMatch(w, sylId(c,v))) return sylId(c,v);
+    return null;
+  }
+  if (!FIRST_SOUND[t.c].test(w)){
+    // only a plain start with another learned letter counts, never "hmm" or "uh"
+    if (!/[aeiouy]/.test(w)) return null;
+    const other = cons.find(c => w.startsWith(c) || (c === 'c' && w.startsWith('k')));
+    return other ? sylId(other, t.v) : null;
+  }
+  if (settings.listen === 'normal'){
+    const g = vowelGuess(w);
+    const other = g.length && !g.includes(t.v) ? g.find(v => vows.includes(v)) : null;
+    return other ? sylId(t.c, other) : null;
+  }
+  return null;
+}
+function learned(list){ return list.filter(l => settings.letters.includes(l)); }
+const isWord = id => id.startsWith('he:');
+const itemLabel = id => isWord(id) ? id.slice(3) : (SYL[id].c + SYL[id].v).toUpperCase();
+const itemSay = id => isWord(id) ? id.slice(3) : SYL[id].say;
+const itemLang = id => isWord(id) ? 'he' : 'en';
+function currentPool(){
+  if (settings.mode === 'hebrew') return settings.words.map(w => 'he:' + w);
+  return syllablePool();
+}
+// Chrome writes Hebrew with or without vowel marks and punctuation; compare bare letters.
+const bareHe = t => t.replace(/[\u0591-\u05C7]/g, '').replace(/[^\u05D0-\u05EA\s]/g, ' ').replace(/\s+/g, ' ').trim();
+function syllablePool(){
+  const out = [];
+  for (const c of learned(CONSONANTS)) for (const v of learned(VOWELS)) if (!settings.skip.includes(sylId(c,v))) out.push(sylId(c,v));
+  return out;
+}
+
+const SKINS = [
+  {id:'sunny',  name:'Sunny',   body:'#FFD23F', belly:'#FFF3C4', wing:'#F5A623', line:'#C98500', cost:0},
+  {id:'bubble', name:'Bubble',  body:'#FF8FC7', belly:'#FFE3F2', wing:'#E85FA5', line:'#B93D78', cost:15},
+  {id:'cherry', name:'Cherry',  body:'#FF4D5E', belly:'#FFD6DA', wing:'#C9184A', line:'#8E0F2E', cost:25, bow:true},
+  {id:'ninja',  name:'Ninja',   body:'#2B2D42', belly:'#8D99AE', wing:'#1B1C2B', line:'#0D0E18', cost:60, headband:true, noTuft:true},
+  {id:'pirate', name:'Pirate',  body:'#C68B59', belly:'#F3DCC3', wing:'#8B5A2B', line:'#5A3A1A', cost:100, pirate:true, noTuft:true},
+  {id:'ice',    name:'Frosty',  body:'#BDE7FF', belly:'#FFFFFF', wing:'#7CC6F2', line:'#3A86B8', cost:120, sparkle:true, scarf:'#FF5A5F'},
+  {id:'fire',   name:'Blaze',   body:'#FF7A1A', belly:'#FFD07A', wing:'#E63E00', line:'#9C2A00', cost:200, flame:true, noTuft:true},
+  {id:'panda',  name:'Panda',   body:'#FFFFFF', belly:'#F1F1F1', wing:'#2B2D42', line:'#2B2D42', cost:250, panda:true, noTuft:true},
+  {id:'sky',    name:'Splash',  body:'#5EC8FF', belly:'#DDF4FF', wing:'#2E9BE0', line:'#1C6FA8', cost:40},
+  {id:'mint',   name:'Minty',   body:'#62DDA8', belly:'#DDFBEF', wing:'#2FB37C', line:'#1D8A5C', cost:80},
+  {id:'rainbow',name:'Rainbow', rainbow:true,   belly:'#FFFFFF', wing:'#FFFFFF', line:'#7A4BD1', cost:150},
+  {id:'galaxy', name:'Galaxy',  body:'#3B2A8C', belly:'#BBA8FF', wing:'#6C4CE0', line:'#21175A', cost:300, sparkle:true},
+  {id:'unicorn',name:'Unicorn', body:'#FFF4FB', belly:'#FFFFFF', wing:'#F7B6E3', line:'#B07CC6', cost:350, horn:true, mane:true, noTuft:true},
+  {id:'robot',  name:'Robo',    body:'#B8C4D6', belly:'#E3E9F2', wing:'#7D8BA3', line:'#46526A', cost:400, antenna:true, noTuft:true},
+  {id:'king',   name:'King',    body:'#FFC93C', belly:'#FFF6E0', wing:'#FF5A5F', line:'#5B2A86', cost:500, crown:true, royal:true},
+  {id:'hero',   name:'Super',   body:'#2F6FEB', belly:'#CFE0FF', wing:'#1D4BB0', line:'#132F70', cost:600, cape:true, mask:true},
+  {id:'dragon', name:'Dragon',  body:'#3DBE6E', belly:'#C8F2C1', wing:'#1F8A4C', line:'#125C30', cost:750, spikes:true, noTuft:true},
+  {id:'ghost',  name:'Boo',     body:'#E4E1FF', belly:'#FFFFFF', wing:'#B9B4F5', line:'#4E4A9E', cost:1000, ghost:true},
+];
+const THEMES = [
+  {name:'Sunny Meadow', top:'#6CCBFF', bot:'#D6F3FF', far:'#A6E39A', near:'#5CC46A', ground:'#4FAE5B', dirt:'#C98B4F', pipe:'#FF8FB1', pipe2:'#FFC6D7', lip:'#E8638C', sun:'#FFD84D', night:false},
+  {name:'Sunset Beach', top:'#FF8E72', bot:'#FFD89A', far:'#F7C987', near:'#EDA95C', ground:'#F3CF8C', dirt:'#D9A15A', pipe:'#5EC8FF', pipe2:'#B5E6FF', lip:'#2E9BE0', sun:'#FFF1B0', night:false},
+  {name:'Candy Clouds', top:'#B99BFF', bot:'#FFD3F1', far:'#FFC1E4', near:'#F795CB', ground:'#FFB0DA', dirt:'#E07BB5', pipe:'#62DDA8', pipe2:'#C2F5DF', lip:'#2FB37C', sun:'#FFF0A8', night:false},
+  {name:'Starry Night', top:'#18205A', bot:'#4A3C9C', far:'#2F4C92', near:'#22386E', ground:'#1D2F5E', dirt:'#152247', pipe:'#FFD45C', pipe2:'#FFEDB0', lip:'#E0A100', sun:'#FFF6D6', night:true},
+  {name:'Snowy Peaks',  top:'#8EC9F0', bot:'#EAF6FF', far:'#FFFFFF', near:'#D7ECFA', ground:'#F4FAFF', dirt:'#B9D6EE', pipe:'#FF8E72', pipe2:'#FFC9B8', lip:'#E0614A', sun:'#FFF3C2', night:false, snow:true},
+  {name:'Outer Space',  top:'#090C2B', bot:'#2B1B5E', far:'#3A2A7A', near:'#2A1F5C', ground:'#4A3A8C', dirt:'#2E2466', pipe:'#62DDA8', pipe2:'#C2F5DF', lip:'#2FB37C', sun:'#FFB86B', night:true, space:true},
+];
+
+/* ================= Progression ================= */
+// What grows as she climbs levels. Reading a gate never gets stricter: the flying gets
+// faster, the bonus timer tighter, and new kinds of gates appear.
+function levelRules(level){
+  return {
+    gates:   Math.min(14, 6 + level),                    // 7, 8, 9 … up to 14 gates
+    speed:   Math.min(1.9, 1 + (level-1)*.09),           // how fast she flies between gates
+    spacing: Math.max(.72, 1 - (level-1)*.04),           // gates come closer together
+    quick:   Math.max(2.5, 6 - (level-1)*.4),            // seconds to earn the ⚡ quick-read bonus
+    golden:  level >= 2 ? .14 : 0,                       // chance of a golden gate (double stars)
+    multi:   level >= 3 ? Math.min(.5, .15*(level-2)) : 0,   // chance a gate holds 2 things to read
+    triple:  level >= 6 ? .35 : 0,                       // …and of those, chance it holds 3
+    bob:     level >= 4 ? Math.min(70, 18*(level-3)) : 0,    // moving gates: how far they bob
+  };
+}
+const LEVEL_NEWS = {
+  2:'New: golden gates ✨ give double stars',
+  3:'New: double gates! Read both',
+  4:'New: moving gates! Watch them bob',
+  5:'Faster wind 💨',
+  6:'New: triple gates! Read all three',
+  8:'Super speed 🚀',
+};
+const BADGES = [
+  {id:'first',    icon:'🐣', name:'First flight',     test:() => save.level > 1},
+  {id:'streak5',  icon:'🔥', name:'5 in a row',       test:() => game.combo >= 5},
+  {id:'streak10', icon:'🌋', name:'10 in a row',      test:() => game.combo >= 10},
+  {id:'quick10',  icon:'⚡', name:'10 quick reads',   test:() => save.counters.quick >= 10},
+  {id:'golden',   icon:'✨', name:'Golden gate',      test:() => save.counters.golden >= 1},
+  {id:'double',   icon:'👯', name:'Double gate',      test:() => save.counters.multi >= 1},
+  {id:'triple',   icon:'🎯', name:'Triple gate',      test:() => save.counters.triple >= 1},
+  {id:'hebrew10', icon:'📖', name:'10 Hebrew words',  test:() => save.counters.hebrew >= 10},
+  {id:'level5',   icon:'🏔️', name:'Level 5',          test:() => save.level > 5},
+  {id:'level10',  icon:'🚀', name:'Level 10',         test:() => save.level > 10},
+  {id:'stars100', icon:'💯', name:'100 stars',        test:() => save.lifetime >= 100},
+  {id:'stars500', icon:'👑', name:'500 stars',        test:() => save.lifetime >= 500},
+];
+const PRAISE = ['Great!','Yes!','Super!','Wow!','Amazing!','You got it!','Brilliant!'];
+
+/* ================= Bird powers ================= */
+// Every bird helps in its own way. Powers only ever add stars or soften a mistake:
+// the reading itself is judged the same whichever bird she flies.
+const POWERS = {
+  sunny:   {icon:'☀️', name:'Sunny start',    desc:'The first gate of every level is golden', firstGolden:true},
+  bubble:  {icon:'🫧', name:'Bubble shield',  desc:'The first mistake in each level is forgiven', shield:1},
+  cherry:  {icon:'🍒', name:'Sweet streak',   desc:'Double stars start at 4 in a row instead of 5', streakAt:4},
+  ninja:   {icon:'🥷', name:'Ninja reflexes', desc:'2 extra seconds to earn the ⚡ quick bonus', quickExtra:2},
+  pirate:  {icon:'🗺️', name:'Treasure map',   desc:'Lots of golden gates, from level 1', goldenOdds:2, goldenFloor:.15},
+  ice:     {icon:'❄️', name:'Snowball',       desc:'Quick reads give +2 ★ instead of +1', quickBonus:2},
+  sky:     {icon:'👂', name:'Good ears',      desc:'“Hear it” is free 3 times each level', freeHear:3},
+  mint:    {icon:'🍀', name:'Lucky leaf',     desc:'1 in 5 gates gives 2 bonus stars', lucky:.2},
+  rainbow: {icon:'🌈', name:'Pot of gold',    desc:'+10 ★ treasure at the end of every level', chest:10},
+  fire:    {icon:'🔥', name:'On fire',        desc:'Streaks give triple stars instead of double', streakX:3},
+  panda:   {icon:'🐼', name:'Calm panda',     desc:'Mistakes never break your streak', streakSafe:true},
+  galaxy:  {icon:'🌠', name:'Shooting star',  desc:'+1 ★ on every gate', perGate:1},
+  unicorn: {icon:'🦄', name:'Magic gold',     desc:'Golden gates from level 1, and they give triple stars', goldenX:3, goldenFloor:.15},
+  robot:   {icon:'🤖', name:'Robo ears',      desc:'Lets you through after 2 unclear tries, for 2 ★', passAfter:2, passStars:2},
+  king:    {icon:'👑', name:'Royal treasury', desc:'Every star you earn counts 1½ times', boost:1.5},
+  hero:    {icon:'🦸', name:'Super speed',    desc:'3 extra seconds for ⚡, and quick reads give +2 ★', quickExtra:3, quickBonus:2},
+  dragon:  {icon:'🐉', name:'Dragon fire',    desc:'Double gates from level 1, and +2 ★ for every word in them', multiBonus:2, multiFloor:.3},
+  ghost:   {icon:'👻', name:'Haunted gold',   desc:'Every 3rd gate is golden', goldenEvery:3},
+};
+const power = () => POWERS[save.skin] || {};
+const quickLimit = () => game.rules.quick + (power().quickExtra || 0);
+function powerPop(text, ms = 2400){   // a banner whenever the bird's power helps
+  const p = power(), el = $('badgePop');
+  el.querySelector('.ico').textContent = p.icon; el.lastElementChild.textContent = text;
+  el.classList.add('show'); clearTimeout(powerPop.t); powerPop.t = setTimeout(() => el.classList.remove('show'), ms);
+  game.powerGlow = 1;   // the bird glows for a moment too
+  tone(1047,0,.1,'sine',.08); tone(1568,.06,.18,'sine',.07);
+}
+
+/* ================= Saved progress (this device only) ================= */
+const KEY = 'rotemSkyLetters.v1';
+const defaults = {
+  stars:0, lifetime:0, level:1, skin:'sunny', bestCombo:0, stats:{}, badges:{}, counters:{quick:0, golden:0, multi:0, triple:0, hebrew:0},
+  settings:{ letters:['a','b','c','d','e','f'], skip:['ce'], letterCase:'mixed', listen:'relaxed', passAfter:3, engine:'whisper', mode:'syllables',
+    words:['אַבָּא','אִמָּא','רוֹתֶם','לִיאוֹר','אֵיתָן','כִּשְׁכֵּשׁ','רַק','הָלַךְ','נָבַח','רָצָה','נָחָשׁ','אָכַל','בָּרַח','כֶּלֶב','חָתוּל','שֶׁמֶשׁ','דָּג','בַּיִת'], sayBack:true, sfx:true }, heardLog:[],
+};
+let save = load();
+function load(){
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) return {...defaults, ...s, settings:{...defaults.settings, ...(s.settings||{})}}; } catch(e){}
+  return structuredClone(defaults);
+}
+function persist(){ try { localStorage.setItem(KEY, JSON.stringify(save)); } catch(e){} }
+let settings = save.settings;
+delete settings.enabled; delete settings.lenient;   // replaced by letters / listen
+// words saved before nikud was added get their pointed spelling
+settings.words = settings.words.map(w => defaults.settings.words.find(p => bareHe(p) === bareHe(w)) || w);
+// words added to the starter list later also reach lists saved before them (once, so deleting one sticks)
+if (!settings.wordsAdded2){
+  for (const w of ['נָחָשׁ','אָכַל','בָּרַח']) if (!settings.words.some(x => bareHe(x) === bareHe(w))) settings.words.push(w);
+  settings.wordsAdded2 = true;
+}
+if (!settings.wordsAdded3){
+  for (const w of ['כֶּלֶב','חָתוּל','שֶׁמֶשׁ','דָּג','בַּיִת']) if (!settings.words.some(x => bareHe(x) === bareHe(w))) settings.words.push(w);
+  settings.wordsAdded3 = true;
+}
+// "הב הב" was dropped: Whisper hears it as "אבא" in her voice almost every time
+if (!settings.havRemoved){ settings.words = settings.words.filter(w => bareHe(w) !== 'הב הב'); settings.havRemoved = true; }
+persist();
+save.badges = {...save.badges}; save.counters = {...defaults.counters, ...save.counters};
+function stat(id){ return save.stats[id] || (save.stats[id] = {seen:0, first:0, miss:0}); }
+
+/* ================= Audio ================= */
+let actx = null;
+function audio(){ if (!actx) { try { actx = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){} } if (actx && actx.state === 'suspended') actx.resume(); return actx; }
+function tone(freq, start, dur, type='triangle', vol=.18, slide=0){
+  const a = actx; if (!a || !settings.sfx) return;
+  const t = a.currentTime + start, o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  if (slide) o.frequency.exponentialRampToValueAtTime(freq*slide, t+dur);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t+.02); g.gain.exponentialRampToValueAtTime(.001, t+dur);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t+dur+.05);
+}
+const sfx = {
+  right(){ [523,659,784,1047].forEach((f,i)=>tone(f, i*.08, .3)); tone(1568,.32,.4,'sine',.08); },
+  wrong(){ tone(330,0,.22,'sine',.16,.8); tone(262,.18,.3,'sine',.14,.8); },
+  flap(){ tone(380,0,.15,'sine',.1,1.8); },
+  star(i){ tone(880+i*90,0,.12,'square',.05); },
+  level(){ [523,659,784,659,784,1047].forEach((f,i)=>tone(f,i*.12,.35,'triangle',.16)); },
+  arrive(){ tone(660,0,.12,'sine',.07); tone(990,.07,.15,'sine',.06); },
+  quick(){ tone(1200,0,.18,'square',.05,2); tone(1800,.08,.2,'square',.04,1.5); },
+  golden(){ [784,988,1175,1568,1976].forEach((f,i)=>tone(f, i*.06, .35, 'sine', .1)); },
+  step(){ tone(880,0,.12,'triangle',.12); tone(1320,.08,.16,'triangle',.1); },
+  badge(){ [659,880,1047,1319].forEach((f,i)=>tone(f, i*.1, .4, 'triangle', .14)); },
+};
+
+/* ================= Speech out (hints) ================= */
+let ttsBusyUntil = 0, voice = null;
+let heVoice = null;
+function pickVoice(){
+  const all = speechSynthesis.getVoices();
+  const vs = all.filter(v => /^en(-|_)?(US|GB)?/i.test(v.lang));
+  voice = vs.find(v => /Samantha|Google US English|Karen|Moira/i.test(v.name)) || vs[0] || null;
+  heVoice = all.find(v => /^(he|iw)/i.test(v.lang)) || null;
+}
+if ('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function say(text, rate=.75, lang='en'){
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const v = lang === 'he' ? heVoice : voice;
+  if (v) u.voice = v;
+  u.lang = lang === 'he' ? 'he-IL' : 'en-US'; u.rate = lang === 'he' ? .85 : rate; u.pitch = 1.25;
+  ttsBusyUntil = performance.now() + 1500;   // syllables are short; also covers browsers that never fire onend
+  u.onend = u.onerror = () => { ttsBusyUntil = performance.now() + 450; };   // ignore the mic hearing the game's own voice
+  speechSynthesis.speak(u);
+}
+
+/* ================= Speech in ================= */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+// The recogniser is started once and left running for the whole visit: every new start
+// can make the browser ask for the microphone again. Results are simply ignored when the
+// bird isn't waiting at a gate.
+let rec = null, recWanted = false, recRunning = false, micBlocked = false, seenResults = 0, ignoreBelow = 0;
+function initRec(){
+  if (!SR || rec) return;
+  rec = new SR();
+  rec.lang = 'en-US'; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 5;
+  rec.onstart = () => { recRunning = true; seenResults = 0; ignoreBelow = 0; };
+  rec.onend = () => { recRunning = false; if (recWanted) setTimeout(startRec, 120); };
+  rec.onerror = e => {
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed'){ micBlocked = true; recWanted = false; updateMic(); }
+  };
+  rec.onresult = onSpeech;
+}
+function startRec(){ if (!rec || recRunning || !recWanted) return; recRunning = true; try { rec.start(); } catch(e){ recRunning = false; } }
+function keepListening(){
+  if (!rec || micBlocked) return;
+  const lang = settings.mode === 'hebrew' ? 'he-IL' : 'en-US';
+  if (rec.lang !== lang){ rec.lang = lang; if (recRunning) try { rec.abort(); } catch(e){} }   // restarts itself in the new language
+  recWanted = true; startRec();
+}
+function forgetEarlierSpeech(){ ignoreBelow = seenResults; }   // what was said before this gate doesn't count
+
+function onSpeech(e){
+  seenResults = e.results.length;
+  for (let i = Math.max(e.resultIndex, ignoreBelow); i < e.results.length; i++){
+    const r = e.results[i], alts = [];
+    for (let j = 0; j < r.length; j++) alts.push(r[j].transcript);
+    if (alts[0]) $('heard').textContent = 'heard: “' + alts[0].trim() + '”';
+    if (!canAnswer()) continue;
+    const g = game.gate, target = g.syl;
+    if (isWord(target)){
+      const want = bareHe(target.slice(3));
+      if (alts.some(a => (' ' + bareHe(a) + ' ').includes(' ' + want + ' '))) { logHeard(g, alts.join(' / '), 'right', 'browser'); answerRight(); return; }
+      if (!r.isFinal) continue;
+      if (whisperOn()){ logHeard(g, alts.join(' / '), 'ignored', 'browser'); continue; }
+      const other = settings.words.find(w => bareHe(w) === bareHe(alts[0] || ''));
+      if (other) { logHeard(g, alts.join(' / '), 'wrong', 'browser'); answerWrong('he:' + other); return; }
+      logHeard(g, alts.join(' / '), 'unclear', 'browser'); unclearTry(); continue;
+    }
+    if (alts.some(a => isRight(a, target))) { logHeard(g, alts.join(' / '), 'right', 'browser'); answerRight(); return; }
+    if (r.isFinal && whisperOn()){ logHeard(g, alts.join(' / '), 'ignored', 'browser'); continue; }
+    if (r.isFinal){
+      const got = wrongSound(alts[0] || '', target);
+      if (got) { logHeard(g, alts.join(' / '), 'wrong', 'browser'); answerWrong(got); return; }
+      logHeard(g, alts.join(' / '), 'unclear', 'browser');
+      unclearTry();
+    }
+  }
+}
+
+/* mic level meter, so she can see the bird is listening */
+let analyser = null, levelBuf = null, micLevel = 0;
+async function initMeter(){
+  if (analyser || !navigator.mediaDevices?.getUserMedia) return;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true}});
+    const a = audio(); if (!a) return;
+    const src = a.createMediaStreamSource(stream);
+    analyser = a.createAnalyser(); analyser.fftSize = 512;
+    levelBuf = new Uint8Array(analyser.fftSize);
+    src.connect(analyser);
+    startTape(a, src);
+  } catch(e){ /* meter is decoration only */ }
+}
+/* A burst of voice the recogniser then turns into nothing still counts as a try. */
+const vox = { floor:.05, on:false, onSince:0, quietSince:0, endedAt:0 };
+function trackVoice(level, now){
+  vox.floor = level < vox.floor ? level : vox.floor + (level - vox.floor)*.002;
+  const loud = level > Math.max(.16, vox.floor*3);
+  if (loud){ vox.quietSince = 0; if (!vox.on){ vox.on = true; vox.onSince = now; vox.tapeStart = tape.pos; vox.clean = canAnswer(); } }
+  else if (vox.on){
+    if (!vox.quietSince) vox.quietSince = now;
+    if (now - vox.quietSince > 350){
+      vox.on = false;
+      const real = vox.quietSince - vox.onSince > 120;   // a real utterance, not a click
+      if (real && whisperOn()){ if (vox.clean && canAnswer()) sendClip(game.gate, vox.tapeStart); }
+      else if (real) vox.endedAt = now;
+    }
+  }
+  // give the browser's listener 1.6 s to come back with something before calling it unclear
+  if (vox.endedAt && now - vox.endedAt > 1600){ vox.endedAt = 0; unclearTry(); }
+}
+let lastTryAt = 0;
+function unclearTry(){
+  const g = game.gate, now = performance.now();
+  if (!g || !canAnswer() || now - lastTryAt < 1500) return;
+  lastTryAt = now;
+  g.unclear = (g.unclear || 0) + 1;
+  const limit = power().passAfter && +settings.passAfter ? Math.min(power().passAfter, +settings.passAfter) : +settings.passAfter;
+  if (limit && g.unclear >= limit){ answerRight(true); return; }
+  toast(['Say it again, nice and loud!','One more time!','I almost heard it!'][Math.min(2, g.unclear-1)], 1300);
+}
+function logHeard(g, text, result, source){
+  save.heardLog.unshift({gate:g.text, heard:(text || '').trim().slice(0, 60), result:result + ' (' + source + ')'});
+  save.heardLog.length = Math.min(save.heardLog.length, 25);
+  // when run from the launcher, also note it in the server log so it can be reviewed later
+  if (location.hostname === 'localhost'){
+    try { fetch(`/heard?gate=${encodeURIComponent(g.text)}&heard=${encodeURIComponent((text || '').trim())}&result=${result}&source=${source}&mode=${settings.listen}&bird=${save.skin}&level=${save.level}`).catch(() => {}); } catch(e){}
+  }
+}
+/* ---------- Tape: the last few seconds of microphone audio, so each utterance can be cut out ---------- */
+const tape = { buf:null, rate:48000, pos:0 };
+function startTape(a, src){
+  tape.rate = a.sampleRate; tape.buf = new Float32Array(Math.round(a.sampleRate*6));
+  const proc = a.createScriptProcessor(2048, 1, 1);
+  proc.onaudioprocess = e => {
+    const d = e.inputBuffer.getChannelData(0), n = tape.buf.length;
+    for (let i = 0; i < d.length; i++) tape.buf[(tape.pos + i) % n] = d[i];
+    tape.pos += d.length;
+  };
+  const mute = a.createGain(); mute.gain.value = 0;
+  src.connect(proc); proc.connect(mute); mute.connect(a.destination);
+}
+// Cut from just before she started (pre-roll) to now, resampled to the 16 kHz Whisper expects.
+function cutClip(fromPos){
+  const n = tape.buf.length, pre = Math.round(tape.rate*.3);
+  let start = Math.max(fromPos - pre, tape.pos - n + 1);
+  const len = Math.min(tape.pos - start, Math.round(tape.rate*3.5));
+  start = tape.pos - len;
+  const out = new Float32Array(Math.floor(len*16000/tape.rate));
+  const step = tape.rate/16000;
+  for (let i = 0; i < out.length; i++){
+    const x = i*step, j = Math.floor(x), f = x - j;
+    const a = tape.buf[(start + j) % n], b = tape.buf[(start + j + 1) % n];
+    out[i] = a + (b - a)*f;
+  }
+  return out;
+}
+
+/* ---------- Whisper, running in a worker on this computer ---------- */
+const WORKER_SRC = `
+import { AutoProcessor, AutoTokenizer, WhisperForConditionalGeneration, Tensor, cat } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2';
+const models = {};   // name -> {processor, tokenizer, model, special}
+const progress = p => { if (p.status === 'progress') postMessage({type:'progress', file:p.file, loaded:p.loaded, total:p.total}); };
+async function load(name){
+  if (models[name]) return models[name];
+  const processor = await AutoProcessor.from_pretrained(name, {progress_callback:progress});
+  const tokenizer = await AutoTokenizer.from_pretrained(name, {progress_callback:progress});
+  let model, device;
+  try {
+    if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) throw new Error('no webgpu');
+    model = await WhisperForConditionalGeneration.from_pretrained(name, {device:'webgpu', dtype:'fp32', progress_callback:progress});
+    device = 'webgpu';
+  } catch (e) {
+    model = await WhisperForConditionalGeneration.from_pretrained(name, {device:'wasm', dtype:'q8', progress_callback:progress});
+    device = 'wasm';
+  }
+  const special = t => tokenizer.model.tokens_to_ids.get(t);
+  models[name] = {processor, tokenizer, model, special};
+  postMessage({type:'ready', model:name, device});
+  return models[name];
+}
+// How likely Whisper finds each written-out answer for this clip. It only ever has to
+// choose between the answers on the list, so it can't drift off into other words.
+const timing = {};
+async function score(name, lang, audio, cands){
+  const { processor, tokenizer, model, special } = await load(name);
+  const EOT = special('<|endoftext|>');
+  // English-only models start with <sot><notimestamps>; multilingual ones also say the language
+  const prefix = lang ? [special('<|startoftranscript|>'), special('<|' + lang + '|>'), special('<|transcribe|>'), special('<|notimestamps|>')]
+                      : [special('<|startoftranscript|>'), special('<|notimestamps|>')];
+  let t = performance.now();
+  const { input_features } = await processor(audio);
+  timing.features = Math.round(performance.now() - t); t = performance.now();
+  const prep = await model._prepare_encoder_decoder_kwargs_for_generation({
+    inputs_tensor:input_features, model_inputs:{input_features}, model_input_name:'input_features', generation_config:{}});
+  timing.encoder = Math.round(performance.now() - t); t = performance.now();
+  // every spelling of every answer goes through the decoder together, in one batch
+  const seqs = [];
+  for (const c of cands) for (const text of c.texts) seqs.push({id:c.id, text, ids:[...prefix, ...tokenizer.encode(text, {add_special_tokens:false}), EOT]});
+  const N = seqs.length, T = Math.max(...seqs.map(q => q.ids.length));
+  const flat = new BigInt64Array(N*T);
+  seqs.forEach((q, i) => { for (let t = 0; t < T; t++) flat[i*T+t] = BigInt(q.ids[t] ?? EOT); });   // padding sits after the end, so it can't change earlier scores
+  const res = await model({ encoder_outputs:cat(Array.from({length:N}, () => prep.encoder_outputs), 0), decoder_input_ids:new Tensor('int64', flat, [N, T]) });
+  const V = res.logits.dims[2], L = res.logits.data;
+  timing.decoder = Math.round(performance.now() - t);
+  const best = {};
+  seqs.forEach((q, i) => {
+    let lp = 0;
+    for (let t = prefix.length - 1; t < q.ids.length - 1; t++){
+      const o = (i*T + t)*V;
+      let max = -Infinity; for (let k = 0; k < V; k++) if (L[o+k] > max) max = L[o+k];
+      let sum = 0; for (let k = 0; k < V; k++) sum += Math.exp(L[o+k] - max);
+      lp += L[o+q.ids[t+1]] - max - Math.log(sum);
+    }
+    if (!best[q.id] || lp > best[q.id].lp) best[q.id] = {id:q.id, lp, text:q.text};
+  });
+  return Object.values(best).sort((a, b) => b.lp - a.lp);
+}
+let queue = Promise.resolve();   // one clip at a time: the model can't run two at once
+let newestClip = 0;
+onmessage = e => {
+  const m = e.data;
+  if (m.type === 'score') newestClip = m.id;
+  queue = queue.then(async () => {
+    // if she has already said it again, only the newest try matters
+    if (m.type === 'score' && m.id < newestClip){ postMessage({type:'skipped', id:m.id}); return; }
+    try {
+      if (m.type === 'load') await load(m.model);
+      if (m.type === 'score'){
+        const t0 = performance.now();
+        const ranked = await score(m.model, m.lang, m.audio, m.cands);
+        postMessage({type:'scores', id:m.id, ranked, ms:Math.round(performance.now() - t0), timing:{...timing}});
+      }
+    } catch (err) { postMessage({type:'error', id:m.id, model:m.model, message:String(err && err.stack || err)}); }
+  });
+};`;
+const whisper = { worker:null, models:{}, files:{}, nextId:1, pending:new Map() };
+// Which Whisper model listens in each mode: English-only for syllables, multilingual for Hebrew.
+function whisperModel(mode = settings.mode){
+  const big = settings.engine === 'whisper-base';
+  if (mode === 'hebrew') return big ? 'Xenova/whisper-base' : 'Xenova/whisper-tiny';
+  return big ? 'Xenova/whisper-base.en' : 'Xenova/whisper-tiny.en';
+}
+function whisperOn(){ return settings.engine.startsWith('whisper') && whisper.models[whisperModel()] === 'ready'; }
+function earsStatus(text){ const el = $('earsStatus'); if (el) el.textContent = text; }
+function loadWhisper(){
+  if (!settings.engine.startsWith('whisper')) return;
+  if (!whisper.worker){
+    try {
+      whisper.worker = new Worker(URL.createObjectURL(new Blob([WORKER_SRC], {type:'text/javascript'})), {type:'module'});
+    } catch(e){ earsStatus('Using the browser\'s listener.'); return; }
+    whisper.worker.onmessage = e => {
+      const m = e.data;
+      if (m.type === 'progress'){
+        whisper.files[m.file] = [m.loaded, m.total];
+        let l = 0, t = 0; for (const [a, b] of Object.values(whisper.files)){ l += a; t += b || 0; }
+        if (t && whisper.models[whisperModel()] === 'loading') earsStatus(`Getting the bird's ears ready… ${Math.round(l/t*100)}%`);
+      } else if (m.type === 'ready'){
+        whisper.models[m.model] = 'ready';
+        if (m.model === whisperModel()) earsStatus('The bird is ready to listen.');
+        console.info('Whisper', m.model, 'ready on', m.device);
+      } else if (m.type === 'skipped'){
+        whisper.pending.delete(m.id);
+      } else if (m.type === 'scores'){
+        const clip = whisper.pending.get(m.id); whisper.pending.delete(m.id);
+        if (clip) judgeClip(clip, m.ranked, m.ms);
+      } else if (m.type === 'error'){
+        console.warn('Whisper:', m.message);
+        if (m.model && whisper.models[m.model] !== 'ready'){ whisper.models[m.model] = 'failed'; earsStatus('Couldn\'t load Whisper (is the internet on?). Using the browser\'s listener.'); }
+        whisper.pending.delete(m.id);
+      }
+    };
+  }
+  const name = whisperModel();
+  if (whisper.models[name]) return;
+  whisper.models[name] = 'loading'; whisper.files = {};
+  earsStatus('Getting the bird\'s ears ready…');
+  whisper.worker.postMessage({type:'load', model:name});
+}
+// How each syllable can be written, so Whisper can score it: "Ba." "Bah." "Ka." ...
+const SPELL_C = {c:['C','K'], k:['K','C'], q:['Qu','Kw'], x:['X','Ks']};
+const SPELL_V = {a:['a','ah'], e:['e','eh'], i:['i','ee'], o:['o','oh'], u:['u','oo']};
+function spellings(id){
+  const s = SYL[id], out = [];
+  for (const c of SPELL_C[s.c] || [s.c.toUpperCase()]) for (const v of SPELL_V[s.v]) out.push(' ' + c + v + '.');
+  return out;
+}
+// Whisper tends to write a repeated word only once ("הב הב" comes out as "הב"),
+// so phrases are also scored joined up and, when every part is the same, as a single word.
+function wordSpellings(w){
+  const parts = w.split(/\s+/), forms = new Set([w]);
+  if (parts.length > 1){
+    forms.add(parts.join(''));
+    forms.add(parts.join('-'));
+    if (parts.every(p => p === parts[0])) forms.add(parts[0]);
+  }
+  return [...forms].flatMap(f => [' ' + f, ' ' + f + '.']);
+}
+function sendClip(g, fromPos){
+  const audio16 = cutClip(fromPos);
+  if (audio16.length < 16000*.2) return;
+  const ids = [...new Set([g.syl, ...currentPool()])];
+  const id = whisper.nextId++;
+  whisper.pending.set(id, {gate:g, syl:g.syl});
+  const lang = isWord(g.syl) ? 'he' : null;
+  whisper.worker.postMessage({type:'score', id, model:whisperModel(), lang, audio:audio16,
+    cands:ids.map(x => ({id:x, texts:isWord(x) ? wordSpellings(bareHe(x.slice(3))) : spellings(x)}))}, [audio16.buffer]);
+  $('micText').textContent = 'Hmm…';
+}
+// Whisper ranks the syllables she knows for each clip (log-likelihood, 0 is certain).
+// Tuned on her first session: clear answers score about -4 to -11, noise and mumbles -14 and below.
+const NOISE = -14;     // nothing scores above this: not a syllable, so neither right nor wrong
+const TIE = .5;        // the gate's syllable this close to the best one counts as heard
+const SURE_WRONG = 3;  // a different syllable must win by this much to count as a mistake
+function judgeClip(clip, ranked, ms){
+  const g = clip.gate, top = ranked[0], tgt = ranked.find(r => r.id === g.syl);
+  const summary = ranked.slice(0, 3).map(r => `${itemLabel(r.id)} ${r.lp.toFixed(1)}`).join(' · ');
+  const src = 'whisper ' + ms + 'ms';
+  updateMic();
+  if (game.gate !== g || game.phase !== 'wait' || g.syl !== clip.syl){ logHeard(g, summary, 'late', src); return; }
+  if (!top || top.lp < NOISE){ logHeard(g, summary, 'unclear', src); unclearTry(); return; }
+  // whole words: no consonant shortcut, but a little more room for a close second
+  const sameStart = !isWord(g.syl) && SYL[top.id].c === SYL[g.syl].c, gap = top.lp - tgt.lp;
+  const tie = isWord(g.syl) && settings.listen === 'relaxed' ? 1 : TIE;
+  let right = top.id === g.syl || (settings.listen !== 'strict' && gap <= tie);
+  if (settings.listen === 'relaxed' && sameStart) right = true;   // relaxed: the consonant is what counts (Whisper often hears her "eh" as "ah")
+  if (right){ logHeard(g, summary, 'right', src); answerRight(); return; }
+  const differs = settings.listen === 'relaxed' && !isWord(g.syl) ? !sameStart : true;
+  // Hebrew: the browser's listener already catches real words well, so Whisper only calls a
+  // mistake when it is very sure (in her first Hebrew round, near-misses were all false alarms)
+  const sure = isWord(g.syl) ? gap > 5 && top.lp > -9 : gap > SURE_WRONG && top.lp > NOISE + 2;
+  if (differs && sure){ logHeard(g, summary, 'wrong', src); answerWrong(top.id); return; }
+  logHeard(g, summary, 'unclear', src);
+  unclearTry();
+}
+
+function readLevel(){
+  if (!analyser) return 0;
+  analyser.getByteTimeDomainData(levelBuf);
+  let s = 0; for (const v of levelBuf){ const d = (v-128)/128; s += d*d; }
+  return Math.min(1, Math.sqrt(s/levelBuf.length)*6);
+}
+
+/* ================= Canvas world ================= */
+const cv = $('c'), ctx = cv.getContext('2d');
+let W = 0, H = 0, U = 1, DPR = 1, groundY = 0;
+function resize(){
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = innerWidth || 800; H = innerHeight || 600;   // a hidden window can report 0
+  cv.width = W*DPR; cv.height = H*DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  U = Math.max(.62, Math.min(W/760, H/620));
+  groundY = H - Math.max(70, H*.13);
+}
+addEventListener('resize', resize); resize();
+
+const game = {
+  mode:'menu', phase:'fly', t:0, worldX:0, speed:0,
+  birdY:0, birdVy:0, birdMood:'happy', moodT:0, wingBoost:0,
+  gates:[], gate:null, levelCount:0, levelFirst:0, levelStars:0,
+  combo:0, cooldownUntil:0, waitStart:0, shake:0, lastSyl:null, doneAt:0,
+  theme:THEMES[0], rules:levelRules(1), levelItems:0, quickStart:0, newBadges:[],
+};
+let particles = [], floaters = [], clouds = [], hillsSeed = Math.random()*1000, twinkles = [];
+for (let i=0;i<9;i++) clouds.push({x:Math.random()*2000, y:Math.random()*.45, s:.6+Math.random()*.9, p:.12+Math.random()*.2});
+for (let i=0;i<70;i++) twinkles.push({x:Math.random(), y:Math.random()*.7, r:Math.random()*1.6+.5, ph:Math.random()*TAU});
+
+const birdX = () => Math.max(110*U, W*.26);
+const gapH = () => 250*U;
+const stopDist = g => g && g.items.length > 1 ? Math.max(175*U, itemLayout(g).total/2 + 130*U) : 175*U;   // wider gates: stop farther back
+
+function displayText(id){
+  if (isWord(id)) return id.slice(3);
+  const s = SYL[id];
+  const raw = s.c + s.v;
+  const mode = settings.letterCase === 'mixed' ? ['upper','lower','title'][Math.floor(Math.random()*3)] : settings.letterCase;
+  if (mode === 'upper') return raw.toUpperCase();
+  if (mode === 'lower') return raw;
+  return raw.charAt(0).toUpperCase() + raw.slice(1);
+}
+function pickSyl(){
+  const pool = currentPool().length ? currentPool() : ['ba'];
+  // sounds she misses come up more often
+  const weights = pool.map(id => {
+    const st = stat(id);
+    if (id === game.lastSyl && pool.length > 1) return 0;
+    return Math.max(.25, 1 + st.miss*.6 - Math.min(st.first, 12)*.04);
+  });
+  let r = Math.random()*weights.reduce((a,b)=>a+b,0);
+  for (let i=0;i<pool.length;i++){ r -= weights[i]; if (r <= 0) return game.lastSyl = pool[i]; }
+  return game.lastSyl = pool[0];
+}
+function goldenRoll(){
+  const p = power(); game.spawned = (game.spawned || 0) + 1;
+  if (p.firstGolden && game.spawned === 1) return true;
+  if (p.goldenEvery && game.spawned % p.goldenEvery === 0) return true;
+  return Math.random() < Math.max(game.rules.golden, p.goldenFloor || 0)*(p.goldenOdds || 1);
+}
+function spawnGates(){
+  const rules = game.rules;
+  let lastX = game.gates.length ? game.gates[game.gates.length-1].x : game.worldX + W*.95 - Math.max(420*U, W*.62);
+  while (lastX < game.worldX + W*2.2){
+    const n = Math.random() < Math.max(rules.multi, power().multiFloor || 0) ? (Math.random() < rules.triple ? 3 : 2) : 1;
+    lastX += Math.max(420*U, W*.62) * rules.spacing + (n - 1)*120*U;
+    const bob = rules.bob*U;
+    const minY = H*.12 + gapH()/2 + 60*U + bob, maxY = groundY - gapH()/2 - 20*U - bob;
+    const items = Array.from({length:n}, () => pickSyl());
+    const baseY = minY + Math.random()*Math.max(10, maxY-minY);
+    game.gates.push({x:lastX, gapY:baseY, baseY, bob, phase:Math.random()*TAU,
+      items, texts:items.map(displayText), step:0, syl:items[0], text:'',
+      golden: n === 1 && goldenRoll(),
+      state:'locked', tries:0, worth:3, heard:false, pop:0, passed:false, open:0});
+    game.gates[game.gates.length-1].text = game.gates[game.gates.length-1].texts[0];
+  }
+  game.gates = game.gates.filter(g => g.x - game.worldX > -300*U);
+}
+
+/* ================= Game flow ================= */
+function canAnswer(){
+  return game.mode === 'play' && game.phase === 'wait' && game.gate &&
+    performance.now() > game.cooldownUntil && performance.now() > ttsBusyUntil;
+}
+function startGame(){
+  audio(); initRec(); initMeter();
+  game.theme = THEMES[(save.level-1) % THEMES.length];
+  game.rules = levelRules(save.level);
+  game.mode = 'play'; game.phase = 'fly';
+  game.gates = []; game.worldX = 0; game.speed = 0;
+  game.levelCount = 0; game.levelFirst = 0; game.levelStars = 0; game.levelItems = 0; game.combo = 0; game.newBadges = [];
+  game.spawned = 0; game.shield = power().shield || 0; game.freeHear = power().freeHear || 0;
+  game.birdY = H*.45;
+  spawnGates();
+  keepListening();
+  $('menu').hidden = true; $('gear').hidden = true; $('backLink').hidden = true; $('hud').hidden = false;
+  $('noSpeech').hidden = !!SR;
+  levelIntro();
+  renderHud(); updateMic();
+}
+function levelIntro(){
+  const news = LEVEL_NEWS[save.level], p = power();
+  toast(`Level ${save.level}<small>${news || game.theme.name}</small>`, news ? 2600 : 1600);
+  if (p.name) setTimeout(() => powerPop(`${p.name}: ${p.desc}`, 3500), news ? 2700 : 1700);
+}
+function goHome(){
+  game.mode = 'menu';
+  ['hud','pause','done'].forEach(id => $(id).hidden = true);
+  $('menu').hidden = false; $('gear').hidden = false;
+  renderMenu();
+}
+function arriveAtGate(g){
+  game.phase = 'wait'; game.gate = g; game.waitStart = performance.now();
+  game.cooldownUntil = performance.now() + 350; game.quickStart = game.cooldownUntil;
+  stat(g.syl).seen++; persist();
+  forgetEarlierSpeech();
+  sfx.arrive();
+  $('heard').textContent = '';
+  updateMic();
+}
+function answerRight(goodTry){
+  const g = game.gate; if (!g) return;
+  if (goodTry){ g.worth = 1; g.heard = true; }
+  const first = g.tries === 0 && !g.heard;
+  const quick = first && performance.now() - game.quickStart < quickLimit()*1000;
+  const st = stat(g.syl); if (first) st.first++;
+  game.combo++; save.bestCombo = Math.max(save.bestCombo, game.combo);
+  // stars: the gate's worth, +1 for a quick read, ×2 on a golden gate, ×2 on a 5+ streak,
+  // each of these nudged by the bird's power
+  const p = power(), helped = [];
+  if (goodTry && p.passStars){ g.worth = p.passStars; helped.push('Robo ears'); }
+  let earned = g.worth + (quick ? (p.quickBonus || 1) : 0) + (p.perGate || 0);
+  if (quick && p.quickBonus) helped.push(p.name);
+  if (p.perGate) helped.push(p.name);
+  if (p.multiBonus && g.items.length > 1){ earned += p.multiBonus; helped.push(p.name); }
+  if (p.lucky && Math.random() < p.lucky){ earned += 2; helped.push(p.name + ' +2'); }
+  if (g.golden){ earned *= p.goldenX || 2; if (p.goldenX) helped.push(p.name); }
+  const streakAt = p.streakAt || 5;
+  if (game.combo >= streakAt){ earned *= p.streakX || 2; if (p.streakX || (p.streakAt && game.combo < 5)) helped.push(p.name); }
+  if (p.boost){ earned = Math.ceil(earned*p.boost); helped.push(p.name); }
+  if (helped.length) powerPop(helped[helped.length-1] + '!');
+  if (location.hostname === 'localhost') try { fetch(`/power?bird=${save.skin}&earned=${earned}&worth=${g.worth}&quick=${quick}&golden=${!!g.golden}&combo=${game.combo}&helped=${encodeURIComponent(helped.join(','))}`).catch(() => {}); } catch(e){}
+  const tag = helped.length ? ' ' + p.icon : '';   // the floating "+N ★" shows the bird's icon when its power added to it
+  save.stars += earned; save.lifetime += earned; game.levelStars += earned;
+  game.levelItems++; if (first) game.levelFirst++;
+  if (quick) save.counters.quick++;
+  if (isWord(g.syl)) save.counters.hebrew++;
+  const said = g.syl;
+  if (settings.sayBack || goodTry) setTimeout(() => say(itemSay(said), .8, itemLang(said)), 250);
+  const bits = [quick ? '⚡ Quick!' : '', g.golden ? '✨ Golden!' : '', game.combo >= streakAt ? `🔥 ${game.combo} in a row · ${(p.streakX || 2) === 3 ? 'triple' : 'double'} stars` : game.combo >= 3 ? `🔥 ${game.combo} in a row!` : ''].filter(Boolean);
+  const praise = goodTry ? 'Good try!<small>Let\'s say it together</small>' : PRAISE[Math.floor(Math.random()*PRAISE.length)] + (bits.length ? `<small>${bits.join(' · ')}</small>` : '');
+
+  // a double or triple gate: on to the next thing to read, the gate stays shut
+  if (g.step < g.items.length - 1){
+    const [ix, iy] = itemPos(g, g.step);
+    burst(ix, iy, 18, true);
+    floaters.push({x:ix, y:iy - 60*U, text:'+' + earned + ' ★' + tag, life:1.2});
+    g.step++; g.syl = g.items[g.step]; g.text = g.texts[g.step];
+    g.tries = 0; g.worth = 3; g.heard = false; g.unclear = 0;
+    stat(g.syl).seen++;
+    game.cooldownUntil = performance.now() + 500; game.quickStart = game.cooldownUntil;
+    forgetEarlierSpeech();
+    sfx.step(); if (quick) sfx.quick();
+    toast(goodTry ? praise : 'Next one! 👉' + (bits.length ? `<small>${bits.join(' · ')}</small>` : ''), 1100);
+    persist(); checkBadges(); bumpStars(); renderHud(); updateMic();
+    return;
+  }
+  if (g.items.length === 2) save.counters.multi++;
+  if (g.items.length === 3){ save.counters.multi++; save.counters.triple++; }
+  if (g.golden) save.counters.golden++;
+  persist();
+  g.state = 'open'; game.gate = null; game.phase = 'fly';
+  game.speed = 0; game.birdVy = -380*U; game.wingBoost = 1; game.birdMood = 'wow'; game.moodT = 1.2;
+  burst(g.x - game.worldX, g.gapY, g.golden || g.items.length > 1 ? 80 : 46, true);
+  floaters.push({x:g.x - game.worldX, y:g.gapY - 90*U, text:'+' + earned + ' ★' + tag, life:1.6});
+  sfx.right(); sfx.flap(); if (quick) sfx.quick(); if (g.golden) sfx.golden();
+  toast(praise, goodTry ? 1600 : 1300);
+  checkBadges(); bumpStars(); renderHud(); updateMic();
+}
+function checkBadges(){
+  for (const b of BADGES){
+    if (save.badges[b.id] || !b.test()) continue;
+    save.badges[b.id] = Date.now(); game.newBadges.push(b);
+    persist();
+    badgePop(b);
+  }
+}
+let badgeQueue = [], badgeShowing = false;
+function badgePop(b){
+  badgeQueue.push(b);
+  if (badgeShowing) return;
+  const next = () => {
+    const x = badgeQueue.shift(); if (!x){ badgeShowing = false; return; }
+    badgeShowing = true;
+    const el = $('badgePop'); el.querySelector('.ico').textContent = x.icon; el.lastElementChild.textContent = 'New badge: ' + x.name;
+    el.classList.add('show'); sfx.badge();
+    setTimeout(() => { el.classList.remove('show'); setTimeout(next, 400); }, 2400);
+  };
+  setTimeout(next, 900);
+}
+function answerWrong(got){
+  const g = game.gate; if (!g) return;
+  g.tries++;
+  stat(g.syl).miss++; persist();
+  const p = power();
+  if (game.shield > 0){ game.shield--; powerPop('Bubble shield! No star lost'); }   // forgiven: stars and streak stay
+  else {
+    g.worth = Math.max(1, g.worth-1);
+    if (p.streakSafe){ if (game.combo) powerPop('Streak saved!'); } else game.combo = 0;
+  }
+  game.shake = .35; game.birdMood = 'oops'; game.moodT = 1.3;
+  game.cooldownUntil = performance.now() + 1600;
+  sfx.wrong();
+  toast(`Hmm, that sounded like “${displayFor(got)}”<small>Look again!</small>`, 1600);
+  if (g.tries >= 2){
+    g.heard = true; g.worth = 1;
+    setTimeout(() => { if (game.gate === g) { toast('Listen…', 1200); say(itemSay(g.syl), .75, itemLang(g.syl)); } }, 1500);
+  }
+  renderHud(); updateMic();
+  setTimeout(updateMic, 1650);
+}
+const displayFor = itemLabel;
+function hearIt(){
+  audio();
+  const g = game.gate || game.gates.find(x => x.state === 'locked');
+  if (!g) return;
+  if (game.gate === g && g.tries === 0){
+    if (game.freeHear > 0){ game.freeHear--; powerPop(`Good ears! ${game.freeHear} free left`); }
+    else { g.heard = true; g.worth = 1; }
+  }
+  say(itemSay(g.syl), .75, itemLang(g.syl));
+  $('hearBtn').classList.remove('nudge');
+}
+function levelDone(){
+  game.mode = 'done'; sfx.level();
+  const chest = power().chest || 0;
+  if (chest){ save.stars += chest; save.lifetime += chest; game.levelStars += chest; }
+  const share = game.levelItems ? game.levelFirst / game.levelItems : 0;
+  const rating = share >= .85 ? 3 : share >= .6 ? 2 : 1;
+  const prevLife = save.lifetime - game.levelStars;
+  const newSkin = SKINS.find(s => s.cost > prevLife && s.cost <= save.lifetime);
+  $('doneTitle').textContent = `Level ${save.level} done!`;
+  $('doneSub').textContent = `You earned ${game.levelStars} ★${chest ? ` (🌈 +${chest} pot of gold)` : ''} and read ${game.levelFirst} of ${game.levelItems} on the first try.`;
+  const spans = [...$('bigStars').children];
+  spans.forEach(s => s.className = '');
+  spans.forEach((s,i) => setTimeout(() => { s.className = i < rating ? 'on' : 'shown'; if (i < rating) sfx.star(i); }, 450 + i*380));
+  const un = $('unlock');
+  if (newSkin){ un.hidden = false; drawBirdThumb(un.querySelector('canvas'), newSkin); un.querySelector('span').textContent = `New friend unlocked: ${newSkin.name}!`; }
+  else un.hidden = true;
+  save.level++; persist();
+  checkBadges();
+  $('doneBadges').innerHTML = '';
+  for (const b of game.newBadges){ const sp = document.createElement('span'); sp.textContent = b.icon + ' ' + b.name; $('doneBadges').appendChild(sp); }
+  game.newBadges = [];
+  $('doneNext').textContent = 'Next: ' + (LEVEL_NEWS[save.level] || 'a little faster!') + ' · ' + THEMES[(save.level-1) % THEMES.length].name;
+  $('done').hidden = false;
+}
+function nextLevel(){
+  $('done').hidden = true;
+  game.theme = THEMES[(save.level-1) % THEMES.length];
+  game.rules = levelRules(save.level);
+  // gates already lined up were made with the old rules; start the new level fresh
+  game.gates = game.gates.filter(g => g.state === 'open');
+  game.mode = 'play'; game.phase = 'fly';
+  game.levelCount = 0; game.levelFirst = 0; game.levelStars = 0; game.levelItems = 0;
+  game.spawned = 0; game.shield = power().shield || 0; game.freeHear = power().freeHear || 0;
+  keepListening();
+  levelIntro();
+  renderHud(); updateMic();
+}
+
+/* ================= HUD ================= */
+let toastTimer = 0;
+function toast(html, ms){
+  const t = $('toast'); t.innerHTML = html; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), ms);
+}
+function bumpStars(){ const el = $('starCount'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+function renderHud(){
+  $('starCount').textContent = save.stars;
+  $('levelName').textContent = 'Level ' + save.level;
+  const dots = $('dots');
+  if (dots.children.length !== game.rules.gates) dots.innerHTML = '<i></i>'.repeat(game.rules.gates);
+  [...dots.children].forEach((d,i) => d.classList.toggle('on', i < game.levelCount));
+  const p = power();
+  $('powerPill').textContent = `${p.icon} ${p.name}` + (game.shield ? ' 🛡️' : '') + (p.freeHear ? ` · ${game.freeHear} free` : '');
+  $('powerPill').title = p.name + ': ' + p.desc;
+  $('combo').hidden = game.combo < 2; $('comboN').textContent = game.combo + (game.combo >= 5 ? ' · ×2' : '');
+}
+function updateMic(){
+  const m = $('mic'), txt = $('micText');
+  m.classList.remove('live','cool');
+  if (micBlocked){ txt.textContent = 'Microphone is off'; return; }
+  if (!SR){ txt.textContent = 'Say it! (grown-up taps ✓)'; return; }
+  if (game.phase === 'wait'){
+    if (performance.now() < game.cooldownUntil - 400){ m.classList.add('cool'); txt.textContent = 'Look carefully…'; }
+    else { m.classList.add('live'); txt.textContent = 'Say it!'; }
+  } else txt.textContent = 'Flying…';
+}
+
+/* ================= Update ================= */
+function update(dt){
+  game.t += dt;
+  const bx = birdX();
+  if (game.mode === 'menu'){
+    game.worldX += 60*U*dt;
+    game.birdY = H*.5 + Math.sin(game.t*2)*14*U;
+    return;
+  }
+  if (game.mode !== 'play') return;
+
+  const next = game.gates.find(g => g.state === 'locked');
+  if (game.phase === 'fly' && next){
+    const dist = (next.x - game.worldX) - bx - stopDist(next);
+    const want = Math.min(260*U*game.rules.speed, Math.max(0, dist*3 + 90*U));
+    game.speed += (want - game.speed) * Math.min(1, dt*3);
+    if (dist <= 1){ game.worldX = next.x - bx - stopDist(next); game.speed = 0; arriveAtGate(next); }
+  } else if (game.phase === 'wait'){ game.speed = 0; if (game.gate) game.worldX = game.gate.x - bx - stopDist(game.gate); }   // stays put even if the window is resized
+  else game.speed += (260*U*game.rules.speed - game.speed) * Math.min(1, dt*3);   // no gate in sight yet: keep flying
+  game.worldX += game.speed*dt;
+
+  // count gates the bird has flown through
+  for (const g of game.gates){
+    if (g.state === 'open' && !g.passed && g.x - game.worldX < bx - 30*U){
+      g.passed = true; game.levelCount++; renderHud();
+      if (game.levelCount >= game.rules.gates) game.doneAt = game.t + .7;
+    }
+    if (g.state === 'open') g.open = Math.min(1, g.open + dt*2.5);
+    if (g.bob) g.gapY = g.baseY + Math.sin(game.t*1.4 + g.phase)*g.bob;   // moving gates
+  }
+  // streak trail: sparkles from 3 in a row, stars from 6
+  if (game.combo >= 3 && game.phase === 'fly' && Math.random() < dt*40){
+    particles.push({x:bx - 30*U, y:game.birdY + (Math.random()-.5)*20*U, vx:-(60 + Math.random()*80)*U, vy:(Math.random()-.5)*40*U,
+      life:.6, c:CONFETTI[Math.floor(Math.random()*CONFETTI.length)], s:(4 + Math.random()*4)*U, rot:0, vr:4, star:game.combo >= 6, grav:.1});
+  }
+  if (game.doneAt && game.t >= game.doneAt){ game.doneAt = 0; levelDone(); return; }
+  spawnGates();
+
+  // bird glides toward the next gap
+  const target = (next ? next.gapY : H*.45) + Math.sin(game.t*3.2)*7*U;
+  game.birdVy += ((target - game.birdY)*9 - game.birdVy*4.5) * dt;
+  game.birdY += game.birdVy*dt;
+  game.wingBoost = Math.max(0, game.wingBoost - dt*1.2);
+  if ((game.moodT -= dt) <= 0) game.birdMood = 'happy';
+  game.shake = Math.max(0, game.shake - dt);
+  game.powerGlow = Math.max(0, (game.powerGlow || 0) - dt*1.2);
+
+  // listening hint after a while
+  if (game.phase === 'wait'){
+    if (performance.now() - game.waitStart > 9000 && game.gate && !game.gate.heard) $('hearBtn').classList.add('nudge');
+    const lvl = readLevel();
+    micLevel += (lvl - micLevel) * Math.min(1, dt*12);
+    trackVoice(lvl, performance.now());
+    $('ring').style.setProperty('--lvl', (1 + micLevel*.9).toFixed(2));
+    if (performance.now() > game.cooldownUntil - 400 && $('mic').classList.contains('cool')) updateMic();
+  } else $('hearBtn').classList.remove('nudge');
+}
+
+/* ================= Particles ================= */
+const CONFETTI = ['#FF5A5F','#1FB5A8','#FFC93C','#5EC8FF','#B48CFF','#FF8FC7'];
+function burst(x, y, n, stars){
+  for (let i=0;i<n;i++){
+    const a = Math.random()*TAU, sp = (140 + Math.random()*380)*U;
+    particles.push({x, y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp - 120*U, life:1 + Math.random()*.6, max:1.6,
+      c:CONFETTI[i % CONFETTI.length], s:(5+Math.random()*7)*U, rot:Math.random()*TAU, vr:(Math.random()-.5)*10,
+      star: stars && i % 4 === 0});
+  }
+}
+function stepParticles(dt){
+  for (const p of particles){ p.vy += 700*U*dt*(p.grav ?? 1); p.x += p.vx*dt; p.y += p.vy*dt; p.vx *= .985; p.rot += p.vr*dt; p.life -= dt; }
+  particles = particles.filter(p => p.life > 0);
+  for (const f of floaters){ f.y -= 60*U*dt; f.life -= dt; }
+  floaters = floaters.filter(f => f.life > 0);
+}
+
+/* ================= Drawing ================= */
+function starPath(c, x, y, r, inner=.45){
+  c.beginPath();
+  for (let i=0;i<10;i++){ const rr = i%2 ? r*inner : r, a = -Math.PI/2 + i*Math.PI/5; c.lineTo(x + Math.cos(a)*rr, y + Math.sin(a)*rr); }
+  c.closePath();
+}
+function rrect(c, x, y, w, h, r){ c.beginPath(); c.roundRect ? c.roundRect(x,y,w,h,r) : c.rect(x,y,w,h); }
+
+function drawSky(th){
+  const g = ctx.createLinearGradient(0,0,0,groundY);
+  g.addColorStop(0, th.top); g.addColorStop(1, th.bot);
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  if (th.night){
+    for (const s of twinkles){ ctx.globalAlpha = .5 + .5*Math.sin(game.t*2 + s.ph); ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(s.x*W, s.y*groundY, s.r*U, 0, TAU); ctx.fill(); }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = th.sun; ctx.beginPath(); ctx.arc(W*.82, H*.18, 46*U, 0, TAU); ctx.fill();
+    ctx.fillStyle = th.top; ctx.beginPath(); ctx.arc(W*.82 + 20*U, H*.18 - 12*U, 40*U, 0, TAU); ctx.fill();
+  } else {
+    const sx = W*.82, sy = H*.17;
+    ctx.save(); ctx.translate(sx, sy); ctx.rotate(game.t*.15);
+    ctx.fillStyle = th.sun; ctx.globalAlpha = .35;
+    for (let i=0;i<12;i++){ ctx.rotate(TAU/12); ctx.beginPath(); ctx.moveTo(-8*U, 60*U); ctx.lineTo(8*U, 60*U); ctx.lineTo(0, 88*U); ctx.fill(); }
+    ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(0,0,50*U,0,TAU); ctx.fill();
+    ctx.restore();
+  }
+  if (th.space){   // planets drift by slowly
+    const px = ((W*.3 - game.worldX*.05) % (W + 300*U) + W + 300*U) % (W + 300*U) - 150*U;
+    ctx.fillStyle = '#FF8FC7'; ctx.beginPath(); ctx.arc(px, H*.32, 34*U, 0, TAU); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 5*U; ctx.beginPath(); ctx.ellipse(px, H*.32, 58*U, 14*U, -.3, 0, TAU); ctx.stroke();
+    ctx.fillStyle = '#62DDA8'; ctx.beginPath(); ctx.arc(px + W*.45, H*.12, 18*U, 0, TAU); ctx.fill();
+  }
+  if (th.snow){
+    ctx.fillStyle = 'rgba(255,255,255,.9)';
+    for (const s of twinkles){
+      const y = ((s.y*groundY + game.t*40*U*(1 + s.r*.3)) % groundY);
+      const x = ((s.x*W + Math.sin(game.t + s.ph)*14*U - game.worldX*.2) % W + W) % W;
+      ctx.beginPath(); ctx.arc(x, y, (s.r + 1)*U, 0, TAU); ctx.fill();
+    }
+  }
+  // clouds
+  for (const c of clouds){
+    const x = ((c.x - game.worldX*c.p) % (W + 400*U) + W + 400*U) % (W + 400*U) - 200*U;
+    drawCloud(x, c.y*groundY + 30*U, 60*U*c.s, th.night ? 'rgba(255,255,255,.18)' : 'rgba(255,255,255,.85)');
+  }
+}
+function drawCloud(x, y, r, fill){
+  ctx.fillStyle = fill; ctx.beginPath();
+  ctx.arc(x, y, r*.6, 0, TAU); ctx.arc(x + r*.55, y - r*.25, r*.55, 0, TAU);
+  ctx.arc(x + r*1.1, y, r*.6, 0, TAU); ctx.arc(x + r*.55, y + r*.15, r*.55, 0, TAU);
+  ctx.fill();
+}
+function hill(par, base, amp, color, freq){
+  ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(0, H);
+  for (let x=0; x<=W+20; x+=20){
+    const wx = (x + game.worldX*par)*freq + hillsSeed;
+    ctx.lineTo(x, base - (Math.sin(wx) *.6 + Math.sin(wx*2.3 + 1)*.3 + Math.sin(wx*.47)*.4) * amp);
+  }
+  ctx.lineTo(W, H); ctx.fill();
+}
+function drawGround(th){
+  hill(.25, groundY - 40*U, 50*U, th.far, .0045/U);
+  hill(.5, groundY - 8*U, 26*U, th.near, .008/U);
+  ctx.fillStyle = th.dirt; ctx.fillRect(0, groundY, W, H-groundY);
+  ctx.fillStyle = th.ground; ctx.fillRect(0, groundY, W, 18*U);
+  // scrolling scallops on the grass edge
+  const step = 34*U, off = -(game.worldX % step);
+  ctx.beginPath();
+  for (let x = off - step; x < W + step; x += step) ctx.arc(x + step/2, groundY + 18*U, step/2, 0, Math.PI);
+  ctx.fill();
+  // flowers / shells / sparkles
+  ctx.fillStyle = 'rgba(255,255,255,.5)';
+  const fs = 140*U, fo = -(game.worldX % fs);
+  for (let x = fo; x < W + fs; x += fs){ ctx.beginPath(); ctx.arc(x + 40*U, groundY + 44*U, 4*U, 0, TAU); ctx.arc(x + 95*U, groundY + 66*U, 3*U, 0, TAU); ctx.fill(); }
+}
+function drawPipe(th, x, y0, y1, top, slide){
+  const w = 96*U, lipH = 30*U, lipW = w + 18*U;
+  const yy0 = top ? y0 : y0 + slide, yy1 = top ? y1 - slide : y1;
+  if (yy1 - yy0 < 2) return;
+  ctx.save();
+  rrect(ctx, x - w/2, yy0 - (top ? 20*U : 0), w, yy1 - yy0 + 20*U, 12*U); ctx.clip();
+  ctx.fillStyle = th.pipe; ctx.fillRect(x - w/2, yy0 - 20*U, w, yy1 - yy0 + 40*U);
+  // candy stripes
+  ctx.strokeStyle = th.pipe2; ctx.lineWidth = 14*U; ctx.globalAlpha = .7;
+  for (let s = yy0 - w; s < yy1 + w; s += 46*U){ ctx.beginPath(); ctx.moveTo(x - w/2, s); ctx.lineTo(x + w/2, s + w*.6); ctx.stroke(); }
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect(x - w/2 + 12*U, yy0 - 20*U, 10*U, yy1 - yy0 + 40*U);
+  ctx.restore();
+  ctx.fillStyle = th.lip;
+  const ly = top ? yy1 - lipH : yy0;
+  rrect(ctx, x - lipW/2, ly, lipW, lipH, 12*U); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.3)'; rrect(ctx, x - lipW/2 + 10*U, ly + 6*U, lipW - 20*U, 7*U, 4*U); ctx.fill();
+}
+const VOWEL_COLOR = {a:'#FF5A5F', e:'#1FB5A8', i:'#8A5CF6', o:'#F08C00', u:'#2F8FE0'};   // each vowel always has its own colour
+function drawLetters(text, x, y, size){
+  ctx.font = `700 ${size}px Fredoka, "Arial Rounded MT Bold", sans-serif`;
+  ctx.textBaseline = 'middle';
+  const parts = [...text].map(ch => ({ch, col: VOWEL_COLOR[ch.toLowerCase()] || '#24305E'}));
+  const widths = parts.map(p => ctx.measureText(p.ch).width), gap = size*.02;
+  let cx = x - (widths.reduce((a,b)=>a+b,0) + gap*(parts.length-1))/2;
+  parts.forEach((p,i) => { ctx.fillStyle = p.col; ctx.fillText(p.ch, cx, y + size*.04); cx += widths[i] + gap; });
+}
+// Hebrew words are drawn whole (right to left), shrunk to fit inside the bubble.
+function drawWord(text, x, y, size, maxW){
+  const font = px => `700 ${px}px Rubik, "Arial Hebrew", sans-serif`;
+  ctx.font = font(size);
+  const w = ctx.measureText(text).width;
+  if (w > maxW) ctx.font = font(size*maxW/w);
+  ctx.direction = 'rtl'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#24305E';
+  ctx.fillText(text, x, y + size*.04);
+  ctx.direction = 'ltr'; ctx.textAlign = 'left';
+}
+// Where each thing to read sits inside a gate's bubble (Hebrew reads right to left).
+function itemFont(id, size){ return isWord(id) ? `700 ${size}px Rubik, "Arial Hebrew", sans-serif` : `700 ${size}px Fredoka, "Arial Rounded MT Bold", sans-serif`; }
+function itemLayout(g){
+  const n = g.items.length, size = (n === 1 ? (isWord(g.syl) ? 70 : (g.text.length > 1 ? 74 : 88)) : 54)*U;
+  const widths = g.texts.map((t, i) => { ctx.font = itemFont(g.items[i], size); return ctx.measureText(t).width; });
+  const gap = 34*U, total = widths.reduce((a, b) => a + b, 0) + gap*(n - 1);
+  const rtl = isWord(g.items[0]);
+  let cx = rtl ? total/2 : -total/2;
+  const xs = widths.map(w => { const c = rtl ? cx - w/2 : cx + w/2; cx += rtl ? -(w + gap) : (w + gap); return c; });
+  return {size, widths, xs, total};
+}
+function itemPos(g, i){ return [g.x - game.worldX + itemLayout(g).xs[i], g.gapY]; }
+function drawGate(th, g){
+  const x = g.x - game.worldX; if (x < -150*U || x > W + 150*U) return;
+  const gh = gapH(), slide = g.open*40*U;
+  drawPipe(th, x, -20, g.gapY - gh/2, true, slide);
+  drawPipe(th, x, g.gapY + gh/2, groundY + 4, false, slide);
+  if (g.state === 'locked' || g.pop < 1){
+    if (g.state === 'open') g.pop = Math.min(1, g.pop + 1/60*4);
+    const waiting = game.gate === g;
+    const pulse = waiting ? 1 + Math.sin(game.t*4)*.03 + micLevel*.08 : 1;
+    const s = (1 + g.pop*.5) * pulse, alpha = 1 - g.pop;
+    const r = 82*U*s, multi = g.items.length > 1;
+    const lay = multi ? itemLayout(g) : null;
+    const halfW = multi ? Math.max(r, (lay.total/2 + 36*U)*s) : r;   // a pill for 2–3 items, a circle for one
+    ctx.save(); ctx.globalAlpha = alpha;
+    ctx.translate(x, g.gapY);
+    if (waiting && game.shake > 0) ctx.translate(Math.sin(game.t*60)*8*U*game.shake/.35, 0);
+    const bubble = grow => { ctx.beginPath(); if (multi) ctx.roundRect(-halfW - grow, -r*.78 - grow, (halfW + grow)*2, (r*.78 + grow)*2, r*.78 + grow); else ctx.arc(0, 0, r + grow, 0, TAU); };
+    // glow
+    if (waiting || g.golden){ ctx.fillStyle = g.golden ? 'rgba(255,214,92,.45)' : 'rgba(255,255,255,.35)'; bubble(r*.22 + (g.golden ? Math.sin(game.t*5)*5*U : 0)); ctx.fill(); }
+    ctx.fillStyle = g.golden ? '#FFF6D6' : '#fff';
+    ctx.strokeStyle = game.shake > 0 && waiting ? '#FF5A5F' : g.golden ? '#E0A100' : '#24305E'; ctx.lineWidth = (g.golden ? 8 : 6)*U;
+    bubble(0); ctx.fill(); ctx.stroke();
+    if (g.golden) for (let i = 0; i < 5; i++){   // sparkles orbiting a golden gate
+      const a = game.t*1.5 + i*TAU/5;
+      starPath(ctx, Math.cos(a)*r*1.18, Math.sin(a)*r*1.18, (6 + 3*Math.sin(game.t*6 + i))*U); ctx.fillStyle = '#FFC93C'; ctx.fill();
+    }
+    if (!multi){
+      if (isWord(g.syl)) drawWord(g.text, 0, -6*U*s, 70*U*s, r*1.6);
+      else drawLetters(g.text, 0, -6*U*s, (g.text.length > 1 ? 74 : 88)*U*s);
+    } else {
+      g.items.forEach((id, i) => {
+        const cx = lay.xs[i]*s, done = i < g.step, now = i === g.step;
+        ctx.globalAlpha = alpha * (done ? .45 : now ? 1 : .35);
+        if (isWord(id)) drawWord(g.texts[i], cx, -6*U*s, lay.size*s, lay.widths[i]*s*1.05);
+        else drawLetters(g.texts[i], cx, -6*U*s, lay.size*s);
+        ctx.globalAlpha = alpha;
+        if (now){ ctx.fillStyle = '#FFC93C'; ctx.beginPath(); ctx.roundRect(cx - lay.widths[i]*s/2, 26*U*s, lay.widths[i]*s, 6*U, 3*U); ctx.fill(); }
+        if (done){ ctx.fillStyle = '#2FB37C'; ctx.font = `700 ${30*U*s}px Fredoka, sans-serif`; ctx.textAlign = 'center'; ctx.fillText('✓', cx, -46*U*s); ctx.textAlign = 'left'; }
+      });
+    }
+    // worth pips
+    for (let i=0;i<3;i++){
+      starPath(ctx, (i-1)*24*U*s, (multi ? r*.55 : r*.62), 10*U*s);
+      ctx.fillStyle = i < g.worth ? '#FFC93C' : '#E3E7F3'; ctx.fill();
+    }
+    // quick-read bar: read before it runs out for a ⚡ bonus star
+    if (waiting && g.tries === 0 && !g.heard){
+      const left = Math.min(1, Math.max(0, 1 - (performance.now() - game.quickStart)/(quickLimit()*1000)));
+      if (left > 0){
+        const bw = 120*U, by = (multi ? r*.78 : r) + 16*U;
+        ctx.fillStyle = 'rgba(36,48,94,.25)'; ctx.beginPath(); ctx.roundRect(-bw/2, by, bw, 10*U, 5*U); ctx.fill();
+        ctx.fillStyle = left > .3 ? '#FFC93C' : '#FF8E72'; ctx.beginPath(); ctx.roundRect(-bw/2, by, bw*left, 10*U, 5*U); ctx.fill();
+        ctx.font = `700 ${20*U}px Fredoka, sans-serif`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText('⚡', -bw/2 - 6*U, by + 5*U); ctx.textAlign = 'left';
+      }
+    }
+    ctx.restore();
+  }
+}
+function drawBird(c, x, y, r, skin, t, rot, wing, mood){
+  c.save(); c.translate(x, y); c.rotate(rot);
+  let body = skin.body;
+  if (skin.rainbow){ const g = c.createLinearGradient(-r,-r,r,r); ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#C77DFF'].forEach((col,i,a)=>g.addColorStop(i/(a.length-1), col)); body = g; }
+  // the King: a slowly turning swirl of colours, with a striped wing and a jewelled crown
+  const ROYAL = ['#FF5A5F','#FF9F1C','#FFD93D','#6BCB77','#2FB7E8','#7A5CFA','#FF5FB0','#FF5A5F'];
+  const royalSwirl = (ox, oy) => { const g = c.createConicGradient(t*.6, ox, oy); ROYAL.forEach((col, i) => g.addColorStop(i/(ROYAL.length-1), col)); return g; };
+  if (skin.royal) body = royalSwirl(0, 0);
+  const lw = Math.max(2, r*.09);
+  c.lineJoin = 'round'; c.strokeStyle = skin.line; c.lineWidth = lw;
+  if (skin.ghost) c.globalAlpha = .9 + .08*Math.sin(t*3);   // gently flickers
+  if (skin.cape){   // red cape flapping behind
+    const fl = Math.sin(t*6)*r*.12;
+    c.fillStyle = '#E63946'; c.beginPath(); c.moveTo(-r*.1, -r*.55); c.quadraticCurveTo(-r*1.2, -r*.6 + fl, -r*1.7, -r*.1 + fl);
+    c.lineTo(-r*1.5, r*.35 + fl); c.quadraticCurveTo(-r*.9, r*.45, -r*.2, r*.1); c.closePath(); c.fill(); c.stroke();
+  }
+  if (skin.spikes){   // dragon spikes along the back
+    c.fillStyle = '#FFB703';
+    [[-.95,-.25],[-.8,-.62],[-.5,-.9],[-.12,-1.02]].forEach(([dx, dy]) => {
+      const a = Math.atan2(dy, dx);
+      c.beginPath(); c.moveTo(dx*r + Math.cos(a+1.6)*r*.16, dy*r + Math.sin(a+1.6)*r*.16); c.lineTo(dx*r*1.38, dy*r*1.38); c.lineTo(dx*r + Math.cos(a-1.6)*r*.16, dy*r + Math.sin(a-1.6)*r*.16); c.closePath(); c.fill(); c.stroke();
+    });
+  }
+  // tail
+  c.fillStyle = skin.royal ? '#7A5CFA' : skin.rainbow ? '#C77DFF' : skin.wing;
+  c.beginPath(); c.moveTo(-r*.8, -r*.1); c.lineTo(-r*1.35, -r*.45); c.lineTo(-r*1.25, r*.05); c.lineTo(-r*1.4, r*.35); c.lineTo(-r*.8, r*.25); c.closePath(); c.fill(); c.stroke();
+  // tuft
+  if (!skin.noTuft){
+    c.fillStyle = skin.royal ? '#2FB7E8' : skin.rainbow ? '#FF6B6B' : skin.wing;
+    c.beginPath(); c.ellipse(-r*.05, -r*1.02, r*.14, r*.28, -.3, 0, TAU); c.fill(); c.stroke();
+    c.beginPath(); c.ellipse(r*.18, -r*.98, r*.12, r*.24, .4, 0, TAU); c.fill(); c.stroke();
+  }
+  if (skin.panda){   // round black ears
+    c.fillStyle = '#2B2D42'; [[-.45,-.82],[.2,-.95]].forEach(([dx, dy]) => { c.beginPath(); c.arc(dx*r, dy*r, r*.24, 0, TAU); c.fill(); });
+  }
+  if (skin.mane){   // pastel rainbow mane
+    ['#FF9AA2','#FFDAC1','#B5EAD7','#C7CEEA'].forEach((col, i) => { c.fillStyle = col; c.beginPath(); c.ellipse(-r*(.55 + i*.13), -r*(.75 - i*.18), r*.2, r*.32, -.7 - i*.25, 0, TAU); c.fill(); });
+  }
+  if (skin.flame){   // flickering flame on top
+    [['#FFD000', .55, 0], ['#FF8C00', .42, .12], ['#FF3D00', .3, .25]].forEach(([col, h, dx], i) => {
+      const f = 1 + Math.sin(t*12 + i)*.12;
+      c.fillStyle = col; c.beginPath(); c.moveTo(-r*.35 + dx*r, -r*.82); c.quadraticCurveTo(-r*.3 + dx*r, -r*(.82 + h*1.4*f), r*.05 + dx*r, -r*(.85 + h*1.9*f));
+      c.quadraticCurveTo(r*.25 + dx*r, -r*(.82 + h*.9*f), r*.25 + dx*r, -r*.8); c.closePath(); c.fill();
+    });
+  }
+  // body
+  c.fillStyle = body; c.beginPath(); c.arc(0,0,r,0,TAU); c.fill(); c.stroke();
+  c.fillStyle = skin.belly; c.beginPath(); c.ellipse(r*.18, r*.38, r*.58, r*.46, -.15, 0, TAU); c.fill();
+  // eye
+  const ex = r*.4, ey = -r*.25;
+  if (skin.panda){ c.fillStyle = '#2B2D42'; c.beginPath(); c.ellipse(ex, ey + r*.03, r*.42, r*.38, -.3, 0, TAU); c.fill(); }
+  if (skin.mask){ c.fillStyle = '#E63946'; c.beginPath(); c.roundRect(-r*.15, ey - r*.24, r*1.0, r*.46, r*.2); c.fill(); }
+  if (skin.headband){   // ninja headband with tails flying back
+    c.fillStyle = '#E63946'; c.beginPath(); c.roundRect(-r*.95, -r*.72, r*1.85, r*.22, r*.08); c.fill();
+    const fl = Math.sin(t*7)*r*.1;
+    c.beginPath(); c.moveTo(-r*.9, -r*.66); c.lineTo(-r*1.45, -r*.85 + fl); c.lineTo(-r*1.35, -r*.62 + fl); c.closePath(); c.fill();
+    c.beginPath(); c.moveTo(-r*.9, -r*.6); c.lineTo(-r*1.4, -r*.45 - fl); c.lineTo(-r*1.25, -r*.35 - fl); c.closePath(); c.fill();
+  }
+  c.fillStyle = '#fff'; c.beginPath(); c.arc(ex, ey, r*.33, 0, TAU); c.fill(); c.stroke();
+  if (mood === 'oops'){
+    c.strokeStyle = '#24305E'; c.lineWidth = lw*1.1;
+    c.beginPath(); c.moveTo(ex - r*.16, ey - r*.08); c.lineTo(ex + r*.12, ey + r*.02); c.lineTo(ex - r*.16, ey + r*.12); c.stroke();
+    c.fillStyle = '#7FD3FF'; c.beginPath(); c.ellipse(-r*.15, -r*.75, r*.1, r*.16, 0, 0, TAU); c.fill();
+    c.strokeStyle = skin.line; c.lineWidth = lw;
+  } else {
+    const pr = mood === 'wow' ? r*.2 : r*.16;
+    c.fillStyle = '#24305E'; c.beginPath(); c.arc(ex + r*.07, ey + r*.02, pr, 0, TAU); c.fill();
+    c.fillStyle = '#fff'; c.beginPath(); c.arc(ex + r*.13, ey - r*.06, pr*.38, 0, TAU); c.fill();
+  }
+  if (skin.pirate){   // eye patch over the eye, strap, and a red bandana
+    c.strokeStyle = '#1B1C2B'; c.lineWidth = lw*.9; c.beginPath(); c.moveTo(-r*.6, -r*.85); c.lineTo(r*.9, r*.05); c.stroke();
+    c.fillStyle = '#1B1C2B'; c.beginPath(); c.ellipse(ex + r*.02, ey + r*.02, r*.3, r*.27, -.4, 0, TAU); c.fill();
+    c.fillStyle = '#E63946'; c.beginPath(); c.moveTo(-r*.85, -r*.45); c.quadraticCurveTo(-r*.2, -r*1.35, r*.75, -r*.55); c.quadraticCurveTo(0, -r*.8, -r*.85, -r*.45); c.fill();
+    c.fillStyle = '#FFFFFF'; [[-.35,-.8],[.05,-.92],[.4,-.75]].forEach(([dx, dy]) => { c.beginPath(); c.arc(dx*r, dy*r, r*.05, 0, TAU); c.fill(); });
+    c.beginPath(); c.fillStyle = '#E63946'; c.moveTo(-r*.8, -r*.5); c.lineTo(-r*1.25, -r*.3); c.lineTo(-r*1.05, -r*.62); c.closePath(); c.fill();
+    c.strokeStyle = skin.line; c.lineWidth = lw;
+  }
+  // cheek
+  c.fillStyle = 'rgba(255,110,140,.45)'; c.beginPath(); c.ellipse(r*.2, r*.18, r*.15, r*.09, 0, 0, TAU); c.fill();
+  // beak
+  c.fillStyle = '#FF9F1C';
+  c.beginPath(); c.moveTo(r*.78, -r*.12); c.quadraticCurveTo(r*1.45, r*.02, r*.8, r*.3); c.closePath(); c.fill(); c.stroke();
+  if (mood === 'wow'){ c.fillStyle = '#C0392B'; c.beginPath(); c.moveTo(r*.83, r*.1); c.lineTo(r*1.12, r*.12); c.lineTo(r*.84, r*.25); c.fill(); }
+  if (skin.sparkle){ c.fillStyle = '#FFFFFF'; [[-.4,-.4],[.1,-.6],[-.55,.15],[.3,.55]].forEach(([dx, dy], i) => { c.globalAlpha = .5 + .5*Math.sin(t*4 + i); c.beginPath(); c.arc(dx*r, dy*r, r*.07, 0, TAU); c.fill(); }); c.globalAlpha = 1; }
+  if (skin.bow){   // a cherry-red bow with white dots
+    c.fillStyle = '#FF8FC7';
+    c.beginPath(); c.moveTo(-r*.1, -r*.95); c.lineTo(-r*.55, -r*1.25); c.lineTo(-r*.5, -r*.7); c.closePath(); c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(-r*.1, -r*.95); c.lineTo(r*.35, -r*1.25); c.lineTo(r*.3, -r*.7); c.closePath(); c.fill(); c.stroke();
+    c.beginPath(); c.arc(-r*.1, -r*.95, r*.12, 0, TAU); c.fill(); c.stroke();
+  }
+  if (skin.scarf){   // cosy scarf with a fluttering end
+    c.fillStyle = skin.scarf; c.beginPath(); c.roundRect(-r*.75, r*.42, r*1.35, r*.24, r*.1); c.fill();
+    const fl = Math.sin(t*6)*r*.08; c.beginPath(); c.moveTo(-r*.6, r*.5); c.lineTo(-r*1.1, r*.7 + fl); c.lineTo(-r*.95, r*.92 + fl); c.lineTo(-r*.45, r*.66); c.closePath(); c.fill();
+  }
+  if (skin.horn){   // golden unicorn horn
+    const g = c.createLinearGradient(0, -r*.8, r*.3, -r*1.6); g.addColorStop(0, '#FFD84D'); g.addColorStop(1, '#FFF6C2');
+    c.fillStyle = g; c.strokeStyle = '#C99700';
+    c.beginPath(); c.moveTo(r*.05, -r*.82); c.lineTo(r*.42, -r*1.62); c.lineTo(r*.35, -r*.78); c.closePath(); c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(r*.14, -r*1.0); c.lineTo(r*.35, -r*1.05); c.moveTo(r*.22, -r*1.2); c.lineTo(r*.38, -r*1.25); c.stroke();
+    c.strokeStyle = skin.line;
+  }
+  if (skin.antenna){   // robot antenna with a blinking light, and a bolt
+    c.strokeStyle = '#46526A'; c.beginPath(); c.moveTo(0, -r*.95); c.lineTo(r*.05, -r*1.4); c.stroke();
+    c.fillStyle = Math.sin(t*6) > 0 ? '#FF3B5C' : '#FFB3C0'; c.beginPath(); c.arc(r*.05, -r*1.48, r*.12, 0, TAU); c.fill(); c.stroke();
+    c.fillStyle = '#E3E9F2'; c.beginPath(); c.arc(-r*.45, r*.05, r*.1, 0, TAU); c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(-r*.52, r*.05); c.lineTo(-r*.38, r*.05); c.stroke();
+    c.strokeStyle = skin.line;
+  }
+  if (skin.spikes){   // little dragon horns
+    c.fillStyle = '#FFF1C1';
+    [[-.15, 0], [.2, .1]].forEach(([dx, tilt]) => { c.beginPath(); c.moveTo((dx - .1)*r, -r*.9); c.lineTo((dx + .05 + tilt)*r, -r*1.35); c.lineTo((dx + .12)*r, -r*.88); c.closePath(); c.fill(); c.stroke(); });
+  }
+  if (skin.ghost){   // spooky-cute: a wavy hem instead of a belly line, and a little "boo" glow
+    c.fillStyle = 'rgba(180,182,255,.35)'; c.beginPath(); c.arc(0, 0, r*1.15, 0, TAU); c.fill();
+  }
+  if (skin.crown){
+    c.fillStyle = '#FFD84D'; c.strokeStyle = '#A87400';
+    c.beginPath(); c.moveTo(-r*.45, -r*.82); c.lineTo(-r*.45, -r*1.25); c.lineTo(-r*.2, -r*1.02); c.lineTo(0, -r*1.35); c.lineTo(r*.2, -r*1.02); c.lineTo(r*.45, -r*1.25); c.lineTo(r*.45, -r*.82); c.closePath(); c.fill(); c.stroke();
+    // jewels: red, green, blue, and a twinkle on the middle one
+    [['#FF3B5C', -r*.28], ['#2ECC71', 0], ['#2F80ED', r*.28]].forEach(([col, jx]) => { c.fillStyle = col; c.beginPath(); c.arc(jx, -r*.95, r*.075, 0, TAU); c.fill(); });
+    c.fillStyle = '#FFFFFF'; c.globalAlpha = .5 + .5*Math.sin(t*5); starPath(c, 0, -r*1.38, r*.09); c.fill(); c.globalAlpha = 1;
+    c.strokeStyle = skin.line;
+  }
+  // wing
+  const a = Math.sin(t*wing)*.7;
+  c.save(); c.translate(-r*.18, r*.08); c.rotate(-.2 + a);
+  if (skin.royal){ const g = c.createLinearGradient(-r*.7, 0, r*.26, 0); ['#FF5A5F','#FFD93D','#6BCB77','#2FB7E8','#7A5CFA'].forEach((col, i, a) => g.addColorStop(i/(a.length-1), col)); c.fillStyle = g; }
+  else c.fillStyle = skin.rainbow ? '#FFD93D' : skin.wing;
+  c.beginPath(); c.ellipse(-r*.22, 0, r*.48, r*.28, 0, 0, TAU); c.fill(); c.stroke();
+  c.restore();
+  c.globalAlpha = 1;
+  c.restore();
+}
+function currentSkin(){ return SKINS.find(s => s.id === save.skin) || SKINS[0]; }
+function drawBirdThumb(canvas, skin){
+  const c = canvas.getContext('2d'); c.clearRect(0,0,canvas.width,canvas.height);
+  drawBird(c, canvas.width*.47, canvas.height*.56, canvas.height*.3, skin, 1, 0, 1, 'happy');
+}
+
+function render(){
+  const th = game.theme;
+  ctx.save();
+  drawSky(th);
+  drawGround(th);
+  if (game.mode !== 'menu') for (const g of game.gates) drawGate(th, g);
+  // bird
+  if (game.mode !== 'menu'){
+    const rot = Math.max(-.5, Math.min(.5, game.birdVy/(900*U)));
+    const wing = game.phase === 'wait' && game.mode === 'play' ? 7 : 12 + game.wingBoost*20;
+    if (game.powerGlow > 0){
+      ctx.globalAlpha = game.powerGlow*.7; ctx.strokeStyle = '#FFD84D'; ctx.lineWidth = 6*U;
+      ctx.beginPath(); ctx.arc(birdX(), game.birdY, (44 + (1 - game.powerGlow)*30)*U, 0, TAU); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    drawBird(ctx, birdX(), game.birdY, 34*U, currentSkin(), game.t, rot, wing, game.birdMood);
+  }
+  // particles
+  for (const p of particles){
+    ctx.globalAlpha = Math.min(1, p.life/.4);
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillStyle = p.star ? '#FFC93C' : p.c;
+    if (p.star){ starPath(ctx, 0, 0, p.s*1.5); ctx.fill(); } else ctx.fillRect(-p.s/2, -p.s/4, p.s, p.s/2);
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+  for (const f of floaters){
+    ctx.globalAlpha = Math.min(1, f.life/.5);
+    ctx.font = `700 ${44*U}px Fredoka, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineWidth = 8*U; ctx.strokeStyle = '#24305E'; ctx.strokeText(f.text, f.x, f.y);
+    ctx.fillStyle = '#FFC93C'; ctx.fillText(f.text, f.x, f.y);
+    ctx.textAlign = 'left';
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+let last = performance.now();
+function loop(now){
+  const dt = Math.min(.05, (now - last)/1000); last = now;
+  update(dt); stepParticles(dt); render();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* ================= Menus ================= */
+function setMode(mode){
+  settings.mode = mode; persist(); renderMenu();
+  loadWhisper();   // fetches the Hebrew listener the first time Hebrew is picked
+}
+$('modeSyl').onclick = () => setMode('syllables');
+$('modeHeb').onclick = () => setMode('hebrew');
+function showPower(id){
+  const p = POWERS[id] || {}, s = SKINS.find(x => x.id === id);
+  $('powerInfo').innerHTML = '';
+  const ico = document.createElement('b'); ico.textContent = p.icon || '';
+  const txt = document.createElement('span'); txt.textContent = `${s ? s.name : ''}'s power: ${p.name}: ${p.desc}`;
+  $('powerInfo').append(ico, txt);
+}
+function renderMenu(){
+  $('backLink').hidden = !/\/rotem-sky\/?$/.test(location.pathname);   // only inside the Brain Snacks site
+  $('modeSyl').classList.toggle('sel', settings.mode !== 'hebrew'); $('modeSyl').setAttribute('aria-checked', settings.mode !== 'hebrew');
+  $('modeHeb').classList.toggle('sel', settings.mode === 'hebrew'); $('modeHeb').setAttribute('aria-checked', settings.mode === 'hebrew');
+  if (whisper.models[whisperModel()] === 'ready') earsStatus('The bird is ready to listen.');
+  $('menuStars').textContent = save.stars; $('menuLevel').textContent = save.level;
+  $('badgeShelf').innerHTML = '';
+  for (const b of BADGES){
+    const el = document.createElement('span'); el.className = 'badge' + (save.badges[b.id] ? '' : ' locked');
+    el.textContent = b.icon; el.title = b.name; el.setAttribute('aria-label', b.name + (save.badges[b.id] ? '' : ' (not yet)'));
+    $('badgeShelf').appendChild(el);
+  }
+  const box = $('birdPick'); box.innerHTML = '';
+  for (const s of SKINS){
+    const locked = save.lifetime < s.cost;
+    const b = document.createElement('button');
+    b.className = 'bird' + (s.id === save.skin ? ' sel' : '') + (locked ? ' locked' : '');
+    b.setAttribute('aria-label', locked ? `${s.name}, needs ${s.cost} stars` : s.name);
+    const pw = POWERS[s.id] || {};
+    b.title = `${pw.name}: ${pw.desc}`;
+    b.innerHTML = `<span class="pw">${pw.icon || ''}</span><canvas width="168" height="140"></canvas><span>${s.name}</span>${locked ? `<span class="cost">🔒 ${s.cost} ★</span>` : ''}`;
+    b.onmouseenter = b.onfocus = () => showPower(s.id);
+    b.onmouseleave = b.onblur = () => showPower(save.skin);
+    drawBirdThumb(b.querySelector('canvas'), s);
+    b.onclick = () => {
+      audio();
+      if (locked){ tone(220,0,.15,'sine',.1); return; }
+      save.skin = s.id; persist(); sfx.flap(); renderMenu();
+    };
+    box.appendChild(b);
+  }
+  showPower(save.skin);
+  const sel = box.querySelector('.sel');   // keep her current bird in view in the scrolling row
+  if (sel) box.scrollLeft = sel.offsetLeft - box.clientWidth/2 + sel.offsetWidth/2;
+  $('noSpeech').hidden = !!SR;
+  const tip = $('openTip');
+  const safari = /Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Edg/.test(navigator.userAgent);
+  if (location.protocol === 'file:'){
+    tip.hidden = false;
+    tip.textContent = 'Opened this way, the browser keeps asking for the microphone. Close this window and double-click “play-rotem-sky.command” instead. It opens the game in Chrome, which asks only once.';
+  } else if (safari){
+    tip.hidden = false;
+    tip.textContent = 'Safari may keep asking for the microphone. To stop it: Safari menu → Settings → Websites → Microphone → set “localhost” to Allow. Or play in Chrome.';
+  } else tip.hidden = true;
+}
+function renderParent(){
+  const letterChip = (box, l) => {
+    const el = document.createElement('label'); el.className = 'chip';
+    el.innerHTML = `<input type="checkbox" id="let-${l}" ${settings.letters.includes(l) ? 'checked' : ''}><span style="color:${VOWEL_COLOR[l] || 'var(--ink)'}">${l.toUpperCase()} ${l}</span>`;
+    el.querySelector('input').onchange = e => {
+      const next = e.target.checked ? [...settings.letters, l] : settings.letters.filter(x => x !== l);
+      settings.letters = next; persist(); renderParent();
+    };
+    box.appendChild(el);
+  };
+  $('vowelChips').innerHTML = ''; $('consChips').innerHTML = '';
+  VOWELS.forEach(l => letterChip($('vowelChips'), l));
+  CONSONANTS.forEach(l => letterChip($('consChips'), l));
+  const chips = $('sylChips'); chips.innerHTML = '';
+  for (const c of learned(CONSONANTS)) for (const v of learned(VOWELS)){
+    const id = sylId(c, v), l = document.createElement('label'); l.className = 'chip';
+    l.innerHTML = `<input type="checkbox" id="syl-${id}" ${settings.skip.includes(id) ? '' : 'checked'}><span>${c.toUpperCase()}<span style="color:${VOWEL_COLOR[v]}">${v.toUpperCase()}</span></span>`;
+    l.querySelector('input').onchange = e => {
+      settings.skip = e.target.checked ? settings.skip.filter(x => x !== id) : [...settings.skip, id];
+      persist();
+    };
+    chips.appendChild(l);
+  }
+  if (!chips.children.length) chips.innerHTML = '<p class="note">Tick at least one vowel and one consonant above.</p>';
+  $('caseSel').value = settings.letterCase;
+  $('listenSel').value = settings.listen; $('passSel').value = String(settings.passAfter); $('wordsInput').value = settings.words.join('\n'); $('engineSel').value = settings.engine; $('sayBack').checked = settings.sayBack; $('sfx').checked = settings.sfx;
+  const body = $('statsBody'); body.innerHTML = '';
+  let any = false;
+  for (const id of Object.keys(save.stats).filter(id => SYL[id] || isWord(id)).sort()){
+    const st = save.stats[id]; if (!st || !st.seen) continue; any = true;
+    const pct = Math.round(st.first/st.seen*100);
+    body.insertAdjacentHTML('beforeend', `<tr><td class="s">${displayFor(id)}</td><td>${st.seen}</td><td>${pct}%</td><td>${st.miss}</td></tr>`);
+  }
+  if (!any) body.innerHTML = '<tr><td colspan="4">No games played yet.</td></tr>';
+  const hb = $('heardBody'); hb.innerHTML = '';
+  for (const h of save.heardLog){
+    const tr = document.createElement('tr');
+    [h.gate, h.heard ? '“' + h.heard + '”' : '(nothing)', h.result].forEach(v => { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); });
+    hb.appendChild(tr);
+  }
+  if (!save.heardLog.length) hb.innerHTML = '<tr><td colspan="3">Nothing yet.</td></tr>';
+  $('statsNote').textContent = `Total stars: ${save.lifetime} · Now on level ${save.level} · Best streak: ${save.bestCombo}. Saved on this device only.`;
+}
+$('caseSel').onchange = e => { settings.letterCase = e.target.value; persist(); };
+$('listenSel').onchange = e => { settings.listen = e.target.value; persist(); };
+$('wordsInput').onchange = e => {
+  const words = [...new Set(e.target.value.split(/[\n,]+/).map(w => w.trim()).filter(Boolean))];
+  if (words.length) settings.words = words;
+  e.target.value = settings.words.join('\n'); persist();
+};
+$('passSel').onchange = e => { settings.passAfter = +e.target.value; persist(); };
+$('engineSel').onchange = e => { settings.engine = e.target.value; persist(); loadWhisper(); };
+$('sayBack').onchange = e => { settings.sayBack = e.target.checked; persist(); };
+$('sfx').onchange = e => { settings.sfx = e.target.checked; persist(); };
+$('closeParent').onclick = () => { $('parent').hidden = true; renderMenu(); };
+let resetArmed = false;
+$('resetBtn').onclick = () => {
+  const b = $('resetBtn');
+  if (!resetArmed){ resetArmed = true; b.textContent = 'Tap again to erase everything'; setTimeout(() => { resetArmed = false; b.textContent = 'Reset progress'; }, 3000); return; }
+  const keep = settings; save = structuredClone(defaults); save.settings = keep; settings = keep; persist();
+  resetArmed = false; b.textContent = 'Reset progress'; renderParent();
+};
+
+// press-and-hold gear so little fingers don't open settings by accident
+let holdTimer = 0;
+const gear = $('gear');
+const endHold = () => { clearTimeout(holdTimer); gear.classList.remove('holding'); };
+gear.addEventListener('pointerdown', e => { e.preventDefault(); gear.classList.add('holding');
+  holdTimer = setTimeout(() => { endHold(); renderParent(); $('parent').hidden = false; }, 900); });
+['pointerup','pointerleave','pointercancel'].forEach(ev => gear.addEventListener(ev, endHold));
+gear.addEventListener('contextmenu', e => e.preventDefault());
+
+$('playBtn').onclick = startGame;
+$('pauseBtn').onclick = () => { if (game.mode !== 'play') return; game.mode = 'paused'; $('pause').hidden = false; };
+$('resumeBtn').onclick = () => { $('pause').hidden = true; game.mode = 'play'; keepListening(); if (game.phase === 'wait'){ game.cooldownUntil = performance.now() + 300; forgetEarlierSpeech(); } };
+$('homeBtn').onclick = goHome;
+$('doneHome').onclick = goHome;
+$('nextBtn').onclick = nextLevel;
+$('hearBtn').onclick = hearIt;
+$('okBtn').onclick = () => { if (game.mode === 'play' && game.phase === 'wait') answerRight(); };
+addEventListener('keydown', e => {
+  if (e.key === 'Enter' && game.mode === 'play' && game.phase === 'wait'){ e.preventDefault(); answerRight(); }
+  if (e.key === 'Escape' && game.mode === 'play') $('pauseBtn').click();
+});
+document.addEventListener('visibilitychange', () => { if (document.hidden && game.mode === 'play') $('pauseBtn').click(); });
+
+renderMenu();
+loadWhisper();
+// ?test in the address bar lets a script step the game without a visible window
+if (location.search.includes('test')) window.__sky = { game, whisper, answerWrong, tick(sec){ for (let i=0;i<sec*60;i++){ update(1/60); stepParticles(1/60); } render(); } };
+})();
+</script>
+</body>
+</html>

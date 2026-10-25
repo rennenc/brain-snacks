@@ -1,0 +1,6 @@
+# local play log: contains what a child said
+heard.log
+.claude/
+.wrangler/
+node_modules/
+.DS_Store

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Brain Snacks</title>
+<meta name="description" content="Snack-size games that feed the brain. Kids read out loud, fly and collect stars: English sounds and Hebrew words.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;800&family=Rubik:wght@500;700&display=swap">
+<style>
+/* Layout: a sunny sky header with the name, then a shelf of game cards; one bright look. */
+:root{
+  --ink:#24305E;
+  --sky:#7FD3FF;
+  --sky-2:#D6F3FF;
+  --coral:#FF5A5F;
+  --teal:#1FB5A8;
+  --sun:#FFC93C;
+  --paper:#FFFFFF;
+  --mist:#F3F6FD;
+  --shadow:rgba(36,48,94,.18);
+  --font-display:"Fredoka","Arial Rounded MT Bold",ui-rounded,system-ui,sans-serif;
+  --font-body:"Nunito",ui-rounded,system-ui,sans-serif;
+  --font-hebrew:"Rubik","Arial Hebrew",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:linear-gradient(180deg,var(--sky) 0,var(--sky-2) 420px,#F7FBFF 700px);color:var(--ink);font-family:var(--font-body);min-height:100vh;
+  padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+a{color:inherit}
+:focus-visible{outline:4px solid var(--ink);outline-offset:3px;border-radius:12px}
+[lang="he"]{font-family:var(--font-hebrew)}
+
+header{max-width:960px;margin:0 auto;padding-block:clamp(36px,8vw,80px) 28px;text-align:center;position:relative}
+.logo{font:700 clamp(54px,11vw,104px)/1 var(--font-display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.logo .c1{color:var(--coral)} .logo .c2{color:var(--teal)}
+.logo .snack{display:inline-block;background:var(--sun);color:var(--ink);border-radius:.28em;padding:0 .14em;transform:rotate(-4deg);box-shadow:0 .08em 0 #D69A00}
+.tag{font:800 clamp(18px,2.6vw,24px)/1.4 var(--font-body);margin:18px 0 4px}
+.tag-he{font:500 clamp(18px,2.4vw,22px) var(--font-hebrew);margin:0;opacity:.85}
+.sun{position:absolute;right:max(0px,4%);top:18px;width:clamp(70px,12vw,120px);aspect-ratio:1;border-radius:50%;background:var(--sun);
+  box-shadow:0 0 0 14px rgba(255,201,60,.25),0 0 0 30px rgba(255,201,60,.12);animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(8px)}}
+@media (max-width:640px){.sun{display:none}}
+
+main{max-width:960px;margin:0 auto;padding-block:8px 48px}
+.shelf-title{font:700 22px var(--font-display);margin:0 0 14px;letter-spacing:.02em}
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+
+.card{background:var(--paper);border-radius:28px;box-shadow:0 8px 0 var(--shadow);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;
+  transition:transform .15s ease}
+a.card:hover{transform:translateY(-4px) rotate(-.4deg)}
+.art{aspect-ratio:16/9;max-width:100%;display:block;background:linear-gradient(180deg,#6CCBFF,#D6F3FF)}
+.body{padding:18px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.body h2{font:700 30px/1.1 var(--font-display);margin:0}
+.body p{margin:0;font-size:16px;line-height:1.5;font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.tags span{background:var(--mist);border-radius:999px;padding:4px 12px;font:600 14px var(--font-display)}
+.play-btn{margin-top:auto;align-self:flex-start;background:var(--coral);color:#fff;border-radius:999px;padding:10px 28px;font:700 22px var(--font-display);box-shadow:0 5px 0 #C9363B}
+
+.soon{border:4px dashed #C7D3EA;background:rgba(255,255,255,.55);box-shadow:none;align-items:center;justify-content:center;text-align:center;padding:28px;min-height:280px;gap:8px}
+.soon b{font:700 26px var(--font-display)}
+.soon p{margin:0;font-weight:600;max-width:24ch}
+.soon .icons{font-size:30px;letter-spacing:6px}
+
+.notes{margin-top:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.note{background:rgba(255,255,255,.7);border-radius:20px;padding:14px 18px;font-size:15px;line-height:1.5;font-weight:600}
+.note b{font-family:var(--font-display);font-size:17px;display:block;margin-bottom:2px}
+footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font-weight:600;font-size:14px;opacity:.7}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="sun" aria-hidden="true"></div>
+  <h1 class="logo"><span class="c1">Br</span><span class="c2">ai</span><span class="c1">n</span> <span class="snack">Snacks</span></h1>
+  <p class="tag">Snack-size games that feed the brain, instead of junk.</p>
+  <p class="tag-he" lang="he" dir="rtl">חטיפים למוח: משחקים קצרים שמלמדים באמת</p>
+</header>
+
+<main>
+  <h2 class="shelf-title">Games</h2>
+  <div class="shelf">
+    <a class="card" href="rotem-sky/">
+      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="A yellow bird hovering next to a bubble that says Ba">
+        <rect width="320" height="180" fill="#8ED8FF"/>
+        <circle cx="270" cy="38" r="22" fill="#FFD84D"/>
+        <ellipse cx="70" cy="40" rx="34" ry="14" fill="#fff" opacity=".9"/><ellipse cx="96" cy="34" rx="22" ry="12" fill="#fff" opacity=".9"/>
+        <path d="M0 150 Q60 128 120 146 T240 140 T320 146 V180 H0Z" fill="#5CC46A"/>
+        <rect x="196" y="0" width="44" height="46" rx="8" fill="#FF8FB1"/><rect x="190" y="38" width="56" height="14" rx="6" fill="#E8638C"/>
+        <rect x="196" y="134" width="44" height="46" rx="8" fill="#FF8FB1"/><rect x="190" y="128" width="56" height="14" rx="6" fill="#E8638C"/>
+        <circle cx="218" cy="90" r="34" fill="#fff" stroke="#24305E" stroke-width="4"/>
+        <text x="218" y="102" text-anchor="middle" font-family="Fredoka, Arial Rounded MT Bold, sans-serif" font-weight="700" font-size="34"><tspan fill="#24305E">B</tspan><tspan fill="#FF5A5F">a</tspan></text>
+        <g transform="translate(120 92)">
+          <path d="M-20 -3 L-33 -12 L-30 1 L-34 9 L-20 6Z" fill="#F5A623" stroke="#C98500" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle r="24" fill="#FFD23F" stroke="#C98500" stroke-width="3"/>
+          <ellipse cx="5" cy="9" rx="14" ry="11" fill="#FFF3C4"/>
+          <circle cx="10" cy="-6" r="8" fill="#fff" stroke="#C98500" stroke-width="2.5"/><circle cx="12" cy="-6" r="4" fill="#24305E"/>
+          <path d="M19 -3 Q35 0 19 7Z" fill="#FF9F1C" stroke="#C98500" stroke-width="2.5" stroke-linejoin="round"/>
+          <ellipse cx="-8" cy="3" rx="12" ry="7" fill="#F5A623" stroke="#C98500" stroke-width="2.5" transform="rotate(-20 -8 3)"/>
+        </g>
+      </svg>
+      <div class="body">
+        <h2>Rotem's Sky Letters</h2>
+        <p>Read the sound or word out loud and the bird flies through the gate. Collect stars, unlock 17 birds with their own powers.</p>
+        <div class="tags"><span>🎤 Read out loud</span><span>BA · DE</span><span lang="he">עברית</span><span>Ages 4–7</span></div>
+        <span class="play-btn">Play ➜</span>
+      </div>
+    </a>
+    <div class="card soon">
+      <div class="icons" aria-hidden="true">🔢 🧩 🎨</div>
+      <b>More games coming</b>
+      <p>New games land here as we make them.</p>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>Best in Chrome</b>On a computer or tablet. The game asks to use the microphone once.</div>
+    <div class="note"><b>Privacy</b>Progress is saved only in this browser. Speech is recognised on your device, and also by Chrome's built-in speech service.</div>
+    <div class="note"><b>For grown-ups</b>Press and hold ⚙ in a game to choose letters, words and how strict it listens.</div>
+  </div>
+</main>
+<footer>Made with love by the Chacham family</footer>
+</body>
+</html>
