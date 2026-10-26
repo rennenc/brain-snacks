@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Brain Snacks · חטיפים למוח</title>
+<title>חטיפים למוח · Brain Snacks</title>
 <meta name="description" content="חטיפים למוח: משחקים ושיעורים קצרים לילדים שמלמדים באמת. קוראים בקול, עפים, אוספים כוכבים ועושים ניסויים בבית.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -37,11 +37,12 @@ a{color:inherit}
 
 header{max-width:960px;margin:0 auto;padding-block:clamp(36px,8vw,80px) 28px;text-align:center;position:relative}
 .logo{font:700 clamp(54px,11vw,104px)/1 var(--font-display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.logo .mark{width:.95em;height:.95em;vertical-align:-.16em;margin-right:.2em}
 .logo .c1{color:var(--coral)} .logo .c2{color:var(--teal)}
 .logo .snack{display:inline-block;background:var(--sun);color:var(--ink);border-radius:.28em;padding:0 .14em;transform:rotate(-4deg);box-shadow:0 .08em 0 #D69A00}
 .tag{font:700 clamp(26px,4vw,38px)/1.2 var(--font-display);margin:20px 0 6px}
 .tag-sub{font:500 clamp(18px,2.4vw,22px)/1.5 var(--font-body);margin:0 auto;opacity:.85;max-width:34em}
-.sun{position:absolute;left:max(0px,4%);top:18px;width:clamp(70px,12vw,120px);aspect-ratio:1;border-radius:50%;background:var(--sun);
+.sun{position:absolute;right:max(0px,4%);top:18px;width:clamp(70px,12vw,120px);aspect-ratio:1;border-radius:50%;background:var(--sun);
   box-shadow:0 0 0 14px rgba(255,201,60,.25),0 0 0 30px rgba(255,201,60,.12);animation:float 6s ease-in-out infinite}
 @keyframes float{50%{transform:translateY(8px)}}
 @media (max-width:640px){.sun{display:none}}
@@ -62,6 +63,7 @@ a.card:hover{transform:translateY(-4px) rotate(.4deg)}
 .body h2{font:700 30px/1.1 var(--font-display);margin:0}
 .body p{margin:0;font-size:17px;line-height:1.55;font-weight:500}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.tags .age{background:#FFF1C7}
 .tags span{background:var(--mist);border-radius:999px;padding:4px 12px;font:600 14px var(--font-display)}
 .play-btn{margin-top:auto;align-self:flex-start;background:var(--coral);color:#fff;border-radius:999px;padding:10px 28px;font:700 22px var(--font-display);box-shadow:0 5px 0 #C9363B}
 
@@ -80,15 +82,15 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
 <body>
 <header>
   <div class="sun" aria-hidden="true"></div>
-  <h1 class="logo" dir="ltr" lang="en"><span class="c1">Br</span><span class="c2">ai</span><span class="c1">n</span> <span class="snack">Snacks</span></h1>
+  <h1 class="logo" dir="ltr" lang="en"><img class="mark" src="favicon.svg" alt="" width="64" height="64"><span class="c1">Br</span><span class="c2">ai</span><span class="c1">n</span> <span class="snack">Snacks</span></h1>
   <p class="tag">חטיפים למוח</p>
   <p class="tag-sub">משחקים ושיעורים קצרים שמלמדים באמת, במקום משחקים שסתם מבזבזים עליהם זמן.</p>
 </header>
 
 <main>
-  <h2 class="shelf-title">משחקים</h2>
+  <h2 class="shelf-title">משחקים לימודיים<small>לומדים תוך כדי משחק: כל משחק מתרגל מיומנות אחת, כמו קריאה בקול.</small></h2>
   <div class="shelf">
-    <a class="card" href="games/rotem-sky/">
+    <a class="card" href="games/rotem-sky/" data-kind="game" data-age-min="4" data-age-max="7">
       <svg class="art" viewBox="0 0 320 180" role="img" aria-label="ציפור צהובה מרחפת ליד בועה שכתוב בה Ba">
         <rect width="320" height="180" fill="#8ED8FF"/>
         <circle cx="270" cy="38" r="22" fill="#FFD84D"/>
@@ -110,20 +112,20 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
       <div class="body">
         <h2 class="en" lang="en">Rotem's Sky Letters</h2>
         <p>קוראים בקול את ההברה או המילה, והציפור עפה דרך השער. אוספים כוכבים ופותחים 17 ציפורים, ולכל אחת כוח מיוחד.</p>
-        <div class="tags"><span>🎤 קוראים בקול</span><span lang="en">BA · DE</span><span>עברית</span><span>גילאי 4–7</span></div>
+        <div class="tags"><span>🎤 קוראים בקול</span><span lang="en">BA · DE</span><span>עברית</span><span class="age">גילאי 4–7</span></div>
         <span class="play-btn">לשחק ←</span>
       </div>
     </a>
     <div class="card soon">
       <div class="icons" aria-hidden="true">🔢 🧩 🎨</div>
-      <b>עוד משחקים בדרך</b>
+      <b>עוד משחקים לימודיים בדרך</b>
       <p>משחקים חדשים יופיעו כאן ברגע שנכין אותם.</p>
     </div>
   </div>
 
   <h2 class="shelf-title">שיעורים אינטראקטיביים<small>מדע בידיים: מנסים בבית, ואז משחקים עם הסימולטור.</small></h2>
   <div class="shelf">
-    <a class="card" href="lessons/flying-paper-lab/">
+    <a class="card" href="lessons/flying-paper-lab/" data-kind="lesson" data-age-min="8" data-age-max="12">
       <svg class="art" viewBox="0 0 320 180" role="img" aria-label="מטוס נייר גולש מעל נייר משבצות, ואוויר זורם מעל הכנף">
         <defs><pattern id="gridp" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#DCE7F3" stroke-width="1"/></pattern></defs>
         <rect width="320" height="180" fill="#F4F8FC"/><rect width="320" height="180" fill="url(#gridp)"/>
@@ -142,7 +144,7 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
       <div class="body">
         <h2>מעבדת הנייר המעופף</h2>
         <p>איך מטוס של 400 טון נשאר באוויר? 8 משימות עם דפי נייר, צינור ברנולי ומנהרת רוח, יומן טיסות ותעודת טייס בסוף.</p>
-        <div class="tags"><span>🧪 ברנולי ועילוי</span><span>📄 רק דפי נייר</span><span>2 סימולטורים</span></div>
+        <div class="tags"><span>🧪 ברנולי ועילוי</span><span>📄 רק דפי נייר</span><span>2 סימולטורים</span><span class="age">גילאי 8–12</span></div>
         <span class="play-btn lesson">להתחיל ←</span>
       </div>
     </a>

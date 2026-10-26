@@ -31,7 +31,9 @@ once a second game needs it.
 ## Adding a game or lesson
 
 1. Create `site/games/<id>/index.html` or `site/lessons/<id>/index.html`.
-2. Add a card for it on the right shelf in `site/index.html` (copy an existing card).
+2. Add a card for it on the right shelf in `site/index.html` (copy an existing card). Set
+   `data-age-min` / `data-age-max` on the card and a matching `גילאי X–Y` tag, so the
+   catalogue can filter by age.
 3. Add a link back to the catalogue (`../../`).
 4. Deploy.
 
