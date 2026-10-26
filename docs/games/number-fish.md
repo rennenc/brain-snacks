@@ -34,7 +34,8 @@ to the answer, so a child can't guess by size. Example: 2–12 with × and ÷ fo
 Every spoken line is a **pre-recorded clip**, not the browser's voice: the lines are in
 [`tools/voice-lines.json`](../../tools/voice-lines.json) and
 [`tools/generate-voice.mjs`](../../tools/generate-voice.mjs) turns them into mp3 files in
-`site/games/number-fish/voice/` once (ElevenLabs or Cartesia). Sums are never read out (just
+`site/games/number-fish/voice/` once. The current clips are Microsoft's neural Hebrew voice
+Hila (`VOICE_PROVIDER=edge`, free, no key); ElevenLabs or Cartesia work too with a key. Sums are never read out (just
 "כמה זה?"), and single numbers are read only up to 20, which keeps it to 33 clips. If a clip is
 missing the game stays quiet.
 

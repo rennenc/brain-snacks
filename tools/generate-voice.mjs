@@ -4,14 +4,17 @@
 //
 //   ELEVENLABS_API_KEY=... node tools/generate-voice.mjs            (ElevenLabs, model eleven_v3)
 //   CARTESIA_API_KEY=...   node tools/generate-voice.mjs            (Cartesia, model sonic-2, language he)
+//   VOICE_PROVIDER=edge    node tools/generate-voice.mjs            (Microsoft neural voice, free, no key:
+//                                                                      needs `pip install edge-tts`; voice he-IL-HilaNeural)
 //
 // Options (environment): VOICE_ID to pick a voice, FORCE=1 to regenerate files that already exist.
 // Only lines that are new or changed are generated, so re-running costs nothing.
-import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto';
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto'; import { execFileSync } from 'node:child_process'; import os from 'node:os';
+import { fileURLToPath } from 'node:url';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');   // safe with spaces in the path
 const lines = JSON.parse(fs.readFileSync(path.join(root, 'tools/voice-lines.json'), 'utf8'));
-const EL = process.env.ELEVENLABS_API_KEY, CA = process.env.CARTESIA_API_KEY;
-if (!EL && !CA) { console.error('Set ELEVENLABS_API_KEY or CARTESIA_API_KEY.'); process.exit(1); }
+const EL = process.env.ELEVENLABS_API_KEY, CA = process.env.CARTESIA_API_KEY, EDGE = process.env.VOICE_PROVIDER === 'edge';
+if (!EL && !CA && !EDGE) { console.error('Set ELEVENLABS_API_KEY or CARTESIA_API_KEY, or VOICE_PROVIDER=edge.'); process.exit(1); }
 
 async function elevenlabs(text) {
   const voice = process.env.VOICE_ID || 'EXAVITQu4vr4xnSDxMaL';   // a warm, clear female voice
@@ -30,7 +33,13 @@ async function cartesia(text) {
   if (!r.ok) throw new Error(`Cartesia ${r.status}: ${(await r.text()).slice(0, 300)}`);
   return Buffer.from(await r.arrayBuffer());
 }
-const speak = EL ? elevenlabs : cartesia, provider = EL ? 'elevenlabs' : 'cartesia';
+async function edge(text) {
+  const out = path.join(os.tmpdir(), `voice-${process.pid}-${Date.now()}.mp3`);
+  execFileSync(process.env.EDGE_TTS_BIN || 'edge-tts', ['--voice', process.env.VOICE_ID || 'he-IL-HilaNeural', '--rate=' + (process.env.VOICE_RATE || '-8%'),
+    '--pitch=' + (process.env.VOICE_PITCH || '+6Hz'), '--text', text, '--write-media', out], { stdio: 'pipe' });   // "=": a leading "-" would read as a flag
+  const buf = fs.readFileSync(out); fs.unlinkSync(out); return buf;
+}
+const speak = EDGE ? edge : EL ? elevenlabs : cartesia, provider = EDGE ? 'edge:' + (process.env.VOICE_ID || 'he-IL-HilaNeural') : EL ? 'elevenlabs' : 'cartesia';
 
 for (const [game, entries] of Object.entries(lines)) {
   if (game.startsWith('_')) continue;
