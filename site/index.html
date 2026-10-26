@@ -45,6 +45,9 @@ header{max-width:960px;margin:0 auto;padding-block:clamp(36px,8vw,80px) 28px;tex
 .sun{position:absolute;right:max(0px,4%);top:18px;width:clamp(70px,12vw,120px);aspect-ratio:1;border-radius:50%;background:var(--sun);
   box-shadow:0 0 0 14px rgba(255,201,60,.25),0 0 0 30px rgba(255,201,60,.12);animation:float 6s ease-in-out infinite}
 @keyframes float{50%{transform:translateY(8px)}}
+.gh{position:absolute;left:0;top:clamp(14px,3vw,24px);display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.85);color:var(--ink);text-decoration:none;
+  border-radius:999px;padding:7px 14px;font:600 15px var(--font-body);box-shadow:0 4px 0 var(--shadow)}
+.gh:hover{background:#fff}
 @media (max-width:640px){.sun{display:none}}
 
 main{max-width:960px;margin:0 auto;padding-block:8px 48px}
@@ -82,6 +85,10 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
 <body>
 <header>
   <div class="sun" aria-hidden="true"></div>
+  <a class="gh" href="https://github.com/rennenc/brain-snacks" target="_blank" rel="noopener" title="הקוד של האתר פתוח ב-GitHub">
+    <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    <span>קוד פתוח</span>
+  </a>
   <h1 class="logo" dir="ltr" lang="en"><img class="mark" src="favicon.svg" alt="" width="64" height="64"><span class="c1">Br</span><span class="c2">ai</span><span class="c1">n</span> <span class="snack">Snacks</span></h1>
   <p class="tag">חטיפים למוח</p>
   <p class="tag-sub">משחקים ושיעורים קצרים שמלמדים באמת, במקום משחקים שסתם מבזבזים עליהם זמן.</p>
@@ -145,6 +152,25 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
         <h2>מעבדת הנייר המעופף</h2>
         <p>איך מטוס של 400 טון נשאר באוויר? 8 משימות עם דפי נייר, צינור ברנולי ומנהרת רוח, יומן טיסות ותעודת טייס בסוף.</p>
         <div class="tags"><span>🧪 ברנולי ועילוי</span><span>📄 רק דפי נייר</span><span>2 סימולטורים</span><span class="age">גילאי 8–12</span></div>
+        <span class="play-btn lesson">להתחיל ←</span>
+      </div>
+    </a>
+    <a class="card" href="lessons/sound-lab/" data-kind="lesson" data-age-min="9" data-age-max="13">
+      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="גל קול סגול, מיתר וכוס עם מים">
+        <defs><pattern id="gridq" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#E2DFF3" stroke-width="1"/></pattern></defs>
+        <rect width="320" height="180" fill="#F6F5FC"/><rect width="320" height="180" fill="url(#gridq)"/>
+        <path d="M10 80 Q 30 20 50 80 T 90 80 T 130 80 T 170 80 T 210 80" fill="none" stroke="#7A5CFA" stroke-width="5" stroke-linecap="round"/>
+        <path d="M10 80 Q 20 50 30 80 T 50 80 T 70 80 T 90 80 T 110 80 T 130 80 T 150 80 T 170 80 T 190 80 T 210 80" fill="none" stroke="#E3484E" stroke-width="2.5" opacity=".7"/>
+        <line x1="20" y1="140" x2="200" y2="140" stroke="#1F1A4A" stroke-width="3"/><rect x="16" y="130" width="7" height="20" fill="#1F1A4A"/><rect x="196" y="130" width="7" height="20" fill="#FFBE2E"/>
+        <path d="M20 140 Q 110 122 200 140" fill="none" stroke="#7A5CFA" stroke-width="3"/>
+        <path d="M240 60 L290 60 L284 150 L246 150 Z" fill="#fff" stroke="#1F1A4A" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M243 100 L287 100 L284 150 L246 150 Z" fill="#2B78DD" opacity=".55"/>
+        <text x="265" y="44" text-anchor="middle" font-family="Secular One, Rubik, sans-serif" font-size="20" fill="#7A5CFA">440 Hz</text>
+      </svg>
+      <div class="body">
+        <h2>מעבדת הצליל</h2>
+        <p>רואים את הקול על המסך, מודדים אותו בהרץ, בונים חליל מקשית וגיטרה מגומיות, מכוונים כוסות לסולם, ומגלים שמוזיקה היא מתמטיקה.</p>
+        <div class="tags"><span>🎤 מיקרופון חי</span><span>🎸 4 כלי נגינה</span><span>🎯 משחקי מדידה</span><span class="age">גילאי 9–13</span></div>
         <span class="play-btn lesson">להתחיל ←</span>
       </div>
     </a>

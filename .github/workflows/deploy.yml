@@ -1,0 +1,35 @@
+# Publishes site/ to Cloudflare Pages (https://brainsnacks.pages.dev) on every push to main.
+# Needs one repository secret, CLOUDFLARE_API_TOKEN: a Cloudflare API token with
+# "Account > Cloudflare Pages > Edit" permission.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the Cloudflare token is set
+        id: token
+        run: echo "ok=${{ secrets.CLOUDFLARE_API_TOKEN != '' }}" >> "$GITHUB_OUTPUT"
+      - name: Skip (no token yet)
+        if: steps.token.outputs.ok != 'true'
+        run: echo "::warning::CLOUDFLARE_API_TOKEN is not set, so nothing was published. Add it under Settings > Secrets and variables > Actions."
+      - name: Publish site/ to Cloudflare Pages
+        if: steps.token.outputs.ok == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: c3a723351b598ee5ab014b6f5514b8aa
+          command: pages deploy site --project-name=brainsnacks --branch=main

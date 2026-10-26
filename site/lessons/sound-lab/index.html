@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>מעבדת הצליל</title>
+<meta name="description" content="שיעור אינטראקטיבי על צליל: אוסצילוסקופ חי מהמיקרופון, משחק גובה צליל, קשית-חליל, גיטרת גומיות, כוסות מוזיקליות, המתמטיקה של המוזיקה ומהירות הקול.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Assistant:wght@400;600;700;800&family=Secular+One&display=swap">
+<style>
+/* Layout: the same lab notebook on graph paper as the Flying Paper Lab, one reading column of
+   missions; every instrument runs full width like a device on the bench. Accent: sound purple. */
+:root{
+  --paper:#F6F5FC; --grid:#E2DFF3; --ink:#1F1A4A; --ink-soft:#5A5487; --card:#FFFFFF; --line:#D6D1EE;
+  --signal:#FFBE2E; --signal-ink:#3B2900; --wave:#7A5CFA; --low:#E3484E; --high:#2B78DD; --ok:#178F62; --sim:#EFECFB;
+  --display:"Secular One","Assistant",system-ui,sans-serif;
+  --body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --hand:"Amatic SC","Assistant",cursive;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#120F2B; --grid:#1D1940; --ink:#ECEAFB; --ink-soft:#ABA5D6; --card:#1A1638; --line:#2F2A5C;
+  --signal:#FFC447; --signal-ink:#2A1D00; --wave:#A48CFF; --low:#FF6B70; --high:#5EA3FF; --ok:#3ECB91; --sim:#16122F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#120F2B; --grid:#1D1940; --ink:#ECEAFB; --ink-soft:#ABA5D6; --card:#1A1638; --line:#2F2A5C;
+  --signal:#FFC447; --signal-ink:#2A1D00; --wave:#A48CFF; --low:#FF6B70; --high:#5EA3FF; --ok:#3ECB91; --sim:#16122F; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+body{margin:0;direction:rtl;font-family:var(--body);font-size:18px;line-height:1.6;color:var(--ink);
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--card)}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px;border-radius:6px}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.num-ltr{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--card);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:10px}
+.brand{font-family:var(--display);font-size:20px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.stamps{display:flex;align-items:center;gap:6px}
+.stamp{width:22px;height:22px;border-radius:50%;border:2px dashed var(--ink-soft);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--ink-soft);text-decoration:none;transition:transform .2s}
+.stamp.on{background:var(--signal);border:2px solid var(--signal);color:var(--signal-ink);transform:rotate(-12deg)}
+.bar-end{display:flex;align-items:center;gap:10px}
+.count{font-size:14px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+.home{font-size:14px;font-weight:700;color:var(--ink-soft);text-decoration:none;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.home:hover{border-color:var(--ink);color:var(--ink)}
+@media (max-width:620px){.brand span{display:none}.stamp{width:18px;height:18px;font-size:10px}.count{display:none}}
+
+/* mic status pill, always visible */
+.micpill{position:fixed;bottom:max(14px,env(safe-area-inset-bottom,0px));left:max(14px,env(safe-area-inset-left,0px));z-index:9;display:flex;align-items:center;gap:8px;
+  background:var(--card);border:2px solid var(--ink);border-radius:999px;padding:6px 14px 6px 8px;font-weight:800;font-size:15px;box-shadow:0 4px 0 var(--line);cursor:pointer}
+.micpill .dot{width:26px;height:26px;border-radius:50%;background:var(--ink-soft);display:grid;place-items:center;color:#fff;font-size:14px;transition:transform .08s}
+.micpill.on .dot{background:var(--low)}
+.micpill .lvl{width:60px;height:8px;border-radius:4px;background:var(--sim);overflow:hidden}
+.micpill .lvl i{display:block;height:100%;width:0;background:var(--wave)}
+
+/* hero */
+.hero{padding-block:44px 22px;display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:center}
+.eyebrow{font-size:14px;font-weight:700;letter-spacing:.06em;color:var(--ink-soft)}
+.hero h1{font-size:clamp(34px,6vw,56px);margin-block:8px 14px}
+.hero h1 mark{background:linear-gradient(transparent 55%,var(--signal) 55%);color:inherit;padding-inline:4px}
+.lead{font-size:20px;color:var(--ink-soft);max-width:34em}
+.hero-art{min-width:0}
+.hero-art canvas{width:100%;height:220px;display:block;border-radius:14px;background:var(--card);border:2px solid var(--ink)}
+@media (max-width:720px){.hero{grid-template-columns:1fr}.hero-art{order:-1}}
+.kit{display:flex;gap:10px;align-items:flex-start;margin-top:18px;padding:12px 14px;border:2px solid var(--ink);border-radius:10px;background:var(--card);max-width:34em}
+.kit b{font-family:var(--display);font-weight:400;font-size:18px;white-space:nowrap}
+
+/* mission map */
+.map{display:flex;flex-wrap:wrap;gap:8px;padding-block:8px 32px}
+.map a{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);text-decoration:none;font-size:15px;font-weight:600}
+.map a:hover{border-color:var(--ink)}
+.map a i{font-style:normal;font-family:var(--display);color:var(--ink-soft)}
+.map a.on{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+.map a.on i{color:var(--signal-ink)}
+
+/* missions */
+.mission{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:28px clamp(16px,4vw,36px);margin-bottom:36px;scroll-margin-top:80px}
+.mission-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
+.num{flex:none;width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--card);display:grid;place-items:center;font-family:var(--display);font-size:28px;line-height:1}
+.mission.done .num{background:var(--signal);color:var(--signal-ink)}
+.mission h2{font-size:clamp(26px,4vw,34px)}
+.tag{font-size:14px;font-weight:700;letter-spacing:.05em;color:var(--ink-soft)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.note{font-family:var(--hand);font-size:28px;line-height:1.1;color:var(--wave);transform:rotate(-1deg)}
+.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:start}
+.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:15px;margin-top:2px}
+.rule{border-inline-start:6px solid var(--signal);padding:10px 14px;background:var(--sim);border-radius:0 8px 8px 0;font-weight:700}
+.rule small{display:block;font-weight:400;color:var(--ink-soft);font-size:15px}
+.fact{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:14px 16px;background:var(--sim);border-radius:10px}
+.fact .big{font-family:var(--display);font-size:clamp(34px,7vw,50px);line-height:1;color:var(--wave);font-variant-numeric:tabular-nums}
+
+/* predictions */
+.predict{border:2px dashed var(--ink-soft);border-radius:12px;padding:16px}
+.predict .q{font-weight:800;margin-bottom:10px}
+.predict .q::before{content:"ניבוי: ";color:var(--wave)}
+.quizq .q::before{content:none}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:2px solid var(--ink);background:var(--card);border-radius:999px;padding:6px 16px;cursor:pointer;font-weight:700;font-size:16px}
+.opt:hover{background:var(--sim)}
+.opt.picked{background:var(--ink);color:var(--card)}
+.opt.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.predict.answered .opt:not(.picked):not(.right){opacity:.45}
+.reveal{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.verdict{font-family:var(--display);font-size:22px;display:block;margin-bottom:6px}
+.verdict.good{color:var(--ok)}.verdict.surprise{color:var(--low)}
+.done-btn{align-self:flex-start;border:2px solid var(--ink);background:transparent;border-radius:10px;padding:8px 18px;font-weight:800;cursor:pointer}
+.done-btn:hover{background:var(--sim)}
+.mission.done .done-btn{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+
+/* instruments */
+.sim{background:var(--sim);border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative}
+.sim canvas{display:block;width:100%;height:260px;touch-action:none}
+.sim canvas.tall{height:320px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px 22px;padding:14px 16px;border-top:1px solid var(--line);background:var(--card)}
+.ctl label{display:flex;justify-content:space-between;font-weight:700;font-size:15px;gap:8px}
+.ctl output{font-variant-numeric:tabular-nums;color:var(--wave);direction:ltr}
+.ctl input[type=range]{width:100%;accent-color:var(--wave)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 16px;background:var(--card);border-top:1px solid var(--line)}
+.chip{padding:4px 12px;border-radius:999px;font-size:14px;font-weight:700;background:var(--sim);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.chip.good{background:var(--ok);border-color:var(--ok);color:#fff}
+.chip.warn{background:var(--low);border-color:var(--low);color:#fff}
+.btn{border:none;background:var(--ink);color:var(--card);border-radius:10px;padding:8px 16px;font-weight:800;cursor:pointer}
+.btn:hover{opacity:.9}
+.btn.alt{background:var(--signal);color:var(--signal-ink)}
+.btn.wave{background:var(--wave);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ok);color:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;background:color-mix(in srgb,var(--sim) 70%,transparent);text-align:center;padding:16px}
+.overlay p{font-weight:700;max-width:28em;margin-bottom:10px}
+.readout{font-family:var(--display);font-size:clamp(34px,7vw,56px);line-height:1;color:var(--wave);direction:ltr;font-variant-numeric:tabular-nums}
+.readout small{font-size:.4em;color:var(--ink-soft)}
+.bigrow{display:flex;flex-wrap:wrap;gap:18px 30px;align-items:flex-end;padding:14px 16px;background:var(--card);border-top:1px solid var(--line)}
+.bigrow .lbl{font-size:14px;font-weight:700;color:var(--ink-soft)}
+.challenge{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.challenge li{display:flex;gap:10px;align-items:flex-start}
+.challenge input{width:20px;height:20px;margin-top:4px;accent-color:var(--ok);flex:none}
+.score{font-family:var(--display);font-size:22px}
+.flash{animation:flash .6s ease}
+@keyframes flash{0%{background:var(--signal)}100%{background:var(--card)}}
+
+/* straw table */
+.tablewrap{overflow-x:auto}
+table.log{border-collapse:collapse;width:100%;min-width:520px;font-variant-numeric:tabular-nums}
+.log th,.log td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+.log th{font-size:14px;background:var(--sim)}
+.log input{width:72px;padding:4px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);text-align:center;font:inherit}
+.log .prod{font-weight:800;color:var(--wave)}
+.log button{font-size:14px;padding:4px 10px}
+
+/* glasses */
+.glasses{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:16px 12px 6px;direction:ltr}
+.glass{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;user-select:none;touch-action:none}
+.glass svg{width:100%;max-width:90px;height:auto;display:block;overflow:visible}
+.glass .gname{font-weight:800;font-size:15px;direction:rtl}
+.glass .ghz{font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.glass .gok{font-size:14px;min-height:20px}
+.glass.hit svg{animation:ring .35s ease}
+@keyframes ring{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+@media (max-width:560px){.glasses{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* ratio buttons */
+.ratios{display:flex;flex-wrap:wrap;gap:8px}
+.ratios button{border:2px solid var(--ink);background:var(--card);border-radius:10px;padding:6px 12px;font-weight:800;cursor:pointer;direction:ltr}
+.ratios button.on{background:var(--wave);border-color:var(--wave);color:#fff}
+.ratios button small{display:block;font-weight:600;font-size:12px;direction:rtl}
+
+.myth{border:2px solid var(--low);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.myth .stampx{align-self:flex-start;font-family:var(--display);color:var(--low);border:3px solid var(--low);padding:0 10px;border-radius:6px;transform:rotate(-4deg);font-size:20px}
+
+/* quiz + certificate */
+.quiz{display:flex;flex-direction:column;gap:14px}
+.cert{border:3px double var(--ink);border-radius:12px;padding:28px 20px;text-align:center;background:var(--card);display:flex;flex-direction:column;gap:10px;align-items:center}
+.cert h3{font-size:32px}
+.cert .who{font-family:var(--hand);font-size:52px;line-height:1;color:var(--wave);min-height:52px}
+.cert .seal{width:86px;height:86px;border-radius:50%;background:var(--signal);color:var(--signal-ink);display:grid;place-items:center;font-family:var(--display);font-size:15px;line-height:1.1;transform:rotate(-10deg);border:3px dashed var(--signal-ink)}
+.namebox{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.namebox input{font:inherit;padding:6px 10px;border:2px solid var(--ink);border-radius:8px;background:var(--card);color:var(--ink);width:220px;max-width:100%}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--card)}
+details summary{cursor:pointer;font-weight:800}
+details[open] summary{margin-bottom:8px}
+.adult{margin-block:8px 90px}
+.adult ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px}
+footer{padding-block:0 90px;color:var(--ink-soft);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><path d="M2 16 Q6 4 10 16 T18 16 T26 16 T32 16" fill="none" stroke="var(--wave)" stroke-width="3" stroke-linecap="round"/></svg>
+      <span>מעבדת הצליל</span>
+    </div>
+    <div class="stamps" id="stamps" aria-label="משימות שהושלמו"></div>
+    <div class="bar-end"><div class="count" id="count">0 / 7</div><a class="home" href="../../" title="Brain Snacks: כל המשחקים והשיעורים">כל השיעורים ←</a></div>
+  </div>
+</header>
+
+<button class="micpill" id="micPill" type="button" aria-live="polite"><span class="dot" aria-hidden="true">🎤</span><span id="micText">הפעל מיקרופון</span><span class="lvl" aria-hidden="true"><i id="micLvl"></i></span></button>
+
+<main class="wrap">
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">מעבדה ביתית · 7 משימות · מיקרופון, קשית, גומיות וכוסות</div>
+    <h1>איך נראה <mark>הקול שלך</mark>?</h1>
+    <p class="lead">כל צליל ששמעת אי פעם הוא אוויר שרועד. היום תראה את הרעד הזה על המסך, תמדוד אותו במספרים, תבנה כלי נגינה מקשית ומגומיות, ותגלה שמוזיקה היא בעצם מתמטיקה.</p>
+    <div class="kit"><b>מה צריך:</b><span>מחשב או טאבלט עם מיקרופון, 3–4 קשיות שתייה, מספריים, 2–3 גומיות, קופסה פתוחה (נעליים או קרטון), 6 כוסות זכוכית זהות, כפית ומים.</span></div>
+  </div>
+  <div class="hero-art"><canvas id="heroWave" aria-label="גל קול נע. כשהמיקרופון פועל, זה הקול שבחדר"></canvas></div>
+</section>
+
+<div class="predict" data-answer="vibrate" style="margin-bottom:20px">
+  <p class="q">מה בעצם עובר מהפה שלך לאוזן של מישהו אחר כשאתה מדבר?</p>
+  <div class="opts">
+    <button class="opt" data-v="air">אוויר שעף מהפה שלך אליו</button>
+    <button class="opt" data-v="vibrate">רעד שעובר מחלקיק אוויר אחד לשכן שלו</button>
+    <button class="opt" data-v="nothing">שום דבר, האוזן פשוט שומעת</button>
+  </div>
+  <div class="reveal" hidden><span class="verdict"></span><p>רעד! חלקיקי האוויר כמעט לא זזים ממקומם. כל אחד דוחף את השכן שלו וחוזר, כמו "גל" ביציע של אצטדיון: האנשים נשארים במקום, והגל עובר את כל האצטדיון.</p></div>
+</div>
+
+<nav class="map" id="map" aria-label="מפת המשימות"></nav>
+
+<!-- 1 -->
+<article class="mission" id="m1" data-m="1">
+  <div class="mission-head"><div class="num">1</div><div><div class="tag">משימה · אוסצילוסקופ חי</div><h2>תראה את הקול שלך</h2></div></div>
+  <div class="stack">
+    <ol class="steps">
+      <li>שים יד על הגרון ותגיד "אההההה" ארוך. מרגיש את הרעד? זה מקור הצליל.</li>
+      <li>הפעל את המיקרופון (הכפתור למטה), ותגיד שוב "אההה" מול המסך.</li>
+    </ol>
+    <div class="sim" id="scopeSim">
+      <canvas id="scope" aria-label="אוסצילוסקופ: גרף של גל הקול מהמיקרופון"></canvas>
+      <div class="overlay" id="scopeOv"><div><p>כאן יופיע הקול שלך כגל. הדפדפן יבקש רשות להשתמש במיקרופון.</p><button class="btn wave mic-on">🎤 הפעל מיקרופון</button></div></div>
+      <div class="row">
+        <button class="btn" id="freeze" aria-pressed="false">⏸ הקפא</button>
+        <div class="ctl" style="flex:1;min-width:180px"><label for="zoom">זום בזמן <output id="zoomOut">×1</output></label><input type="range" id="zoom" min="1" max="8" step="1" value="2"></div>
+        <span class="chip" id="loudChip">עוצמה: –</span>
+      </div>
+    </div>
+    <ul class="challenge">
+      <li><input type="checkbox" id="c11"><label for="c11">תלחש, ואחר כך תצעק (לא חזק מדי!). מה משתנה בגל: הגובה שלו או הצפיפות שלו?</label></li>
+      <li><input type="checkbox" id="c12"><label for="c12">תגיד "אוווו" ואחר כך "אייייי" באותו גובה. הגל נראה אותו דבר? לחץ "הקפא" כדי להשוות.</label></li>
+      <li><input type="checkbox" id="c13"><label for="c13">תגיד "שששש". למה הגל נראה כמו בלגן ולא כמו גלים מסודרים?</label></li>
+      <li><input type="checkbox" id="c14"><label for="c14">תשרוק. זה הגל הכי "נקי" שתצליח לעשות. למה, לדעתך?</label></li>
+    </ul>
+    <div class="rule">מה גילית:<small><b>גובה הגל</b> (אמפליטודה) = כמה חזק הצליל. <b>הצורה של הגל</b> = איזה צליל זה: "או" ו"אי" באותו גובה נראים אחרת, ולכן האוזן מבדילה ביניהם. "שששש" הוא רעש: אין לו חזרה מסודרת.</small></div>
+    <button class="done-btn" data-m="1">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 2 -->
+<article class="mission" id="m2" data-m="2">
+  <div class="mission-head"><div class="num">2</div><div><div class="tag">משחק · מד גובה צליל</div><h2>כמה פעמים בשנייה?</h2></div></div>
+  <div class="stack">
+    <p>כשהגל חוזר על עצמו הרבה פעמים בשנייה, אנחנו שומעים צליל <b>גבוה</b>. מעט פעמים בשנייה: צליל <b>נמוך</b>. מספר החזרות בשנייה נקרא <b>תדר</b>, ונמדד בהרץ (Hz). 440 הרץ = האוויר רועד 440 פעם בשנייה אחת!</p>
+    <div class="fact"><div class="big num-ltr">20–20,000</div><p>זה הטווח שהאוזן של ילד שומעת, בהרץ. כלבים שומעים עד 45,000, ועטלפים עד 200,000. עם הגיל הצלילים הכי גבוהים נעלמים, אז כנראה שאתה שומע צלילים שההורים שלך כבר לא שומעים.</p></div>
+    <div class="sim">
+      <canvas id="pitchCv" class="tall" aria-label="גרף של גובה הצליל שלך לאורך זמן, עם פס מטרה"></canvas>
+      <div class="overlay" id="pitchOv"><div><p>זמזם או שרוק, ותראה את הקו עולה ויורד.</p><button class="btn wave mic-on">🎤 הפעל מיקרופון</button></div></div>
+      <div class="bigrow">
+        <div><div class="lbl">התדר שלך</div><div class="readout" id="hzOut">– <small>Hz</small></div></div>
+        <div><div class="lbl">התו</div><div class="readout" id="noteOut" style="direction:rtl">–</div></div>
+        <div style="margin-inline-start:auto"><div class="lbl">ניקוד</div><div class="readout" id="gameScore">0</div></div>
+      </div>
+      <div class="row">
+        <button class="btn alt" id="gameBtn">🎯 התחל משחק: פגע בצליל</button>
+        <button class="btn ghost" id="hearTarget" disabled>🔊 השמע את המטרה</button>
+        <span class="chip" id="gameMsg">זמזם בגובה של הפס הצהוב ותחזיק אותו שנייה אחת</span>
+      </div>
+    </div>
+    <ul class="challenge">
+      <li><input type="checkbox" id="c21"><label for="c21">מה הצליל הכי נמוך שאתה מצליח לזמזם? והכי גבוה? כמה פעמים גבוה יותר?</label></li>
+      <li><input type="checkbox" id="c22"><label for="c22">צבור 5 נקודות במשחק.</label></li>
+      <li><input type="checkbox" id="c23"><label for="c23">בקש ממבוגר לזמזם. למה הקו שלו נמוך משלך? (רמז: מיתרי קול ארוכים ועבים יותר)</label></li>
+    </ul>
+    <button class="done-btn" data-m="2">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 3 -->
+<article class="mission" id="m3" data-m="3">
+  <div class="mission-head"><div class="num">3</div><div><div class="tag">ניסוי ומדידה · 15 דקות · קשית ומספריים</div><h2>חליל הקשית</h2></div></div>
+  <div class="stack">
+    <ol class="steps">
+      <li>מעך את קצה הקשית (2 ס"מ) עם השיניים או בין האצבעות עד שהוא שטוח.</li>
+      <li>גזור את הקצה השטוח לצורת חץ (משולש), משני הצדדים. זה הפיה של החליל.</li>
+      <li>הכנס את החץ לפה, הדק קצת עם השפתיים ונשוף חזק. אם לא יוצא צליל: נסה לנשוף חזק יותר, או להכניס פחות עמוק.</li>
+    </ol>
+    <div class="predict" data-answer="higher">
+      <p class="q">אם תקצר את הקשית במספריים, הצליל יהיה...</p>
+      <div class="opts">
+        <button class="opt" data-v="higher">גבוה יותר</button>
+        <button class="opt" data-v="lower">נמוך יותר</button>
+        <button class="opt" data-v="same">אותו דבר</button>
+      </div>
+      <div class="reveal" hidden><span class="verdict"></span><p>גבוה יותר. בתוך הקשית יש עמוד אוויר שרועד. עמוד קצר רועד מהר יותר, כמו נדנדה עם שרשראות קצרות. עכשיו בוא נמדוד בדיוק <b>כמה</b>.</p></div>
+    </div>
+    <p><b>יומן מדידות.</b> מדוד את אורך הקשית בסנטימטרים, לחץ "מדוד" ונשוף 2 שניות. המעבדה תרשום את התדר. אחר כך גזור 2–3 ס"מ ומדוד שוב.</p>
+    <div class="sim">
+      <div class="tablewrap" style="background:var(--card)">
+        <table class="log">
+          <thead><tr><th>מדידה</th><th>אורך (ס"מ)</th><th>תדר (Hz)</th><th>אורך × תדר</th><th></th></tr></thead>
+          <tbody id="strawBody"></tbody>
+        </table>
+      </div>
+      <canvas id="strawCv" aria-label="גרף: אורך הקשית מול התדר"></canvas>
+      <div class="row"><button class="btn ghost" id="strawAdd">+ שורה</button><button class="btn ghost" id="strawDemo">מלא דוגמה</button><span class="chip" id="strawMsg">צריך לפחות 3 מדידות כדי לראות את החוק</span></div>
+    </div>
+    <details>
+      <summary>מה מסתתר בעמודה האחרונה? (לפתוח אחרי 3 מדידות)</summary>
+      <p>אם המדידות טובות, <b>אורך × תדר</b> יוצא בערך אותו מספר בכל השורות. זה אומר שהתדר והאורך <b>הפוכים</b>: קשית בחצי האורך נותנת בדיוק פי 2 בתדר. מדענים קוראים לזה "יחס הפוך", והמספר הקבוע קשור ל<b>מהירות הקול</b>: הגל רץ הלוך וחזור בתוך הקשית. בקשית סגורה בצד אחד (כמו עם השפתיים), 4 × אורך × תדר ≈ 343 מטר לשנייה. נסה לחשב!</p>
+    </details>
+    <button class="done-btn" data-m="3">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 4 -->
+<article class="mission" id="m4" data-m="4">
+  <div class="mission-head"><div class="num">4</div><div><div class="tag">בונים ומנגנים · גומיות וקופסה</div><h2>גיטרת הגומיות</h2></div></div>
+  <div class="stack">
+    <ol class="steps">
+      <li>מתח 2–3 גומיות לאורך קופסה פתוחה. נסה גומיות בעובי שונה.</li>
+      <li>פרוט על כל גומייה. מי גבוהה יותר, הדקה או העבה?</li>
+      <li>החזק עיפרון מתחת לגומייה באמצע הקופסה, ופרוט רק על חצי ממנה.</li>
+    </ol>
+    <p><b>הסימולטור:</b> לחץ או החלק על המיתר כדי לפרוט. שנה אורך, מתח ועובי, וראה ושמע מה קורה.</p>
+    <div class="sim">
+      <canvas id="stringCv" aria-label="מיתר מתנדנד שאפשר לפרוט עליו בלחיצה"></canvas>
+      <div class="controls">
+        <div class="ctl"><label for="sLen">אורך <output id="sLenOut">100%</output></label><input type="range" id="sLen" min="20" max="100" value="100"></div>
+        <div class="ctl"><label for="sTen">מתח (כמה חזק מתוח) <output id="sTenOut">×1.0</output></label><input type="range" id="sTen" min="0.5" max="2" step="0.05" value="1"></div>
+        <div class="ctl"><label for="sThk">עובי <output id="sThkOut">×1.0</output></label><input type="range" id="sThk" min="0.5" max="2" step="0.05" value="1"></div>
+      </div>
+      <div class="row">
+        <span class="chip" id="sHz">– Hz</span><span class="chip" id="sNote">–</span>
+        <button class="btn wave" id="pluck">🎸 פרוט</button>
+        <button class="btn ghost" id="sRef">🔊 השמע את המיתר המלא</button>
+        <label style="display:flex;gap:6px;align-items:center;font-weight:700;font-size:15px"><input type="checkbox" id="sMarks"> הצג נקודות קסם</label>
+        <span class="chip" id="sMsg">אתגר: מצא את האוקטבה</span>
+      </div>
+    </div>
+    <ul class="challenge">
+      <li><input type="checkbox" id="c41"><label for="c41">מצא את האורך שבו הצליל הוא "אותו צליל אבל גבוה יותר" מהמיתר המלא (אוקטבה). איזה אחוז?</label></li>
+      <li><input type="checkbox" id="c42"><label for="c42">הכפל את המתח מ-×1 ל-×2. התדר הוכפל? (רמז: לא בדיוק)</label></li>
+      <li><input type="checkbox" id="c43"><label for="c43">הדלק "נקודות קסם". נגן בכל אחת. אלה הצלילים הכי "יפים" ביחד עם המיתר המלא. למה דווקא חצי, שני-שליש ושלושה-רבעים?</label></li>
+    </ul>
+    <div class="rule">חוקי המיתר:<small>חצי אורך = פי 2 בתדר (אוקטבה). מיתר עבה = נמוך. מתח פי 4 = תדר פי 2 בלבד, כי התדר תלוי ב<b>שורש</b> של המתח. ככה עובדת כל גיטרה, כינור ופסנתר.</small></div>
+    <button class="done-btn" data-m="4">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 5 -->
+<article class="mission" id="m5" data-m="5">
+  <div class="mission-head"><div class="num">5</div><div><div class="tag">מכוונים ומנגנים · 6 כוסות</div><h2>הקסילופון של הכוסות</h2></div></div>
+  <div class="stack">
+    <ol class="steps">
+      <li>שים 6 כוסות זהות בשורה, ומלא אותן במים בכמויות שונות.</li>
+      <li>הקש עדין על כל כוס עם כפית.</li>
+    </ol>
+    <div class="predict" data-answer="lower">
+      <p class="q">כוס עם <b>יותר</b> מים, כשמקישים עליה, תישמע...</p>
+      <div class="opts">
+        <button class="opt" data-v="higher">גבוה יותר</button>
+        <button class="opt" data-v="lower">נמוך יותר</button>
+        <button class="opt" data-v="same">אותו דבר</button>
+      </div>
+      <div class="reveal" hidden><span class="verdict"></span><p>נמוך יותר. כשמקישים, <b>הזכוכית</b> רועדת, והמים מכבידים עליה ומאטים אותה. עכשיו הטוויסט: אם <b>נושפים</b> מעל פתח של בקבוק, יותר מים נותנים צליל <b>גבוה</b> יותר, כי שם רועד עמוד האוויר, והוא נעשה קצר יותר, כמו בקשית. נסה עם בקבוק!</p></div>
+    </div>
+    <p><b>האתגר:</b> כוון את הכוסות לסולם דו-רה-מי. גרור את המים למעלה או למטה בכל כוס, והקש עליה כדי לשמוע. כשכוס מכוונת, יופיע ✓. כשכל השש מכוונות, תוכל לנגן מנגינה.</p>
+    <div class="sim">
+      <div class="glasses" id="glasses"></div>
+      <div class="row">
+        <span class="chip" id="gMsg">0 / 6 כוסות מכוונות</span>
+        <button class="btn ghost" id="gScale">🔊 השמע את הסולם הנכון</button>
+        <button class="btn wave" id="gSong" disabled>🎵 נגן "כוכב קטן" על הכוסות שלך</button>
+      </div>
+    </div>
+    <p class="note">טיפ: אפשר גם להקיש על הכוסות במקלדת, במקשים 1 עד 6.</p>
+    <button class="done-btn" data-m="5">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 6 -->
+<article class="mission" id="m6" data-m="6">
+  <div class="mission-head"><div class="num">6</div><div><div class="tag">סימולטור · מערבל גלים</div><h2>המתמטיקה הסודית של המוזיקה</h2></div></div>
+  <div class="stack">
+    <p>לפני 2,500 שנה פיתגורס (כן, זה מהמשולשים) גילה שצלילים נשמעים יפה ביחד כשהתדרים שלהם הם <b>יחס של מספרים קטנים</b>. בוא נבדוק אם הוא צדק. בחר יחס, לחץ "נגן", והקשב. הגרף התחתון מראה את שני הגלים <b>מחוברים</b>.</p>
+    <div class="sim">
+      <canvas id="mixCv" class="tall" aria-label="שני גלים והסכום שלהם"></canvas>
+      <div class="row" style="flex-direction:column;align-items:stretch">
+        <div class="ratios" id="ratios"></div>
+        <div class="ctl"><label for="detune">כוונון עדין של הצליל השני <output id="detuneOut">0 Hz</output></label><input type="range" id="detune" min="-12" max="12" step="0.5" value="0"></div>
+      </div>
+      <div class="row">
+        <button class="btn wave" id="mixPlay" aria-pressed="false">▶ נגן</button>
+        <span class="chip" id="mixInfo">–</span>
+        <span class="chip" id="beatInfo" hidden></span>
+      </div>
+    </div>
+    <ul class="challenge">
+      <li><input type="checkbox" id="c61"><label for="c61">נגן 2:1 ואחר כך 45:32. מה ההבדל בצליל? ומה ההבדל בגרף התחתון?</label></li>
+      <li><input type="checkbox" id="c62"><label for="c62">בחר 1:1 והזז את הכוונון העדין ל-2 Hz. מה אתה שומע? (זה נקרא "פעימות")</label></li>
+      <li><input type="checkbox" id="c63"><label for="c63">מהר יותר או לאט יותר: מה קורה לפעימות כשמזיזים את הכוונון רחוק יותר?</label></li>
+    </ul>
+    <div class="rule">מה גילית:<small>ביחס פשוט (2:1, 3:2) הסכום חוזר על עצמו מהר, והמוח שומע "נעים". ביחס מסובך (45:32) התבנית כמעט לא חוזרת, ושומעים "צורם". ושני צלילים כמעט זהים יוצרים <b>פעימות</b>: הם מתחזקים ונחלשים לסירוגין, בדיוק כמספר ההפרש ביניהם בהרץ. ככה מכוונים גיטרה: מזיזים עד שהפעימות נעלמות.</small></div>
+    <button class="done-btn" data-m="6">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 7 -->
+<article class="mission" id="m7" data-m="7">
+  <div class="mission-head"><div class="num">7</div><div><div class="tag">משחק · ברקים ורעמים</div><h2>מרוץ האור והקול</h2></div></div>
+  <div class="stack">
+    <div class="fact"><div class="big num-ltr">343</div><p>מטר לשנייה. זאת מהירות הקול באוויר. נשמע מהר? האור מהיר פי מיליון בערך. לכן בסופת ברקים רואים את הברק מיד, ושומעים את הרעם רק אחרי כמה שניות.</p></div>
+    <div class="sim">
+      <canvas id="stormCv" aria-label="ברק ורעם במרחק מהבית"></canvas>
+      <div class="controls">
+        <div class="ctl" id="distCtl"><label for="dist">מרחק הברק <output id="distOut">2.0 ק"מ</output></label><input type="range" id="dist" min="0.3" max="6" step="0.1" value="2"></div>
+      </div>
+      <div class="row">
+        <button class="btn alt" id="bolt">⚡ ברק!</button>
+        <span class="readout" id="stormT" style="font-size:34px">0.0 <small>שניות</small></span>
+        <span class="chip" id="stormMsg">לחץ על ברק, וספור עד שתשמע את הרעם</span>
+      </div>
+      <div class="row">
+        <b>מצב אתגר:</b>
+        <button class="btn wave" id="stormGame">🎲 ברק במרחק סודי</button>
+        <label style="display:flex;gap:6px;align-items:center;font-weight:700">כמה ק"מ? <input id="guess" type="number" step="0.1" min="0" inputmode="decimal" style="width:80px;font:inherit;padding:4px 8px;border-radius:8px;border:2px solid var(--ink);background:var(--card);color:var(--ink)"></label>
+        <button class="btn" id="guessBtn" disabled>בדוק</button>
+        <span class="score" id="stormScore">0 / 0</span>
+      </div>
+    </div>
+    <div class="rule">הכלל של הסערה:<small>ספור שניות מהברק עד הרעם, וחלק ב-3. זה המרחק בקילומטרים. (כי בשלוש שניות הקול עובר בערך קילומטר אחד: 3 × 343 ≈ 1,029 מטר.)</small></div>
+    <p><b>בבית:</b> עמוד מול קיר גדול (בחוץ, במרחק של 30 מטר לפחות) ומחא כף. שמעת הד? הקול רץ לקיר וחזר. אם תמדוד את הזמן ואת המרחק, תוכל לחשב בעצמך את מהירות הקול.</p>
+    <button class="done-btn" data-m="7">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- final -->
+<section class="mission" id="final" style="border-style:dashed">
+  <div class="mission-head"><div class="num" style="background:var(--signal);color:var(--signal-ink)">★</div><div><div class="tag">מבחן המהנדס</div><h2>5 שאלות לתעודה</h2></div></div>
+  <div class="quiz" id="quiz"></div>
+  <div class="namebox" style="margin-top:20px"><label for="engName"><b>השם שלך לתעודה:</b></label><input id="engName" type="text" placeholder="הקלד כאן" maxlength="30"></div>
+  <div class="cert" style="margin-top:16px">
+    <div class="seal">מהנדס<br>צליל</div>
+    <h3>תעודת מהנדס צליל</h3>
+    <div class="who" id="certName">&nbsp;</div>
+    <p id="certText"></p>
+    <p style="color:var(--ink-soft);font-size:15px" id="certDate"></p>
+  </div>
+</section>
+
+<details class="adult">
+  <summary>למבוגר שמלווה</summary>
+  <ul>
+    <li><b>זמן:</b> כשעה וחצי. אפשר לחלק: משימות 1–3 (מיקרופון וקשית), ואז 4–7.</li>
+    <li><b>מיקרופון:</b> הדף מבקש גישה פעם אחת. הקול לא נשמר ולא נשלח לשום מקום: הניתוח קורה במכשיר. עובד הכי טוב ב-Chrome, בסביבה שקטה.</li>
+    <li><b>מד הגובה</b> משתמש באוטוקורלציה, ועובד הכי טוב על זמזום ושריקה. דיבור רגיל קופץ בין תדרים, וזה חלק מהשיעור: לדיבור אין צליל אחד.</li>
+    <li><b>קשית:</b> אם לא יוצא צליל, החץ כנראה לא שטוח מספיק. מעכו שוב בשיניים. בקשית "סגורה" בשפתיים, אורך הגל הוא בערך פי 4 מאורך הקשית, ולכן 4 × L × f מתקרב ל-343 מ'/ש'. בפועל יוצא פחות, וזה בסדר: יש "תיקון קצה".</li>
+    <li><b>דיוק פיזיקלי:</b> במיתר, f ∝ √T / (L·√μ). בכוסות, המים מורידים את תדר הזכוכית. בבקבוק שנושפים מעליו זה הפוך, כי שם רועד האוויר. כדאי לנסות את שניהם.</li>
+    <li><b>שאלה טובה לסיום:</b> "למה פסנתר וגיטרה שמנגנים אותו תו נשמעים אחרת?" (צורת הגל, ממשימה 1.)</li>
+  </ul>
+</details>
+
+</main>
+<footer class="wrap">ההתקדמות נשמרת בדפדפן הזה בלבד. הקול מהמיקרופון לא נשמר ולא נשלח לשום מקום.</footer>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('snd:'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('snd:'+k,JSON.stringify(v))}catch(e){}}};
+const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TAU=Math.PI*2;
+
+/* ================= audio engine ================= */
+let AC=null;
+function ac(){ if(!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(AC&&AC.state==='suspended') AC.resume(); return AC; }
+// a plain tone with a soft attack and release
+function tone(f,dur=.6,type='sine',vol=.18,when=0){
+  const a=ac(); if(!a) return; const t=a.currentTime+when, o=a.createOscillator(), g=a.createGain();
+  o.type=type; o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+.02); g.gain.setValueAtTime(vol,t+dur-.08); g.gain.linearRampToValueAtTime(0,t+dur);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t+dur+.05);
+}
+// a plucked string: a few harmonics that fade, brighter at the start
+function pluckSound(f,vol=.22){
+  const a=ac(); if(!a) return; const t=a.currentTime, out=a.createGain(); out.gain.value=vol; out.connect(a.destination);
+  [1,2,3,4,5].forEach((h,i)=>{ if(f*h>9000) return; const o=a.createOscillator(), g=a.createGain(); o.frequency.value=f*h; o.type='sine';
+    const amp=1/(h*h*.6+.4), d=2.4/(1+i*.7); g.gain.setValueAtTime(amp,t); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g).connect(out); o.start(t); o.stop(t+d+.05); });
+}
+// a struck glass: a pure tone that rings for a while, with a faint high partial
+function glassSound(f,vol=.2){
+  const a=ac(); if(!a) return; const t=a.currentTime;
+  [[1,1,2.2],[2.76,.18,.6]].forEach(([m,amp,d])=>{ const o=a.createOscillator(),g=a.createGain(); o.frequency.value=f*m; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol*amp,t+.005); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g).connect(a.destination); o.start(t); o.stop(t+d+.05); });
+}
+// thunder: low rumbling noise that swells and fades
+function thunderSound(vol=.6){
+  const a=ac(); if(!a) return; const t=a.currentTime, n=a.sampleRate*3.2, buf=a.createBuffer(1,n,a.sampleRate), d=buf.getChannelData(0);
+  let last=0; for(let i=0;i<n;i++){ last=(last+.06*(Math.random()*2-1))/1.06; d[i]=last*3.2; }
+  const s=a.createBufferSource(), lp=a.createBiquadFilter(), g=a.createGain(); s.buffer=buf; lp.type='lowpass'; lp.frequency.value=380;
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+.12); g.gain.exponentialRampToValueAtTime(vol*.5,t+.8); g.gain.exponentialRampToValueAtTime(.001,t+3.1);
+  s.connect(lp).connect(g).connect(a.destination); s.start(t);
+}
+const NOTE_HE=['דו','דו♯','רה','רה♯','מי','פה','פה♯','סול','סול♯','לה','לה♯','סי'];
+function noteOf(f){ if(!(f>0)) return null; const n=12*Math.log2(f/440)+57, r=Math.round(n); return {name:NOTE_HE[((r%12)+12)%12], oct:Math.floor(r/12), cents:Math.round((n-r)*100), midi:r}; }
+const noteFreq=midi=>440*Math.pow(2,(midi-57)/12);   // our numbering: C0 = 0, so A4 = 57
+
+/* ================= microphone, shared by every instrument ================= */
+const mic={on:false, an:null, buf:null, level:0, pitch:-1, denied:false};
+async function enableMic(){
+  if(mic.on) return true;
+  const a=ac(); if(!a||!navigator.mediaDevices?.getUserMedia){ micState('המיקרופון לא זמין בדפדפן הזה'); return false; }
+  try{
+    const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    const src=a.createMediaStreamSource(st); mic.an=a.createAnalyser(); mic.an.fftSize=2048; src.connect(mic.an);
+    mic.buf=new Float32Array(mic.an.fftSize); mic.on=true; micState(); return true;
+  }catch(e){ mic.denied=true; micState('אין גישה למיקרופון. אפשר לאשר בסמל המנעול שליד הכתובת.'); return false; }
+}
+function micState(err){
+  const pill=$('#micPill'); pill.classList.toggle('on',mic.on);
+  $('#micText').textContent = err || (mic.on ? 'המיקרופון מקשיב' : 'הפעל מיקרופון');
+  $$('.overlay').forEach(o=>{ if(mic.on) o.hidden=true; else if(err){ const p=o.querySelector('p'); if(p) p.textContent=err; } });
+}
+$('#micPill').addEventListener('click',enableMic);
+$$('.mic-on').forEach(b=>b.addEventListener('click',enableMic));
+// pitch by autocorrelation (works best for humming, whistling and the straw)
+function detectPitch(buf,sr){
+  let size=buf.length, rms=0; for(let i=0;i<size;i++) rms+=buf[i]*buf[i]; rms=Math.sqrt(rms/size); if(rms<.012) return -1;
+  let r1=0,r2=size-1; const th=.2;
+  for(let i=0;i<size/2;i++) if(Math.abs(buf[i])<th){r1=i;break}
+  for(let i=1;i<size/2;i++) if(Math.abs(buf[size-i])<th){r2=size-i;break}
+  const b=buf.subarray(r1,r2); size=b.length; if(size<64) return -1;
+  const c=new Float32Array(size); for(let lag=0;lag<size;lag++){ let s=0; for(let j=0;j<size-lag;j++) s+=b[j]*b[j+lag]; c[lag]=s; }
+  let d=0; while(d<size-1 && c[d]>c[d+1]) d++;
+  let mx=-1,pos=-1; for(let i=d;i<size;i++) if(c[i]>mx){mx=c[i];pos=i}
+  if(pos<1||pos>=size-1) return -1;
+  const x1=c[pos-1],x2=c[pos],x3=c[pos+1], a2=(x1+x3-2*x2)/2, b2=(x3-x1)/2; const T0=a2?pos-b2/(2*a2):pos;
+  const f=sr/T0; return f>60&&f<2500?f:-1;
+}
+// one loop reads the mic for everyone
+let pitchClock=0;
+function micTick(now){
+  if(mic.on){
+    mic.an.getFloatTimeDomainData(mic.buf);
+    let s=0; for(let i=0;i<mic.buf.length;i++) s+=mic.buf[i]*mic.buf[i];
+    mic.level=Math.min(1,Math.sqrt(s/mic.buf.length)*6);
+    $('#micLvl').style.width=(mic.level*100)+'%';
+    if(now-pitchClock>45){ pitchClock=now; mic.pitch=detectPitch(mic.buf,AC.sampleRate); }
+  }
+  requestAnimationFrame(micTick);
+}
+requestAnimationFrame(micTick);
+
+/* ================= canvas helper ================= */
+function setup(cv,onResize){
+  const ctx=cv.getContext('2d'); const s={ctx,W:0,H:0,visible:true};
+  function rs(){ const d=window.devicePixelRatio||1; s.W=cv.clientWidth; s.H=cv.clientHeight; cv.width=Math.round(s.W*d); cv.height=Math.round(s.H*d); ctx.setTransform(d,0,0,d,0,0); onResize&&onResize(s); }
+  rs(); addEventListener('resize',rs);
+  if('IntersectionObserver' in window) new IntersectionObserver(e=>{s.visible=e[0].isIntersecting}).observe(cv);
+  return s;
+}
+function grid(ctx,W,H,step,col){ ctx.strokeStyle=col; ctx.lineWidth=1; ctx.beginPath(); for(let x=0;x<=W;x+=step){ctx.moveTo(x,0);ctx.lineTo(x,H)} for(let y=0;y<=H;y+=step){ctx.moveTo(0,y);ctx.lineTo(W,y)} ctx.stroke(); }
+
+/* ================= progress, predictions, checklists ================= */
+const titles=['תראה את הקול','כמה פעמים בשנייה','חליל הקשית','גיטרת הגומיות','כוסות מוזיקליות','המתמטיקה של המוזיקה','האור והקול'];
+const done=new Set(store.get('done',[]));
+titles.forEach((t,i)=>{
+  const a=document.createElement('a'); a.className='stamp'; a.href='#m'+(i+1); a.textContent=i+1; a.title=t; $('#stamps').appendChild(a);
+  const m=document.createElement('a'); m.href='#m'+(i+1); m.innerHTML='<i>'+(i+1)+'</i>'; m.append(t); $('#map').appendChild(m);
+});
+function renderProgress(){
+  [...$('#stamps').children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
+  [...$('#map').children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
+  $$('.mission[data-m]').forEach(m=>{ const n=+m.dataset.m; m.classList.toggle('done',done.has(n)); const b=m.querySelector('.done-btn'); if(b) b.textContent=done.has(n)?'בוצע! (לחץ לביטול)':'סמן משימה כבוצעה'; });
+  $('#count').textContent=done.size+' / 7'; renderCert();
+}
+$$('.done-btn').forEach(b=>b.addEventListener('click',()=>{ const n=+b.dataset.m; done.has(n)?done.delete(n):done.add(n); store.set('done',[...done]); renderProgress(); }));
+$$('.predict').forEach(p=>{
+  if(p.classList.contains('quizq')) return;
+  const ans=p.dataset.answer, rev=p.querySelector('.reveal'), ver=p.querySelector('.verdict');
+  p.querySelectorAll('.opt').forEach(o=>o.addEventListener('click',()=>{
+    p.querySelectorAll('.opt').forEach(x=>x.classList.remove('picked','right'));
+    o.classList.add('picked'); p.classList.add('answered');
+    const r=p.querySelector('.opt[data-v="'+ans+'"]'); r.classList.add('right');
+    if(o===r){ver.textContent='ניבאת נכון!';ver.className='verdict good'} else {ver.textContent='הפתעה! עכשיו נסה ובדוק בעצמך.';ver.className='verdict surprise'}
+    rev.hidden=false;
+  }));
+});
+const checks=store.get('checks',{});
+$$('.challenge input').forEach(c=>{ c.checked=!!checks[c.id]; c.addEventListener('change',()=>{ checks[c.id]=c.checked; store.set('checks',checks); }); });
+const tick=id=>{ const c=document.getElementById(id); if(c&&!c.checked){ c.checked=true; checks[id]=true; store.set('checks',checks); } };
+
+/* ================= hero: a wave that becomes your voice ================= */
+(function(){
+  const S=setup($('#heroWave')), ctx=S.ctx; let t=0, last=performance.now();
+  function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; t+=dt;
+    if(S.visible){ const W=S.W,H=S.H; ctx.clearRect(0,0,W,H); grid(ctx,W,H,24,tok('--grid'));
+      ctx.strokeStyle=tok('--wave'); ctx.lineWidth=3; ctx.beginPath();
+      for(let x=0;x<=W;x+=2){ let y;
+        if(mic.on){ const i=Math.floor(x/W*mic.buf.length*.5); y=H/2-Math.max(-1,Math.min(1,mic.buf[i]*2))*H*.42; }
+        else { const k=x/W; y=H/2+Math.sin(k*TAU*3-t*4)*H*.22*Math.sin(k*Math.PI)+Math.sin(k*TAU*7-t*6)*H*.05; }
+        x?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+      ctx.stroke();
+      ctx.fillStyle=tok('--ink-soft'); ctx.font='700 14px Assistant, sans-serif'; ctx.textAlign='right';
+      ctx.fillText(mic.on?'זה הקול שבחדר, עכשיו':'גל קול',W-12,22);
+    }
+    requestAnimationFrame(frame); }
+  requestAnimationFrame(frame);
+})();
+
+/* ================= 1: oscilloscope ================= */
+(function(){
+  const S=setup($('#scope')), ctx=S.ctx, zoom=$('#zoom'); let frozen=null, peak=0;
+  $('#freeze').addEventListener('click',e=>{ const b=e.currentTarget; if(frozen){frozen=null;b.textContent='⏸ הקפא';b.setAttribute('aria-pressed','false')} else if(mic.on){frozen=Float32Array.from(mic.buf);b.textContent='▶ המשך';b.setAttribute('aria-pressed','true')} });
+  function frame(){
+    if(S.visible){ const W=S.W,H=S.H; ctx.clearRect(0,0,W,H); grid(ctx,W,H,26,tok('--grid'));
+      ctx.strokeStyle=tok('--line'); ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
+      const buf=frozen||(mic.on?mic.buf:null);
+      if(buf){
+        // start at a rising zero crossing so the wave stands still instead of sliding
+        let st=0; for(let i=1;i<buf.length/2;i++) if(buf[i-1]<0&&buf[i]>=0){st=i;break}
+        const span=Math.floor(buf.length/(+zoom.value)); let mx=0;
+        ctx.strokeStyle=tok('--wave'); ctx.lineWidth=2.5; ctx.beginPath();
+        for(let i=0;i<span&&st+i<buf.length;i++){ const v=buf[st+i]; mx=Math.max(mx,Math.abs(v)); const x=i/span*W, y=H/2-Math.max(-1,Math.min(1,v*3))*H*.45; i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+        ctx.stroke();
+        if(!frozen){ peak=Math.max(mx,peak*.97);
+          const lvl=mic.level; $('#loudChip').textContent='עוצמה: '+(lvl<.05?'שקט':lvl<.2?'לחישה':lvl<.5?'דיבור':'חזק!');
+          if(lvl>.5) tick('c11'); }
+        ctx.fillStyle=tok('--ink-soft'); ctx.font='700 13px Assistant, sans-serif'; ctx.textAlign='left';
+        const ms=(span/AC.sampleRate*1000).toFixed(1); ctx.fillText('← '+ms+' אלפיות שנייה →',10,H-10);
+        if(frozen){ ctx.textAlign='right'; ctx.fillStyle=tok('--low'); ctx.fillText('מוקפא',W-10,20); }
+      }
+      $('#zoomOut').textContent='×'+zoom.value;
+    }
+    requestAnimationFrame(frame); }
+  requestAnimationFrame(frame);
+})();
+
+/* ================= 2: pitch meter and the hit-the-note game ================= */
+(function(){
+  const S=setup($('#pitchCv')), ctx=S.ctx, hist=[];
+  const LO=80, HI=1600, yOf=(f,H)=>H-((Math.log2(f/LO))/Math.log2(HI/LO))*(H-30)-15;
+  const game={on:false,target:0,hold:0,score:store.get('pitchScore',0),done:0};
+  $('#gameScore').textContent=game.score;
+  function newTarget(){
+    // targets a child can hum or whistle: a random note between sol3 and sol5
+    const midi=43+Math.floor(Math.random()*24); game.target=noteFreq(midi); game.hold=0;
+    const n=noteOf(game.target); $('#gameMsg').textContent='המטרה: '+n.name+' ('+Math.round(game.target)+' Hz). זמזם ותחזיק!';
+  }
+  $('#gameBtn').addEventListener('click',async()=>{ await enableMic(); game.on=!game.on; $('#gameBtn').textContent=game.on?'⏹ עצור משחק':'🎯 התחל משחק: פגע בצליל'; $('#hearTarget').disabled=!game.on; if(game.on){ newTarget(); tone(game.target,.8,'triangle',.15); } else $('#gameMsg').textContent='זמזם בגובה של הפס הצהוב ותחזיק אותו שנייה אחת'; });
+  $('#hearTarget').addEventListener('click',()=>tone(game.target,.9,'triangle',.15));
+  let last=performance.now();
+  function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now;
+    if(S.visible){ const W=S.W,H=S.H; ctx.clearRect(0,0,W,H);
+      // note lines
+      ctx.font='600 12px Assistant, sans-serif'; ctx.textAlign='right';
+      for(let m=36;m<=84;m++){ if(![0,4,7].includes(m%12)) continue; const f=noteFreq(m); if(f<LO||f>HI) continue; const y=yOf(f,H);
+        ctx.strokeStyle=tok('--grid'); ctx.lineWidth=m%12===0?2:1; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W-46,y); ctx.stroke();
+        if(m%12===0){ ctx.fillStyle=tok('--ink-soft'); ctx.fillText(Math.round(f)+' Hz',W-6,y+4); } }
+      // target band
+      if(game.on){ const y1=yOf(game.target*1.03,H), y2=yOf(game.target/1.03,H); ctx.fillStyle=tok('--signal'); ctx.globalAlpha=.35+.25*Math.min(1,game.hold); ctx.fillRect(0,y1,W,y2-y1); ctx.globalAlpha=1;
+        ctx.fillStyle=tok('--signal-ink'); ctx.textAlign='left'; ctx.font='800 14px Assistant, sans-serif'; ctx.fillText('🎯 '+noteOf(game.target).name,8,y1-6); }
+      // history
+      const p=mic.on?mic.pitch:-1; hist.push(p); if(hist.length>W/3) hist.shift();
+      ctx.strokeStyle=tok('--wave'); ctx.lineWidth=4; ctx.lineCap='round'; ctx.beginPath(); let pen=false;
+      hist.forEach((f,i)=>{ const x=i*3; if(f>0){ const y=yOf(f,H); pen?ctx.lineTo(x,y):ctx.moveTo(x,y); pen=true; } else pen=false; });
+      ctx.stroke();
+      if(p>0){ const y=yOf(p,H); ctx.fillStyle=tok('--wave'); ctx.beginPath(); ctx.arc((hist.length-1)*3,y,7,0,TAU); ctx.fill(); }
+    }
+    // readouts and game logic
+    const p=mic.on?mic.pitch:-1;
+    if(p>0){ const n=noteOf(p); $('#hzOut').innerHTML=Math.round(p)+' <small>Hz</small>'; $('#noteOut').textContent=n.name; }
+    if(game.on){
+      const ok=p>0&&Math.abs(Math.log2(p/game.target))<Math.log2(1.03);
+      game.hold=ok?game.hold+dt:Math.max(0,game.hold-dt*.5);
+      if(game.hold>=1){ game.score++; store.set('pitchScore',game.score); $('#gameScore').textContent=game.score; $('#gameScore').classList.remove('flash'); void $('#gameScore').offsetWidth; $('#gameScore').classList.add('flash');
+        tone(game.target,.15,'triangle',.12); tone(game.target*1.5,.25,'triangle',.1,.12);
+        if(game.score>=5) tick('c22');
+        newTarget(); setTimeout(()=>{ if(game.on) tone(game.target,.8,'triangle',.15); },500); }
+    }
+    requestAnimationFrame(frame); }
+  requestAnimationFrame(frame);
+})();
+
+/* ================= 3: the straw flute measurement log ================= */
+(function(){
+  const S=setup($('#strawCv')), ctx=S.ctx, body=$('#strawBody');
+  let rows=store.get('straw',[{len:'',hz:''},{len:'',hz:''},{len:'',hz:''}]);
+  const save=()=>store.set('straw',rows);
+  function render(){
+    body.innerHTML='';
+    rows.forEach((r,i)=>{
+      const tr=document.createElement('tr');
+      const prod=(+r.len>0&&+r.hz>0)?Math.round(r.len*r.hz/100*10)/10:'–';   // length in metres × Hz
+      tr.innerHTML='<td>'+(i+1)+'</td><td><input type="number" min="1" step="0.5" inputmode="decimal" aria-label="אורך מדידה '+(i+1)+'" value="'+(r.len??'')+'"></td><td class="hz num-ltr">'+(r.hz?Math.round(r.hz):'–')+'</td><td class="prod num-ltr">'+prod+'</td><td><button class="btn wave">🎤 מדוד</button></td>';
+      tr.querySelector('input').addEventListener('input',e=>{ r.len=e.target.value; save(); draw(); tr.querySelector('.prod').textContent=(+r.len>0&&+r.hz>0)?Math.round(r.len*r.hz/100*10)/10:'–'; });
+      tr.querySelector('button').addEventListener('click',e=>measure(i,e.currentTarget));
+      body.appendChild(tr);
+    });
+    draw();
+  }
+  async function measure(i,btn){
+    if(!await enableMic()) return;
+    btn.disabled=true; const samples=[]; const t0=performance.now();
+    btn.textContent='נשוף… 3';
+    const iv=setInterval(()=>{ const left=3-Math.floor((performance.now()-t0)/1000); btn.textContent='נשוף… '+Math.max(1,left); if(mic.pitch>0) samples.push(mic.pitch); },50);
+    setTimeout(()=>{ clearInterval(iv); btn.disabled=false; btn.textContent='🎤 מדוד';
+      if(samples.length<6){ $('#strawMsg').textContent='לא שמעתי צליל ברור. נסה לנשוף חזק יותר, קרוב למיקרופון.'; return; }
+      samples.sort((a,b)=>a-b); rows[i].hz=samples[Math.floor(samples.length/2)]; save(); render(); },3000);
+  }
+  function draw(){
+    const W=S.W,H=S.H; ctx.clearRect(0,0,W,H); grid(ctx,W,H,26,tok('--grid'));
+    const pts=rows.filter(r=>+r.len>0&&+r.hz>0).map(r=>[+r.len,+r.hz]);
+    const ink=tok('--ink'),soft=tok('--ink-soft'),wave=tok('--wave');
+    const mL=40,mB=34,mT=16,mR=16, maxL=Math.max(25,...pts.map(p=>p[0]))*1.1, maxF=Math.max(1000,...pts.map(p=>p[1]))*1.1;
+    const X=l=>mL+(l/maxL)*(W-mL-mR), Y=f=>H-mB-(f/maxF)*(H-mB-mT);
+    ctx.strokeStyle=ink; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(mL,mT); ctx.lineTo(mL,H-mB); ctx.lineTo(W-mR,H-mB); ctx.stroke();
+    ctx.fillStyle=soft; ctx.font='700 13px Assistant, sans-serif'; ctx.textAlign='center'; ctx.fillText('אורך הקשית (ס"מ) →',W/2,H-8);
+    ctx.save(); ctx.translate(14,H/2); ctx.rotate(-Math.PI/2); ctx.fillText('תדר (Hz) →',0,0); ctx.restore();
+    for(let l=5;l<maxL;l+=5){ ctx.fillText(l,X(l),H-mB+16); }
+    if(pts.length>=2){
+      // the inverse curve through the average of length × frequency
+      const k=pts.reduce((s,p)=>s+p[0]*p[1],0)/pts.length;
+      ctx.strokeStyle=wave; ctx.globalAlpha=.5; ctx.lineWidth=2; ctx.setLineDash([6,6]); ctx.beginPath(); let first=true;
+      for(let l=2;l<=maxL;l+=.5){ const f=k/l; if(f>maxF) continue; first?ctx.moveTo(X(l),Y(f)):ctx.lineTo(X(l),Y(f)); first=false; }
+      ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha=1;
+    }
+    pts.forEach(([l,f])=>{ ctx.fillStyle=wave; ctx.beginPath(); ctx.arc(X(l),Y(f),7,0,TAU); ctx.fill(); ctx.fillStyle=ink; ctx.textAlign='left'; ctx.fillText(Math.round(f),X(l)+10,Y(f)-6); });
+    const msg=$('#strawMsg');
+    if(pts.length<3) msg.textContent='צריך לפחות 3 מדידות כדי לראות את החוק';
+    else { const prods=pts.map(p=>p[0]*p[1]/100), avg=prods.reduce((a,b)=>a+b,0)/prods.length, spread=Math.max(...prods.map(p=>Math.abs(p-avg)/avg));
+      msg.textContent=spread<.15?'וואו: אורך × תדר כמעט קבוע ('+avg.toFixed(0)+'). מצאת חוק טבע!':'הנקודות יורדות: קשית קצרה = צליל גבוה. מדוד שוב בזהירות וראה אם המכפלה מתייצבת.'; }
+  }
+  $('#strawAdd').addEventListener('click',()=>{ rows.push({len:'',hz:''}); save(); render(); });
+  $('#strawDemo').addEventListener('click',()=>{ rows=[{len:20,hz:430},{len:16,hz:536},{len:12,hz:712},{len:9,hz:955}]; save(); render(); $('#strawMsg').textContent='זאת דוגמה. עכשיו תמדוד קשית אמיתית!'; });
+  S.ctx; addEventListener('resize',draw); render();
+})();
+
+/* ================= 4: the string ================= */
+(function(){
+  let draw=null;   // set below; the resize handler may run before it exists
+  const cv=$('#stringCv'), S=setup(cv,()=>draw&&draw()), ctx=S.ctx;
+  const L=$('#sLen'),T=$('#sTen'),K=$('#sThk'); const F0=196;   // the full string is sol3
+  let amp=0, phase=0, t=0, pluckX=.5, foundOctave=false;
+  const freq=()=>F0*(100/L.value)*Math.sqrt(+T.value)/(+K.value);
+  const MAGIC=[[50,'½ אוקטבה'],[66.7,'⅔ קווינטה'],[75,'¾ קוורטה']];
+  function pluck(x){ pluckX=x??.5; amp=1; pluckSound(freq()); check(); }
+  function check(){
+    const f=freq(), n=noteOf(f); $('#sHz').textContent=Math.round(f)+' Hz'; $('#sNote').textContent=n.name+(Math.abs(n.cents)>15?(n.cents>0?' (קצת גבוה)':' (קצת נמוך)'):'');
+    $('#sLenOut').textContent=L.value+'%'; $('#sTenOut').textContent='×'+(+T.value).toFixed(2); $('#sThkOut').textContent='×'+(+K.value).toFixed(2);
+    const r=f/F0; let msg='אתגר: מצא את האוקטבה';
+    if(Math.abs(r-2)<.03){ msg='🎉 אוקטבה! פי 2 בתדר, אותו צליל גבוה יותר'; if(!foundOctave){foundOctave=true; tick('c41');} }
+    else if(Math.abs(r-1.5)<.03) msg='קווינטה: יחס 3:2, הצליל הכי "חזק" ביחד עם המיתר המלא';
+    else if(Math.abs(r-4/3)<.03) msg='קוורטה: יחס 4:3';
+    if(+T.value>=1.95&&+L.value===100&&+K.value===1) tick('c42');
+    $('#sMsg').textContent=msg; $('#sMsg').className='chip'+(msg.startsWith('🎉')?' good':'');
+  }
+  let last=performance.now();
+  draw=function(){
+    const W=S.W,H=S.H; ctx.clearRect(0,0,W,H);
+    const x0=40, xFull=W-40, xEnd=x0+(xFull-x0)*L.value/100, y=H/2;
+    // the box
+    ctx.fillStyle=tok('--card'); ctx.strokeStyle=tok('--ink'); ctx.lineWidth=2; ctx.beginPath(); ctx.roundRect(x0-20,y-60,xFull-x0+40,120,14); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=tok('--sim'); ctx.beginPath(); ctx.ellipse((x0+xFull)/2,y,50,40,0,0,TAU); ctx.fill(); ctx.stroke();
+    // magic points
+    if($('#sMarks').checked) MAGIC.forEach(([p,l])=>{ const x=x0+(xFull-x0)*p/100; ctx.strokeStyle=tok('--signal'); ctx.lineWidth=3; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(x,y-66); ctx.lineTo(x,y+66); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle=tok('--ink'); ctx.font='700 12px Assistant, sans-serif'; ctx.textAlign='center'; ctx.fillText(l,x,y+82); });
+    // bridges (the pencil when shorter)
+    ctx.fillStyle=tok('--ink'); ctx.fillRect(x0-4,y-14,8,28);
+    ctx.fillStyle=L.value<100?tok('--signal'):tok('--ink'); ctx.fillRect(xEnd-4,y-14,8,28);
+    // the vibrating part: the fundamental plus a little of the 2nd harmonic, fading out
+    const thick=2+2.5*K.value, f=freq(), visF=Math.min(22,f/18);
+    ctx.strokeStyle=tok('--wave'); ctx.lineWidth=thick; ctx.lineCap='round'; ctx.beginPath();
+    for(let i=0;i<=80;i++){ const u=i/80, x=x0+(xEnd-x0)*u;
+      const disp=amp*(Math.sin(Math.PI*u)*Math.cos(phase)+.25*Math.sin(2*Math.PI*u)*Math.sin(Math.PI*pluckX*2)*Math.cos(phase*2))*28;
+      i?ctx.lineTo(x,y+disp):ctx.moveTo(x,y+disp); }
+    ctx.stroke();
+    if(L.value<100){ ctx.strokeStyle=tok('--ink-soft'); ctx.lineWidth=thick*.7; ctx.globalAlpha=.4; ctx.beginPath(); ctx.moveTo(xEnd,y); ctx.lineTo(xFull,y); ctx.stroke(); ctx.globalAlpha=1; }
+    ctx.fillStyle=tok('--ink-soft'); ctx.font='700 13px Assistant, sans-serif'; ctx.textAlign='center'; ctx.fillText(amp>.05?'רועד '+Math.round(f)+' פעמים בשנייה (בהילוך איטי)':'לחץ על המיתר כדי לפרוט',(x0+xFull)/2,y-72);
+    return visF;
+  };
+  function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; t+=dt;
+    if(S.visible){ const visF=draw(); phase+=dt*TAU*(reduce?visF*.3:visF); amp*=Math.pow(.25,dt); }
+    requestAnimationFrame(frame); }
+  requestAnimationFrame(frame);
+  // pluck by tapping or dragging across the string
+  let lastPluck=0;
+  const at=e=>{ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left),(e.clientY-r.top)]; };
+  function tryPluck(e){ const [x,y]=at(e), x0=40, xEnd=x0+(S.W-80)*L.value/100; if(x<x0||x>xEnd||Math.abs(y-S.H/2)>40) return; const now=performance.now(); if(now-lastPluck<120) return; lastPluck=now; pluck((x-x0)/(xEnd-x0)); }
+  cv.addEventListener('pointerdown',e=>{ ac(); tryPluck(e); });
+  cv.addEventListener('pointermove',e=>{ if(e.buttons) tryPluck(e); });
+  [L,T,K].forEach(el=>el.addEventListener('input',check));
+  L.addEventListener('change',()=>pluck()); T.addEventListener('change',()=>pluck()); K.addEventListener('change',()=>pluck());
+  $('#pluck').addEventListener('click',()=>pluck());
+  $('#sRef').addEventListener('click',()=>pluckSound(F0*Math.sqrt(+T.value)/(+K.value)));
+  $('#sMarks').addEventListener('change',e=>{ if(e.target.checked) tick('c43'); });
+  check();
+})();
+
+/* ================= 5: the glass xylophone ================= */
+(function(){
+  const TARGET=[60,62,64,65,67,69];   // דו רה מי פה סול לה, 523–880 Hz (C0 = 0 in our numbering)
+  const F_EMPTY=1000, TUNED=25;   // within a quarter of a semitone counts as tuned
+  // more water → lower: the water weighs the glass down as it vibrates
+  const fOf=h=>F_EMPTY*(1-.56*Math.pow(h,1.35));
+  let levels=store.get('glasses',[.15,.55,.3,.8,.45,.65]);
+  const wrap=$('#glasses'); const els=[];
+  levels.forEach((h,i)=>{
+    const d=document.createElement('div'); d.className='glass'; d.tabIndex=0; d.setAttribute('role','button');
+    d.innerHTML='<svg viewBox="0 0 80 120"><path d="M10 6 L70 6 L62 112 L18 112 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/><clipPath id="gc'+i+'"><path d="M10 6 L70 6 L62 112 L18 112 Z"/></clipPath><rect class="water" x="0" width="80" clip-path="url(#gc'+i+')" fill="var(--high)" opacity=".55"/><line class="surf" x1="10" x2="70" stroke="var(--high)" stroke-width="3"/></svg><span class="gname"></span><span class="ghz"></span><span class="gok"></span>';
+    wrap.appendChild(d); els.push(d);
+    let dragging=false, moved=false, startY=0;
+    const setFromY=e=>{ const svg=d.querySelector('svg'), r=svg.getBoundingClientRect(), u=(e.clientY-r.top)/r.height; levels[i]=Math.max(0,Math.min(.95,(112/120-u)/(106/120))); paint(i); };
+    d.addEventListener('pointerdown',e=>{ ac(); dragging=true; moved=false; startY=e.clientY; d.setPointerCapture(e.pointerId); });
+    d.addEventListener('pointermove',e=>{ if(!dragging) return; if(Math.abs(e.clientY-startY)>4) moved=true; if(moved) setFromY(e); });
+    d.addEventListener('pointerup',()=>{ dragging=false; if(moved){ store.set('glasses',levels); strike(i); } else strike(i); });
+    d.addEventListener('keydown',e=>{ if(e.key==='ArrowUp'){levels[i]=Math.min(.95,levels[i]+.008);paint(i);store.set('glasses',levels);strike(i);e.preventDefault()} if(e.key==='ArrowDown'){levels[i]=Math.max(0,levels[i]-.008);paint(i);store.set('glasses',levels);strike(i);e.preventDefault()} if(e.key==='Enter'||e.key===' '){strike(i);e.preventDefault()} });
+  });
+  function strike(i){ glassSound(fOf(levels[i])); const d=els[i]; d.classList.remove('hit'); void d.offsetWidth; d.classList.add('hit'); }
+  function paint(i){
+    const h=levels[i], d=els[i], top=112-h*106; d.querySelector('.water').setAttribute('y',top); d.querySelector('.water').setAttribute('height',120-top);
+    d.querySelector('.surf').setAttribute('y1',top); d.querySelector('.surf').setAttribute('y2',top);
+    const f=fOf(h), want=noteFreq(TARGET[i]), cents=1200*Math.log2(f/want), ok=Math.abs(cents)<TUNED;
+    d.querySelector('.gname').textContent=NOTE_HE[TARGET[i]%12]; d.querySelector('.ghz').textContent=Math.round(f)+' Hz';
+    d.querySelector('.gok').textContent=ok?'✓':(cents>0?'↓ יותר מים':'↑ פחות מים');
+    d.querySelector('.gok').style.color=ok?tok('--ok'):tok('--ink-soft');
+    d.setAttribute('aria-label','כוס '+(i+1)+', צריכה להיות '+NOTE_HE[TARGET[i]%12]+'. '+(ok?'מכוונת':'לא מכוונת')+'. חיצים למעלה ולמטה משנים את המים.');
+    const n=levels.filter((h,j)=>Math.abs(1200*Math.log2(fOf(h)/noteFreq(TARGET[j])))<TUNED).length;
+    $('#gMsg').textContent=n+' / 6 כוסות מכוונות'; $('#gMsg').className='chip'+(n===6?' good':''); $('#gSong').disabled=n<6;
+  }
+  els.forEach((d,i)=>paint(i));
+  $('#gScale').addEventListener('click',()=>TARGET.forEach((m,i)=>setTimeout(()=>glassSound(noteFreq(m),.18),i*330)));
+  // "Twinkle twinkle": do do sol sol la la sol, fa fa mi mi re re do, played on HER glasses
+  $('#gSong').addEventListener('click',()=>{ const seq=[0,0,4,4,5,5,4,-1,3,3,2,2,1,1,0]; seq.forEach((g,k)=>{ if(g>=0) setTimeout(()=>strike(g),k*380); }); });
+  addEventListener('keydown',e=>{ if(/^[1-6]$/.test(e.key)&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){ const i=+e.key-1; const r=wrap.getBoundingClientRect(); if(r.top<innerHeight&&r.bottom>0) strike(i); } });
+})();
+
+/* ================= 6: wave mixer ================= */
+(function(){
+  const S=setup($('#mixCv')), ctx=S.ctx;
+  const RATIOS=[[1,1,'אוניסון'],[2,1,'אוקטבה'],[3,2,'קווינטה'],[4,3,'קוורטה'],[5,4,'טרצה'],[45,32,'טריטון']];
+  const BASE=220; let sel=1, playing=false, o1=null, o2=null, g=null;
+  const box=$('#ratios');
+  RATIOS.forEach(([a,b,n],i)=>{ const btn=document.createElement('button'); btn.innerHTML=a+':'+b+'<small>'+n+'</small>'; btn.addEventListener('click',()=>{ sel=i; render(); if(i===5&&checks.c61seen) tick('c61'); if(i===1) checks.c61seen=1; }); box.appendChild(btn); });
+  const f2=()=>BASE*RATIOS[sel][0]/RATIOS[sel][1]+(+$('#detune').value);
+  function render(){ [...box.children].forEach((b,i)=>b.classList.toggle('on',i===sel));
+    const d=+$('#detune').value; $('#detuneOut').textContent=(d>0?'+':'')+d+' Hz';
+    $('#mixInfo').textContent=BASE+' Hz + '+Math.round(f2()*10)/10+' Hz';
+    const beat=Math.abs(d)>0&&sel===0; $('#beatInfo').hidden=!beat; if(beat) $('#beatInfo').textContent='פעימות: '+Math.abs(d)+' בשנייה';
+    if(sel===0&&Math.abs(d)>=1.5&&Math.abs(d)<=2.5&&playing) tick('c62');
+    if(sel===0&&Math.abs(d)>=6&&playing) tick('c63');
+    if(o2) o2.frequency.setTargetAtTime(f2(),AC.currentTime,.03); }
+  $('#detune').addEventListener('input',render);
+  $('#mixPlay').addEventListener('click',()=>{
+    const a=ac(); if(!a) return; playing=!playing; $('#mixPlay').textContent=playing?'⏹ עצור':'▶ נגן'; $('#mixPlay').setAttribute('aria-pressed',playing);
+    if(playing){ g=a.createGain(); g.gain.value=0; g.connect(a.destination); g.gain.setTargetAtTime(.14,a.currentTime,.05);
+      o1=a.createOscillator(); o2=a.createOscillator(); o1.type=o2.type='sine'; o1.frequency.value=BASE; o2.frequency.value=f2(); o1.connect(g); o2.connect(g); o1.start(); o2.start(); }
+    else { g.gain.setTargetAtTime(0,a.currentTime,.05); const a1=o1,a2=o2; setTimeout(()=>{a1.stop();a2.stop()},300); o1=o2=null; }
+    render(); });
+  let t=0,last=performance.now();
+  function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; if(playing) t+=dt*(reduce?.05:.25);
+    if(S.visible){ const W=S.W,H=S.H; ctx.clearRect(0,0,W,H); const rowH=H/3, f1=BASE, fb=f2(), sel0=sel===0&&Math.abs(+$('#detune').value)>0;
+      // a window of 20 ms (or 1 s when showing beats) drawn at "slow motion" scale
+      const span=sel0?1.2:.02;
+      const rows=[[t=>Math.sin(TAU*f1*t),tok('--high'),BASE+' Hz'],[t=>Math.sin(TAU*fb*t),tok('--low'),Math.round(fb*10)/10+' Hz'],[t=>(Math.sin(TAU*f1*t)+Math.sin(TAU*fb*t))/2,tok('--wave'),'ביחד']];
+      rows.forEach(([fn,col,label],r)=>{ const cy=rowH*r+rowH/2; ctx.strokeStyle=tok('--grid'); ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+        ctx.strokeStyle=col; ctx.lineWidth=r===2?3:2; ctx.beginPath(); const N=Math.min(1600,W*2);
+        for(let i=0;i<=N;i++){ const x=i/N*W, tt=t*.02+i/N*span; const y=cy-fn(tt)*rowH*.38; i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+        ctx.stroke(); ctx.fillStyle=col; ctx.font='800 13px Assistant, sans-serif'; ctx.textAlign='right'; ctx.fillText(label,W-8,rowH*r+16); });
+      if(sel0){ ctx.fillStyle=tok('--ink-soft'); ctx.textAlign='left'; ctx.font='700 13px Assistant, sans-serif'; ctx.fillText('שנייה אחת שלמה',8,H-8); }
+      else { ctx.fillStyle=tok('--ink-soft'); ctx.textAlign='left'; ctx.font='700 13px Assistant, sans-serif'; ctx.fillText('20 אלפיות שנייה',8,H-8); }
+    }
+    requestAnimationFrame(frame); }
+  render(); requestAnimationFrame(frame);
+})();
+
+/* ================= 7: lightning and thunder ================= */
+(function(){
+  const S=setup($('#stormCv')), ctx=S.ctx, dist=$('#dist'); const V=343;
+  const st={flashAt:-1, d:2, heardAt:-1, secret:false, tries:store.get('stormTries',0), wins:store.get('stormWins',0)};
+  $('#stormScore').textContent=st.wins+' / '+st.tries;
+  function bolt(d,secret){ ac(); st.d=d; st.secret=secret; st.flashAt=performance.now(); st.heardAt=-1;
+    $('#stormMsg').textContent=secret?'ספור את השניות עד הרעם…':'הברק נראה מיד. עכשיו הקול בדרך…';
+    setTimeout(()=>{ thunderSound(Math.max(.25,.8-d*.08)); st.heardAt=performance.now();
+      if(secret){ $('#stormMsg').textContent='שמעת! כמה קילומטר? (רמז: שניות חלקי 3)'; $('#guessBtn').disabled=false; $('#guess').focus(); }
+      else $('#stormMsg').textContent='הרעם הגיע אחרי '+(d*1000/V).toFixed(1)+' שניות. '+d.toFixed(1)+' ק"מ ÷ 0.343 = '+(d*1000/V).toFixed(1); },d*1000/V*1000); }
+  $('#bolt').addEventListener('click',()=>bolt(+dist.value,false));
+  dist.addEventListener('input',()=>$('#distOut').textContent=(+dist.value).toFixed(1)+' ק"מ');
+  $('#stormGame').addEventListener('click',()=>{ $('#guess').value=''; bolt(Math.round((0.6+Math.random()*4.4)*10)/10,true); });
+  $('#guessBtn').addEventListener('click',()=>{ const g=parseFloat($('#guess').value); if(isNaN(g)) return; $('#guessBtn').disabled=true; st.tries++; const err=Math.abs(g-st.d);
+    const good=err<=Math.max(.35,st.d*.2); if(good){st.wins++; tone(660,.12,'triangle',.12); tone(990,.2,'triangle',.1,.1);}
+    $('#stormMsg').textContent=(good?'🎉 מצוין! ':'כמעט! ')+'הברק היה במרחק '+st.d.toFixed(1)+' ק"מ. הרעם הגיע אחרי '+(st.d*1000/V).toFixed(1)+' שניות.';
+    store.set('stormTries',st.tries); store.set('stormWins',st.wins); $('#stormScore').textContent=st.wins+' / '+st.tries; });
+  $('#guess').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#guessBtn').click(); });
+  let last=performance.now(); const bolts=[];
+  function frame(now){ last=now;
+    if(S.visible){ const W=S.W,H=S.H; ctx.clearRect(0,0,W,H);
+      const since=st.flashAt>0?(now-st.flashAt)/1000:-1, flash=since>=0&&since<.25;
+      const sky=ctx.createLinearGradient(0,0,0,H); sky.addColorStop(0,flash?'#E8E4FF':'#2A2559'); sky.addColorStop(1,flash?'#B9B0F2':'#4A4390'); ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='#3B6B4A'; ctx.fillRect(0,H-36,W,36);
+      // the house (us) on the right, the storm on the left at a distance that matches the slider
+      const xs=W-70, xb=Math.max(60,xs-(W-140)*Math.min(1,(st.secret?3:st.d)/6));
+      ctx.fillStyle='#F4E3C1'; ctx.fillRect(xs-22,H-70,44,34); ctx.fillStyle='#C94F3D'; ctx.beginPath(); ctx.moveTo(xs-30,H-70); ctx.lineTo(xs,H-96); ctx.lineTo(xs+30,H-70); ctx.fill();
+      ctx.font='22px sans-serif'; ctx.textAlign='center'; ctx.fillText(st.heardAt>0&&now-st.heardAt<1500?'🙉':'🙂',xs,H-44);
+      // cloud
+      ctx.fillStyle='#8F8AB8'; [[0,0,34],[30,-12,30],[60,0,32],[30,8,30]].forEach(([dx,dy,r])=>{ctx.beginPath();ctx.arc(xb-30+dx,60+dy,r,0,TAU);ctx.fill()});
+      if(flash){ ctx.strokeStyle='#FFF7B0'; ctx.lineWidth=5; ctx.beginPath(); let x=xb, y=80; ctx.moveTo(x,y); while(y<H-36){ x+=(Math.random()-.5)*40; y+=24; ctx.lineTo(x,Math.min(y,H-36)); } ctx.stroke(); }
+      // the sound front: a ring moving at the speed of sound (shown 10× faster than the real distance scale)
+      if(since>=0&&st.heardAt<0){ const r=(xs-xb)*Math.min(1,since/(st.d*1000/V)); ctx.strokeStyle='rgba(255,255,255,.7)'; ctx.lineWidth=3; ctx.setLineDash([8,8]);
+        ctx.beginPath(); ctx.arc(xb,H-40,r,Math.PI*1.5,Math.PI*2.05); ctx.stroke(); ctx.setLineDash([]); }
+      // distance ruler
+      if(!st.secret){ ctx.strokeStyle='rgba(255,255,255,.6)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(xb,H-14); ctx.lineTo(xs,H-14); ctx.stroke();
+        ctx.fillStyle='#fff'; ctx.font='700 13px Assistant, sans-serif'; ctx.fillText(st.d.toFixed(1)+' ק"מ',(xb+xs)/2,H-20); }
+      else { ctx.fillStyle='#fff'; ctx.font='700 14px Assistant, sans-serif'; ctx.fillText('מרחק סודי ❓',(xb+xs)/2,H-20); }
+      // timer
+      const shown=since<0?0:(st.heardAt>0?(st.heardAt-st.flashAt)/1000:since);
+      $('#stormT').innerHTML=shown.toFixed(1)+' <small>שניות</small>';
+    }
+    requestAnimationFrame(frame); }
+  requestAnimationFrame(frame);
+})();
+
+/* ================= quiz and certificate ================= */
+const Q=[
+  ['גל עם גובה גדול יותר (אמפליטודה) נשמע...',['גבוה יותר','חזק יותר','מהר יותר'],1],
+  ['קיצרת קשית לחצי מהאורך שלה. התדר...',['יורד לחצי','לא משתנה','מוכפל'],2],
+  ['כוס עם הרבה מים, כשמקישים עליה בכפית, נשמעת...',['נמוכה יותר מכוס ריקה','גבוהה יותר מכוס ריקה','בדיוק אותו דבר'],0],
+  ['איזה זוג צלילים יישמע הכי "נעים" ביחד?',['220 Hz ו-440 Hz','220 Hz ו-309 Hz','220 Hz ו-223 Hz'],0],
+  ['ראית ברק, ושמעת רעם אחרי 6 שניות. הברק היה במרחק של בערך...',['6 ק"מ','2 ק"מ','600 מטר'],1],
+];
+const qa=store.get('quiz',{});
+Q.forEach(([q,opts,ans],qi)=>{
+  const d=document.createElement('div'); d.className='predict quizq';
+  const p=document.createElement('p'); p.className='q'; p.textContent=(qi+1)+'. '+q; d.appendChild(p);
+  const o=document.createElement('div'); o.className='opts'; d.appendChild(o);
+  const btns=opts.map((t,i)=>{ const b=document.createElement('button'); b.className='opt'; b.textContent=t; o.appendChild(b); return b; });
+  function show(i){ btns.forEach(b=>b.classList.remove('picked','right')); btns[i].classList.add('picked'); btns[ans].classList.add('right'); d.classList.add('answered'); }
+  btns.forEach((b,i)=>b.addEventListener('click',()=>{ qa[qi]=i; store.set('quiz',qa); show(i); renderCert(); }));
+  if(qa[qi]!=null) show(qa[qi]);
+  $('#quiz').appendChild(d);
+});
+const nameEl=$('#engName'); nameEl.value=store.get('name','');
+nameEl.addEventListener('input',()=>{ store.set('name',nameEl.value); renderCert(); });
+function renderCert(){
+  const right=Q.filter((q,i)=>qa[i]===q[2]).length;
+  $('#certName').textContent=nameEl&&nameEl.value.trim()?nameEl.value.trim():' ';
+  $('#certText').textContent='השלים '+done.size+' מתוך 7 משימות ו-'+right+' מתוך 5 שאלות במעבדת הצליל, ויודע למדוד, לראות ולהסביר צליל.';
+}
+$('#certDate').textContent=new Date().toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
+renderProgress();
+
+// ?test exposes the pitch detector for automated checks
+if(location.search.includes('test')) window.__sound={detectPitch,noteOf,mic};
+})();
+</script>
+</body>
+</html>

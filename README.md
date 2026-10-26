@@ -4,8 +4,11 @@ Snack-size learning games and interactive lessons for kids — things that teach
 
 - **Rotem's Sky Letters** (game): a Flappy-Bird-style game where you read a syllable or
   Hebrew word out loud and the bird flies through the gate.
-- **מעבדת הנייר המעופף — the Flying Paper Lab** (lesson): why planes fly. Eight home
+- **מעבדת הנייר המעופף — the Flying Paper Lab** (lesson, ages 8–12): why planes fly. Eight home
   experiments with paper, a Bernoulli tube simulator, a wind tunnel, a flight log and a quiz.
+- **מעבדת הצליל — the Sound Lab** (lesson, ages 9–13): a live microphone oscilloscope, a
+  pitch game, a straw flute measured in Hz, a rubber-band guitar, tuned water glasses, a wave
+  mixer (Pythagoras' ratios and beats) and a lightning-and-thunder race.
 
 Live site: https://brainsnacks.pages.dev
 
@@ -16,6 +19,7 @@ site/                                  everything here is published as-is (no bu
   index.html                           the catalogue: a Games shelf and a Lessons shelf
   games/rotem-sky/index.html           Rotem's Sky Letters (single self-contained file)
   lessons/flying-paper-lab/index.html  the Flying Paper Lab (Hebrew, right-to-left)
+  lessons/sound-lab/index.html         the Sound Lab (Hebrew; uses the microphone, nothing is sent)
   games/<id>/  lessons/<id>/           new games and lessons each get their own folder
   _redirects                           keeps old addresses working (/rotem-sky/ → /games/rotem-sky/)
 tools/
@@ -45,6 +49,12 @@ While running, everything the game hears is written to `heard.log` at the repo r
 useful for tuning recognition, and ignored by git because it holds a child's speech.
 
 ## Deploying
+
+Every push to `main` publishes `site/` automatically (`.github/workflows/deploy.yml`).
+It needs one repository secret, `CLOUDFLARE_API_TOKEN` (a Cloudflare API token with
+*Account → Cloudflare Pages → Edit*).
+
+To publish by hand instead:
 
 ```bash
 npx wrangler@3 pages deploy
