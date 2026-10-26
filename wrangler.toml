@@ -1,4 +1,5 @@
-# Cloudflare Pages project. Deploy with:  npx wrangler@3 pages deploy
+# Cloudflare Pages project on the PERSONAL account (c3a723351b598ee5ab014b6f5514b8aa).
+# Deployed by GitHub Actions or tools/deploy-local.sh; never with a computer-wide wrangler login.
 name = "brainsnacks"
 pages_build_output_dir = "site"
 compatibility_date = "2026-10-01"

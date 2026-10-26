@@ -50,18 +50,15 @@ useful for tuning recognition, and ignored by git because it holds a child's spe
 
 ## Deploying
 
-Every push to `main` publishes `site/` automatically (`.github/workflows/deploy.yml`).
-It needs one repository secret, `CLOUDFLARE_API_TOKEN` (a Cloudflare API token with
-*Account → Cloudflare Pages → Edit*).
+Every push to `main` publishes `site/` to the **personal** Cloudflare account
+(`c3a723351b598ee5ab014b6f5514b8aa`, project `brainsnacks`) via
+`.github/workflows/deploy.yml`. It needs one repository secret, `CLOUDFLARE_API_TOKEN`:
+a token from the personal account with *Account → Cloudflare Pages → Edit*.
 
-To publish by hand instead:
-
-```bash
-npx wrangler@3 pages deploy
-```
-
-Uses `wrangler.toml` (project `brainsnacks`, output folder `site/`). Run
-`npx wrangler@3 login` first on a new machine.
+Don't use `wrangler login` for this project: wrangler keeps one login for the whole computer,
+and the same computer is used with a work Cloudflare account. To publish by hand, put the
+personal token in a git-ignored `.env.local` (`CLOUDFLARE_API_TOKEN=...`) and run
+`tools/deploy-local.sh`, which pins the personal account ID.
 
 ## How Rotem's Sky Letters listens
 

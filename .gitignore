@@ -4,3 +4,6 @@ heard.log
 .wrangler/
 node_modules/
 .DS_Store
+
+# personal Cloudflare token for tools/deploy-local.sh
+.env.local
