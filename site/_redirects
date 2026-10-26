@@ -1,0 +1,2 @@
+# the game's first address keeps working after games moved under /games/
+/rotem-sky/*  /games/rotem-sky/:splat  301

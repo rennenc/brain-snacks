@@ -45,6 +45,10 @@ header{max-width:960px;margin:0 auto;padding-block:clamp(36px,8vw,80px) 28px;tex
 
 main{max-width:960px;margin:0 auto;padding-block:8px 48px}
 .shelf-title{font:700 22px var(--font-display);margin:0 0 14px;letter-spacing:.02em}
+.shelf + .shelf-title{margin-top:40px}
+.shelf-title small{display:block;font:600 16px var(--font-body);opacity:.75;letter-spacing:0;margin-top:2px}
+.play-btn.lesson{background:var(--teal);box-shadow:0 5px 0 #12867C}
+.card .he{font-family:var(--font-hebrew);font-weight:700}
 .shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
 
 .card{background:var(--paper);border-radius:28px;box-shadow:0 8px 0 var(--shadow);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;
@@ -81,7 +85,7 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
 <main>
   <h2 class="shelf-title">Games</h2>
   <div class="shelf">
-    <a class="card" href="rotem-sky/">
+    <a class="card" href="games/rotem-sky/">
       <svg class="art" viewBox="0 0 320 180" role="img" aria-label="A yellow bird hovering next to a bubble that says Ba">
         <rect width="320" height="180" fill="#8ED8FF"/>
         <circle cx="270" cy="38" r="22" fill="#FFD84D"/>
@@ -114,8 +118,40 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
     </div>
   </div>
 
+  <h2 class="shelf-title">Interactive lessons<small>Hands-on science: try it at home, then play with the simulator.</small></h2>
+  <div class="shelf">
+    <a class="card" href="lessons/flying-paper-lab/">
+      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="A paper plane gliding over graph paper with air flowing over its wing">
+        <defs><pattern id="gridp" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#DCE7F3" stroke-width="1"/></pattern></defs>
+        <rect width="320" height="180" fill="#F4F8FC"/><rect width="320" height="180" fill="url(#gridp)"/>
+        <path d="M300 150 C 230 160, 170 120, 110 100" fill="none" stroke="#4C6185" stroke-width="2" stroke-dasharray="6 7"/>
+        <g transform="rotate(-6 150 90)">
+          <path d="M60 95 L230 52 L165 140 Z" fill="#fff" stroke="#13274A" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M60 95 L165 140 L150 108 Z" fill="#DCE7F3" stroke="#13274A" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M150 108 L230 52" stroke="#13274A" stroke-width="2" stroke-dasharray="4 4"/>
+        </g>
+        <g fill="none" stroke="#2B78DD" stroke-width="2.5" stroke-linecap="round">
+          <path d="M20 60 C 70 40, 120 34, 180 30"/><path d="M20 78 C 70 60, 120 52, 190 46"/>
+        </g>
+        <g fill="none" stroke="#E3484E" stroke-width="2.5" stroke-linecap="round"><path d="M40 150 C 90 148, 140 150, 200 160"/></g>
+        <text x="250" y="40" font-family="Secular One, Rubik, sans-serif" font-size="22" fill="#178F62">עילוי ↑</text>
+      </svg>
+      <div class="body">
+        <h2 class="he" lang="he" dir="rtl">מעבדת הנייר המעופף</h2>
+        <p>How does a 400-ton plane stay in the air? 8 missions with sheets of paper, a Bernoulli tube and a wind tunnel simulator, a flight log, and a pilot certificate at the end.</p>
+        <div class="tags"><span>🧪 Bernoulli &amp; lift</span><span>📄 Paper only</span><span>2 simulators</span><span lang="he">עברית</span></div>
+        <span class="play-btn lesson">Start lesson ➜</span>
+      </div>
+    </a>
+    <div class="card soon">
+      <div class="icons" aria-hidden="true">🧲 🌋 🪐</div>
+      <b>More lessons coming</b>
+      <p>Each lesson mixes a home experiment with an interactive simulator.</p>
+    </div>
+  </div>
+
   <div class="notes">
-    <div class="note"><b>Best in Chrome</b>On a computer or tablet. The game asks to use the microphone once.</div>
+    <div class="note"><b>Best in Chrome</b>On a computer or tablet. Games that listen ask to use the microphone once.</div>
     <div class="note"><b>Privacy</b>Progress is saved only in this browser. Speech is recognised on your device, and also by Chrome's built-in speech service.</div>
     <div class="note"><b>For grown-ups</b>Press and hold ⚙ in a game to choose letters, words and how strict it listens.</div>
   </div>

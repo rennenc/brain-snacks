@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+</head>
+<body>
+<title>מעבדת הנייר המעופף</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Assistant:wght@400;600;700;800&family=Secular+One&display=swap">
+<style>
+/* Layout: a lab notebook on engineering graph paper. One reading column of mission cards; the two simulators run full width like instruments on the bench. */
+:root{
+  --paper:#F4F8FC; --grid:#DCE7F3; --ink:#13274A; --ink-soft:#4C6185; --card:#FFFFFF; --line:#CBD9EA;
+  --signal:#FFBE2E; --signal-ink:#3B2900; --low:#E3484E; --high:#2B78DD; --ok:#178F62; --sim:#EAF2FB;
+  --display:"Secular One","Assistant",system-ui,sans-serif;
+  --body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --hand:"Amatic SC","Assistant",cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0D1A31; --grid:#182A4A; --ink:#E8EFFA; --ink-soft:#A3B5D2; --card:#132442; --line:#29406A;
+  --signal:#FFC447; --signal-ink:#2A1D00; --low:#FF6B70; --high:#5EA3FF; --ok:#3ECB91; --sim:#0F203D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0D1A31; --grid:#182A4A; --ink:#E8EFFA; --ink-soft:#A3B5D2; --card:#132442; --line:#29406A;
+  --signal:#FFC447; --signal-ink:#2A1D00; --low:#FF6B70; --high:#5EA3FF; --ok:#3ECB91; --sim:#0F203D; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{
+  direction:rtl; font-family:var(--body); font-size:18px; line-height:1.6; color:var(--ink);
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--card)}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px;border-radius:6px}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.home{font-size:14px;font-weight:700;color:var(--ink-soft);text-decoration:none;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.home:hover{border-color:var(--ink);color:var(--ink)}
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--card);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px}
+.brand{font-family:var(--display);font-size:20px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.stamps{display:flex;align-items:center;gap:6px}
+.stamp{width:22px;height:22px;border-radius:50%;border:2px dashed var(--ink-soft);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--ink-soft);text-decoration:none;transition:transform .2s}
+.stamp.on{background:var(--signal);border:2px solid var(--signal);color:var(--signal-ink);transform:rotate(-12deg)}
+.count{font-size:14px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:520px){.brand span{display:none}.stamp{width:18px;height:18px;font-size:10px}}
+
+/* hero */
+.hero{padding-block:48px 24px;display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:center}
+.eyebrow{font-size:14px;font-weight:700;letter-spacing:.06em;color:var(--ink-soft)}
+.hero h1{font-size:clamp(34px,6vw,56px);margin-block:8px 14px}
+.hero h1 mark{background:linear-gradient(transparent 55%,var(--signal) 55%);color:inherit;padding-inline:4px}
+.lead{font-size:20px;color:var(--ink-soft);max-width:34em}
+.hero-art{position:relative;min-width:0}
+.hero-art svg{width:100%;height:auto;display:block}
+.float{animation:float 4s ease-in-out infinite;transform-origin:center}
+@keyframes float{0%,100%{transform:translate(0,0) rotate(-4deg)}50%{transform:translate(-10px,-12px) rotate(2deg)}}
+@media (max-width:700px){.hero{grid-template-columns:1fr}.hero-art{max-width:320px;justify-self:center;order:-1}}
+.kit{display:flex;gap:10px;align-items:center;margin-top:18px;padding:12px 14px;border:2px solid var(--ink);border-radius:10px;background:var(--card);max-width:34em}
+.kit b{font-family:var(--display);font-weight:400;font-size:18px;white-space:nowrap}
+
+/* mission map */
+.map{display:flex;flex-wrap:wrap;gap:8px;padding-block:8px 32px}
+.map a{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);text-decoration:none;font-size:15px;font-weight:600}
+.map a:hover{border-color:var(--ink)}
+.map a i{font-style:normal;font-family:var(--display);color:var(--ink-soft)}
+.map a.on{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+.map a.on i{color:var(--signal-ink)}
+
+/* mission cards */
+.mission{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:28px clamp(18px,4vw,36px);margin-bottom:36px;position:relative;scroll-margin-top:80px}
+.mission-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
+.num{flex:none;width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--card);display:grid;place-items:center;font-family:var(--display);font-size:28px;line-height:1}
+.mission.done .num{background:var(--signal);color:var(--signal-ink)}
+.mission h2{font-size:clamp(26px,4vw,34px)}
+.tag{font-size:14px;font-weight:700;letter-spacing:.05em;color:var(--ink-soft)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.note{font-family:var(--hand);font-size:28px;line-height:1.1;color:var(--high);transform:rotate(-1deg)}
+.fact{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:14px 16px;background:var(--sim);border-radius:10px}
+.fact .big{font-family:var(--display);font-size:clamp(36px,7vw,52px);line-height:1;color:var(--high);font-variant-numeric:tabular-nums}
+.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:start}
+.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:15px;margin-top:2px}
+.rule{border-inline-start:6px solid var(--signal);padding:10px 14px;background:var(--sim);border-radius:0 8px 8px 0;font-weight:700}
+.rule small{display:block;font-weight:400;color:var(--ink-soft);font-size:15px}
+
+/* predictions */
+.predict{border:2px dashed var(--ink-soft);border-radius:12px;padding:16px}
+.predict .q{font-weight:800;margin-bottom:10px}
+.predict .q::before{content:"ניבוי: ";color:var(--high)}
+.quizq .q::before{content:none}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:2px solid var(--ink);background:var(--card);border-radius:999px;padding:6px 16px;cursor:pointer;font-weight:700;font-size:16px}
+.opt:hover{background:var(--sim)}
+.opt.picked{background:var(--ink);color:var(--card)}
+.opt.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.predict.answered .opt:not(.picked):not(.right){opacity:.45}
+.reveal{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.verdict{font-family:var(--display);font-size:22px;display:block;margin-bottom:6px}
+.verdict.good{color:var(--ok)}.verdict.surprise{color:var(--low)}
+
+.done-btn{align-self:flex-start;border:2px solid var(--ink);background:transparent;border-radius:10px;padding:8px 18px;font-weight:800;cursor:pointer}
+.done-btn:hover{background:var(--sim)}
+.mission.done .done-btn{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+
+/* simulators */
+.sim{background:var(--sim);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sim canvas{display:block;width:100%;height:300px;touch-action:pan-y}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 22px;padding:14px 16px;border-top:1px solid var(--line);background:var(--card)}
+.ctl label{display:flex;justify-content:space-between;font-weight:700;font-size:15px}
+.ctl output{font-variant-numeric:tabular-nums;color:var(--high)}
+.ctl input[type=range]{width:100%;accent-color:var(--high)}
+.readouts{display:flex;flex-wrap:wrap;gap:10px;padding:0 16px 14px;background:var(--card)}
+.chip{padding:4px 12px;border-radius:999px;font-size:14px;font-weight:700;background:var(--sim);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.chip.warn{background:var(--low);border-color:var(--low);color:#fff}
+.chip.good{background:var(--ok);border-color:var(--ok);color:#fff}
+.meter{display:grid;grid-template-columns:52px 1fr 48px;gap:8px;align-items:center;font-size:14px;font-weight:700}
+.meter .track{height:12px;border-radius:6px;background:var(--sim);overflow:hidden;border:1px solid var(--line)}
+.meter .fill{height:100%;width:0;border-radius:6px;transition:width .15s}
+.meter output{font-variant-numeric:tabular-nums;text-align:end}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--ink-soft)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-inline-end:6px;vertical-align:-1px}
+.btn{border:none;background:var(--ink);color:var(--card);border-radius:10px;padding:8px 16px;font-weight:800;cursor:pointer}
+.btn:hover{opacity:.9}
+.btn.alt{background:var(--signal);color:var(--signal-ink)}
+.challenge{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.challenge li{display:flex;gap:10px;align-items:flex-start}
+.challenge input{width:20px;height:20px;margin-top:4px;accent-color:var(--ok);flex:none}
+
+.myth{border:2px solid var(--low);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.myth .stampx{align-self:flex-start;font-family:var(--display);color:var(--low);border:3px solid var(--low);padding:0 10px;border-radius:6px;transform:rotate(-4deg);font-size:20px}
+
+/* forces */
+.forces{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:center}
+.forces svg{width:100%;height:auto}
+.force-list{display:flex;flex-direction:column;gap:8px}
+.force{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--card);text-align:start;cursor:pointer}
+.force b{font-family:var(--display);font-weight:400;font-size:19px}
+.force span{display:block;font-size:15px;color:var(--ink-soft)}
+.force.on{border-color:var(--ink);border-width:2px;padding:7px 11px}
+@media (max-width:640px){.forces{grid-template-columns:1fr}}
+
+/* folding */
+.folds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.fold{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card);display:flex;flex-direction:column;gap:6px}
+.fold svg{width:100%;height:auto;max-height:150px}
+.fold p{font-size:15px;line-height:1.4}
+.fold b{font-family:var(--display);font-weight:400;color:var(--high)}
+@media (max-width:620px){.folds{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* flight log */
+.log-wrap{overflow-x:auto}
+table.log{border-collapse:collapse;width:100%;min-width:480px;font-variant-numeric:tabular-nums}
+.log th,.log td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+.log th{font-size:14px;background:var(--sim)}
+.log td:first-child{text-align:start;font-weight:700;white-space:nowrap}
+.log input{width:64px;padding:4px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);text-align:center;font:inherit}
+.log .avg{font-weight:800;color:var(--high)}
+.bars{display:flex;flex-direction:column;gap:8px}
+.barrow{display:grid;grid-template-columns:120px 1fr 56px;gap:10px;align-items:center;font-size:15px;font-weight:700}
+.barrow .track{height:22px;background:var(--sim);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.barrow .fill{height:100%;width:0;background:var(--high);transition:width .3s}
+.barrow.win .fill{background:var(--signal)}
+.barrow output{text-align:end}
+.empty{color:var(--ink-soft);font-size:15px}
+select{font:inherit;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--card)}
+details summary{cursor:pointer;font-weight:800}
+details[open] summary{margin-bottom:8px}
+
+/* quiz + certificate */
+.quiz{display:flex;flex-direction:column;gap:14px}
+.cert{border:3px double var(--ink);border-radius:12px;padding:28px 20px;text-align:center;background:var(--card);display:flex;flex-direction:column;gap:10px;align-items:center;position:relative;overflow:hidden}
+.cert h3{font-size:32px}
+.cert .who{font-family:var(--hand);font-size:52px;line-height:1;color:var(--high);min-height:52px}
+.cert .seal{width:86px;height:86px;border-radius:50%;background:var(--signal);color:var(--signal-ink);display:grid;place-items:center;font-family:var(--display);font-size:15px;line-height:1.1;transform:rotate(-10deg);border:3px dashed var(--signal-ink)}
+.namebox{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.namebox input{font:inherit;padding:6px 10px;border:2px solid var(--ink);border-radius:8px;background:var(--card);color:var(--ink);min-width:0;width:220px;max-width:100%}
+
+.adult{margin-block:8px 64px}
+.adult ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px}
+footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
+
+@media (prefers-reduced-motion:reduce){.float{animation:none}.stamp,.barrow .fill,.meter .fill{transition:none}}
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><path d="M2 16 L30 4 L20 28 L15 18 Z" fill="var(--signal)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M15 18 L30 4" stroke="var(--ink)" stroke-width="2"/></svg>
+      <span>מעבדת הנייר המעופף</span>
+    </div>
+    <div class="stamps" id="stamps" aria-label="משימות שהושלמו"></div>
+    <div class="count" id="count">0 / 8</div>
+    <a class="home" href="../../" title="Brain Snacks: all games and lessons">כל השיעורים ←</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">מעבדה ביתית · 8 משימות · דפי נייר בלבד</div>
+    <h1>איך מטוס של <mark>400 טון</mark> נשאר באוויר?</h1>
+    <p class="lead">מטוס נוסעים גדול שוקל בהמראה כמו 300 מכוניות. אין לו מדחף שמסתובב למעלה כמו למסוק. אז מה מחזיק אותו? עד סוף הדף הזה תדע להסביר, ותוכיח את זה בעצמך עם דף נייר.</p>
+    <div class="kit"><b>מה צריך:</b><span>4–5 דפי A4 רגילים. בלי מספריים ובלי דבק. רק לקפל, לקרוע ולנשוף.</span></div>
+  </div>
+  <div class="hero-art">
+    <svg viewBox="0 0 320 240" aria-hidden="true">
+      <path d="M300 200 C 220 210, 160 150, 90 120" fill="none" stroke="var(--ink-soft)" stroke-width="2" stroke-dasharray="6 8"/>
+      <g class="float">
+        <path d="M40 110 L220 60 L150 160 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M40 110 L150 160 L135 120 Z" fill="var(--grid)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M40 110 L220 60" stroke="var(--ink)" stroke-width="3"/>
+        <path d="M135 120 L220 60" stroke="var(--ink)" stroke-width="2" stroke-dasharray="4 4"/>
+        <path d="M70 92 C 60 70, 70 50, 85 40" fill="none" stroke="var(--high)" stroke-width="2.5"/>
+        <path d="M100 85 C 92 62, 100 42, 116 32" fill="none" stroke="var(--high)" stroke-width="2.5"/>
+      </g>
+      <text x="40" y="225" font-family="Amatic SC, cursive" font-size="30" fill="var(--high)">עילוי!</text>
+    </svg>
+  </div>
+</section>
+
+<div class="predict" id="p0" data-answer="air" style="margin-bottom:20px">
+  <p class="q">מה מחזיק את המטוס למעלה?</p>
+  <div class="opts">
+    <button class="opt" data-v="engines">המנועים דוחפים אותו למעלה</button>
+    <button class="opt" data-v="air">האוויר שזורם סביב הכנפיים</button>
+    <button class="opt" data-v="fast">הוא פשוט מהיר מכדי ליפול</button>
+  </div>
+  <div class="reveal" hidden>
+    <span class="verdict"></span>
+    <p>האוויר! המנועים רק דוחפים את המטוס קדימה. הכנפיים הופכות את התנועה קדימה לכוח שמרים למעלה. בשמונה המשימות הבאות תגלה איך.</p>
+  </div>
+</div>
+
+<nav class="map" id="map" aria-label="מפת המשימות"></nav>
+
+<!-- 1 -->
+<article class="mission" id="m1" data-m="1">
+  <div class="mission-head"><div class="num">1</div><div><div class="tag">משימה · 5 דקות · 2 דפים</div><h2>האוויר הוא לא כלום</h2></div></div>
+  <div class="stack">
+    <div class="fact"><div class="big">640 ק"ג</div><p>זה הכוח שבו האוויר לוחץ על דף A4 אחד, בערך כמו 9 מבוגרים שעומדים עליו. הדף לא נמחץ, כי האוויר לוחץ עליו באותה עוצמה גם מלמטה ומכל הצדדים.</p></div>
+    <p><b>מרוץ הנפילה.</b> האוויר הוא חומר אמיתי, ואפשר להרגיש אותו כשמשהו מנסה לעבור דרכו.</p>
+    <ol class="steps">
+      <li>קח שני דפים. קמט אחד לכדור הדוק, והשאר את השני שטוח.</li>
+      <li>החזק את שניהם באותו גובה, ידיים ישרות קדימה, הדף השטוח מקביל לרצפה.</li>
+      <li>שחרר את שניהם בדיוק באותו רגע.</li>
+    </ol>
+    <div class="predict" data-answer="ball">
+      <p class="q">מי ינחת ראשון?</p>
+      <div class="opts">
+        <button class="opt" data-v="ball">הכדור</button>
+        <button class="opt" data-v="flat">הדף השטוח</button>
+        <button class="opt" data-v="same">ינחתו יחד</button>
+      </div>
+      <div class="reveal" hidden>
+        <span class="verdict"></span>
+        <p>הכדור. לשניהם בדיוק אותו משקל, כי זה אותו דף. ההבדל הוא בצורה: הדף השטוח צריך להזיז הרבה אוויר בדרך למטה, והאוויר דוחף אותו בחזרה. לכוח הזה קוראים <b>גרר</b>.</p>
+      </div>
+    </div>
+    <p class="note">אתגר: הפל את הדף השטוח כשהוא עומד על הצד. מה השתנה?</p>
+    <p>אותו דף, אותו משקל, צורה אחרת מול האוויר. זאת בדיוק <b>אווירודינמיקה</b>: איך הצורה של דבר משנה את מה שהאוויר עושה לו.</p>
+    <button class="done-btn" data-m="1">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 2 -->
+<article class="mission" id="m2" data-m="2">
+  <div class="mission-head"><div class="num">2</div><div><div class="tag">משימה · 5 דקות · דף אחד</div><h2>הגשר שמסרב לעוף</h2></div></div>
+  <div class="stack">
+    <ol class="steps">
+      <li>קפל 3 ס"מ בכל אחד מהצדדים הקצרים של הדף כלפי מטה, כך שיהיו לו שתי רגליים.</li>
+      <li>העמד אותו על השולחן כמו גשר קטן.</li>
+      <li>התכופף עד שהפה שלך בגובה השולחן, ונשוף חזק מתחת לגשר.</li>
+    </ol>
+    <div class="predict" data-answer="down">
+      <p class="q">מה יקרה לגשר?</p>
+      <div class="opts">
+        <button class="opt" data-v="up">יתרומם ויעוף</button>
+        <button class="opt" data-v="down">יימעך למטה</button>
+        <button class="opt" data-v="slide">יחליק מהשולחן</button>
+      </div>
+      <div class="reveal" hidden>
+        <span class="verdict"></span>
+        <p>הגשר נמעך למטה, וככל שתנשוף חזק יותר הוא יישטח יותר. האוויר מתחת לגשר זורם מהר. האוויר מעל הגשר עומד במקום ולוחץ כרגיל. הלחץ מלמעלה גדול מהלחץ מלמטה, אז הגשר נדחף למטה.</p>
+      </div>
+    </div>
+    <div class="rule">כלל המעבדה: אוויר שזורם מהר לוחץ פחות.<small>זה עיקרון ברנולי. תכף תראה אותו בתוך צינור.</small></div>
+    <button class="done-btn" data-m="2">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 3 -->
+<article class="mission" id="m3" data-m="3">
+  <div class="mission-head"><div class="num">3</div><div><div class="tag">משימה · 5 דקות · רצועת נייר</div><h2>הרצועה המרחפת</h2></div></div>
+  <div class="stack">
+    <ol class="steps">
+      <li>קרע מהדף רצועה ברוחב 3 ס"מ לאורך הצד הארוך.</li>
+      <li>החזק את קצה הרצועה בשתי אצבעות, ממש מתחת לשפה התחתונה. היא תתלה כלפי מטה בקשת.</li>
+      <li>נשוף חזק וישר קדימה, מעל הרצועה.</li>
+    </ol>
+    <div class="predict" data-answer="rise">
+      <p class="q">מה תעשה הרצועה?</p>
+      <div class="opts">
+        <button class="opt" data-v="rise">תתרומם</button>
+        <button class="opt" data-v="drop">תיפול עוד יותר</button>
+        <button class="opt" data-v="flap">רק תרעד במקום</button>
+      </div>
+      <div class="reveal" hidden>
+        <span class="verdict"></span>
+        <p>הרצועה מתרוממת ועפה ישר קדימה. האוויר שנשפת נצמד לגב המעוקל של הרצועה ומתעקם יחד איתו. כדי שזרם אוויר יתעקם, הלחץ בצד הפנימי של העיקול חייב להיות נמוך יותר, כמו שמכונית בסיבוב צריכה כוח שמושך אותה פנימה. לחץ נמוך מעל, לחץ רגיל מתחת, והרצועה עולה.</p>
+      </div>
+    </div>
+    <p class="note">שים לב לצורה: גב מעוקל. בדיוק כמו כנף של מטוס.</p>
+    <button class="done-btn" data-m="3">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 4 -->
+<article class="mission" id="m4" data-m="4">
+  <div class="mission-head"><div class="num">4</div><div><div class="tag">משימה · 3 דקות · 2 דפים</div><h2>הדפים שנמשכים זה לזה</h2></div></div>
+  <div class="stack">
+    <ol class="steps">
+      <li>החזק שני דפים בפינות העליונות, דף בכל יד, כך שיתלו מול הפנים שלך במרחק של כ-5 ס"מ זה מזה.</li>
+      <li>נשוף חזק בדיוק לתוך הרווח שביניהם.</li>
+    </ol>
+    <div class="predict" data-answer="together">
+      <p class="q">מה יקרה לדפים?</p>
+      <div class="opts">
+        <button class="opt" data-v="apart">יתרחקו זה מזה</button>
+        <button class="opt" data-v="together">יתקרבו זה לזה</button>
+        <button class="opt" data-v="nothing">לא יקרה כלום</button>
+      </div>
+      <div class="reveal" hidden>
+        <span class="verdict"></span>
+        <p>הם מתקרבים ואפילו נוגעים. היית מצפה שהנשיפה תדחוף אותם הצידה, אבל האוויר ברווח זורם מהר והלחץ שלו יורד. האוויר שבחוץ עומד במקום ולוחץ את הדפים פנימה. מאותה סיבה, ספינות ששטות מהר זו ליד זו נמשכות זו לזו, וקברניטים נזהרים מזה.</p>
+      </div>
+    </div>
+    <button class="done-btn" data-m="4">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 5 -->
+<article class="mission" id="m5" data-m="5">
+  <div class="mission-head"><div class="num">5</div><div><div class="tag">סימולטור · צינור ברנולי</div><h2>למה אוויר מהיר לוחץ פחות?</h2></div></div>
+  <div class="stack">
+    <p>דניאל ברנולי, מתמטיקאי שווייצרי, פרסם את הכלל הזה ב-1738. דמיין שלאוויר יש כיס עם 100 מטבעות של אנרגיה. הוא יכול להוציא אותם על <b>מהירות</b> או על <b>לחיצה</b>. כשהצינור נהיה צר, כל האוויר חייב לעבור בו, אז הוא רץ מהר יותר ומוציא יותר מטבעות על מהירות. נשארים לו פחות מטבעות ללחוץ על הקירות.</p>
+    <div class="sim">
+      <canvas id="venturi" aria-label="סימולציה של אוויר זורם בצינור עם היצרות ושלושה מדי לחץ"></canvas>
+      <div class="controls">
+        <div class="ctl"><label for="squeeze">כמה להצר את האמצע <output id="sqOut">50%</output></label><input type="range" id="squeeze" min="0" max="70" value="50"></div>
+      </div>
+      <div class="readouts">
+        <span class="chip" id="vOut">מהירות באמצע: ×2.0</span>
+        <span class="chip" id="pOut">לחץ באמצע: נמוך</span>
+      </div>
+    </div>
+    <div class="legend"><span><i style="background:var(--high)"></i>לחץ גבוה</span><span><i style="background:var(--low)"></i>לחץ נמוך</span><span>גובה המים בעמודים = כמה חזק האוויר לוחץ</span></div>
+    <ul class="challenge">
+      <li><input type="checkbox" id="c51"><label for="c51">הצר את הצינור עד הסוף. מה קורה לעמוד המים האמצעי?</label></li>
+      <li><input type="checkbox" id="c52"><label for="c52">פתח את הצינור לגמרי. למה כל העמודים שווים עכשיו?</label></li>
+      <li><input type="checkbox" id="c53"><label for="c53">איפה בגשר ממשימה 2 היה &quot;האמצע הצר&quot;?</label></li>
+    </ul>
+    <button class="done-btn" data-m="5">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 6 -->
+<article class="mission" id="m6" data-m="6">
+  <div class="mission-head"><div class="num">6</div><div><div class="tag">סימולטור · מנהרת רוח</div><h2>בתוך כנף</h2></div></div>
+  <div class="stack">
+    <p>זאת מנהרת רוח. האוויר זורם משמאל לימין סביב כנף. אתה שולט ב<b>זווית ההתקפה</b>, כלומר כמה האף של הכנף מורם, וב<b>מהירות</b>.</p>
+    <div class="sim">
+      <canvas id="wing" aria-label="סימולציה של זרימת אוויר סביב כנף עם חיצי עילוי וגרר"></canvas>
+      <div class="controls">
+        <div class="ctl"><label for="aoa">זווית התקפה <output id="aoaOut">6°</output></label><input type="range" id="aoa" min="-4" max="22" step="1" value="6"></div>
+        <div class="ctl"><label for="spd">מהירות <output id="spdOut">×1.5</output></label><input type="range" id="spd" min="1" max="3" step="0.1" value="1.5"></div>
+      </div>
+      <div class="readouts" style="flex-direction:column;align-items:stretch">
+        <div class="meter"><span>עילוי</span><div class="track"><div class="fill" id="liftBar" style="background:var(--ok)"></div></div><output id="liftOut">0%</output></div>
+        <div class="meter"><span>גרר</span><div class="track"><div class="fill" id="dragBar" style="background:var(--low)"></div></div><output id="dragOut">0%</output></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span class="chip" id="wingState">טיסה רגילה</span><button class="btn alt" id="race">שחרר מרוץ חלקיקים</button></div>
+      </div>
+    </div>
+    <ul class="challenge">
+      <li><input type="checkbox" id="c61"><label for="c61">מצא את הזווית שנותנת הכי הרבה עילוי. מה קורה אם עולים עוד מעליה?</label></li>
+      <li><input type="checkbox" id="c62"><label for="c62">הכפל את המהירות מ-×1.5 ל-×3. פי כמה גדל העילוי? (רמז: לא פי 2)</label></li>
+      <li><input type="checkbox" id="c63"><label for="c63">הסתכל על האוויר שיוצא מאחורי הכנף. לאיזה כיוון הוא הולך?</label></li>
+    </ul>
+    <div class="myth">
+      <span class="stampx">מיתוס</span>
+      <p>בהרבה ספרים כתוב שהאוויר מעל הכנף עובר דרך ארוכה יותר, ולכן חייב להגיע לסוף הכנף באותו זמן כמו האוויר שמתחת. <b>זה לא נכון.</b> אף חלקיק לא מחכה לחבר שלו. לחץ על &quot;שחרר מרוץ חלקיקים&quot;: החלקיקים הצהובים מעל הכנף מגיעים ראשונים, הרבה לפני הכחולים שמתחת.</p>
+      <p><b>אז מה באמת מרים את הכנף?</b> שני צדדים של אותו סיפור. הכנף המוטה והמעוקלת מסובבת את האוויר כלפי מטה, ולפי ניוטון, אם הכנף דוחפת אוויר למטה, האוויר דוחף אותה למעלה. וכדי לסובב את האוויר, הלחץ מעל הכנף יורד והאוויר שם זורם מהר יותר, בדיוק כמו בצינור של ברנולי.</p>
+    </div>
+    <h3 style="font-size:24px;margin-top:8px">ארבעת הכוחות</h3>
+    <div class="forces">
+      <svg viewBox="0 0 380 220" role="img" aria-label="מטוס עם ארבעה חיצי כוח">
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="context-stroke"/></marker></defs>
+        <path d="M95 112 L250 96 L292 70 L306 70 L298 104 L285 114 L250 122 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M160 112 L215 112 L190 140 L172 140 Z" fill="var(--grid)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>
+        <g class="farrow" data-f="lift"><line x1="190" y1="98" x2="190" y2="22" stroke="var(--ok)" stroke-width="6" marker-end="url(#ah)"/><text x="200" y="36" fill="var(--ok)" font-family="Secular One, sans-serif" font-size="18">עילוי</text></g>
+        <g class="farrow" data-f="weight"><line x1="190" y1="128" x2="190" y2="204" stroke="var(--ink)" stroke-width="6" marker-end="url(#ah)"/><text x="200" y="200" fill="var(--ink)" font-family="Secular One, sans-serif" font-size="18">משקל</text></g>
+        <g class="farrow" data-f="thrust"><line x1="92" y1="112" x2="18" y2="112" stroke="var(--high)" stroke-width="6" marker-end="url(#ah)"/><text x="30" y="100" fill="var(--high)" font-family="Secular One, sans-serif" font-size="18">דחף</text></g>
+        <g class="farrow" data-f="drag"><line x1="304" y1="104" x2="366" y2="104" stroke="var(--low)" stroke-width="6" marker-end="url(#ah)"/><text x="318" y="92" fill="var(--low)" font-family="Secular One, sans-serif" font-size="18">גרר</text></g>
+      </svg>
+      <div class="force-list" id="forceList">
+        <button class="force" data-f="lift"><b style="color:var(--ok)">עילוי</b><span>הכנפיים מסובבות אוויר למטה ונדחפות למעלה. במטוס נייר: הכנפיים שקיפלת.</span></button>
+        <button class="force" data-f="weight"><b>משקל</b><span>כדור הארץ מושך הכול למטה. במטוס נייר: המשקל של הדף.</span></button>
+        <button class="force" data-f="thrust"><b style="color:var(--high)">דחף</b><span>מה שמניע קדימה. במטוס אמיתי המנועים, במטוס נייר היד שלך.</span></button>
+        <button class="force" data-f="drag"><b style="color:var(--low)">גרר</b><span>האוויר שמתנגד לתנועה. זה מה שעצר את הדף השטוח במשימה 1.</span></button>
+      </div>
+    </div>
+    <button class="done-btn" data-m="6">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 7 -->
+<article class="mission" id="m7" data-m="7">
+  <div class="mission-head"><div class="num">7</div><div><div class="tag">ניסוי הבית הגדול · 20 דקות · דף אחד</div><h2>מטוס הניסוי</h2></div></div>
+  <div class="stack">
+    <p>מדענים לא מנחשים. הם משנים <b>דבר אחד בלבד</b>, משאירים את כל השאר זהה, ומודדים. היום תבדוק איך המדפים בקצה הכנף משנים את הטיסה.</p>
+    <h3 style="font-size:22px">שלב א׳: מקפלים</h3>
+    <div class="folds">
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true"><rect x="12" y="8" width="96" height="144" fill="var(--card)" stroke="var(--ink)" stroke-width="2"/><line x1="60" y1="8" x2="60" y2="152" stroke="var(--high)" stroke-width="2" stroke-dasharray="5 4"/></svg><p><b>1.</b> קפל את הדף לאורך, בדיוק באמצע, ופתח שוב.</p></div>
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true"><path d="M12 56 L60 8 L108 56 L108 152 L12 152 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M12 56 L60 8 L60 56 Z M108 56 L60 8 L60 56 Z" fill="var(--grid)" stroke="var(--ink)" stroke-width="1.5"/><line x1="60" y1="56" x2="60" y2="152" stroke="var(--high)" stroke-width="2" stroke-dasharray="5 4"/></svg><p><b>2.</b> קפל את שתי הפינות העליונות אל הקו האמצעי.</p></div>
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true"><path d="M12 100 L60 8 L108 100 L108 152 L12 152 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M12 100 L60 8 L60 100 Z M108 100 L60 8 L60 100 Z" fill="var(--grid)" stroke="var(--ink)" stroke-width="1.5"/></svg><p><b>3.</b> קפל שוב את השוליים המשופעים אל הקו האמצעי.</p></div>
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true"><path d="M10 92 L110 62 L110 112 L40 112 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M10 92 L110 62" stroke="var(--ink)" stroke-width="1.5"/></svg><p><b>4.</b> קפל את כל המטוס לאורך הקו האמצעי, כשהקפלים בחוץ.</p></div>
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true"><path d="M60 8 L14 148 L60 136 L106 148 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><line x1="60" y1="8" x2="60" y2="136" stroke="var(--ink)" stroke-width="2"/></svg><p><b>5.</b> קפל כל כנף כלפי מטה, כך שהשפה שלה תשב על תחתית הגוף.</p></div>
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true"><path d="M60 8 L14 148 L60 136 L106 148 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><line x1="60" y1="8" x2="60" y2="136" stroke="var(--ink)" stroke-width="2"/><path d="M18 136 L40 130 L40 142 L14 148 Z M102 136 L80 130 L80 142 L106 148 Z" fill="var(--signal)" stroke="var(--ink)" stroke-width="1.5"/></svg><p><b>6.</b> המדפים: 1 ס"מ בקצה האחורי של כל כנף. כאן תכופף אותם.</p></div>
+    </div>
+    <h3 style="font-size:22px">שלב ב׳: חוקי הניסוי</h3>
+    <ul class="challenge">
+      <li><input type="checkbox" id="r1"><label for="r1">זורקים תמיד מאותה נקודה, באותו גובה ובאותו כוח.</label></li>
+      <li><input type="checkbox" id="r2"><label for="r2">מודדים בצעדים: עקב צמוד לבוהן, עד המקום שבו המטוס נגע ברצפה.</label></li>
+      <li><input type="checkbox" id="r3"><label for="r3">3 זריקות לכל מצב, ולוקחים ממוצע. זריקה אחת יכולה להיות מזל.</label></li>
+    </ul>
+    <div class="predict" data-answer="any" id="planePredict">
+      <p class="q">איזה מצב יטוס הכי רחוק?</p>
+      <div class="opts">
+        <button class="opt" data-v="flat">מדפים ישרים</button>
+        <button class="opt" data-v="up">מדפים קצת למעלה</button>
+        <button class="opt" data-v="down">מדפים קצת למטה</button>
+      </div>
+      <div class="reveal" hidden><span class="verdict"></span><p>רשמת ניבוי. עכשיו רק המדידות יכריעו.</p></div>
+    </div>
+    <h3 style="font-size:22px">שלב ג׳: יומן טיסות</h3>
+    <div class="log-wrap">
+      <table class="log">
+        <thead><tr><th>מצב המדפים</th><th>זריקה 1</th><th>זריקה 2</th><th>זריקה 3</th><th>ממוצע (צעדים)</th></tr></thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+    <div class="bars" id="bars"></div>
+    <p class="empty" id="logMsg">מלא את המדידות, והגרף יראה מי ניצח.</p>
+    <details>
+      <summary>מה אמור לקרות? (לפתוח רק אחרי הניסוי)</summary>
+      <p>המדפים עובדים כמו ההגאים בזנב של מטוס אמיתי. <b>מדפים למעלה:</b> האוויר דוחף את הקצה האחורי למטה, האף עולה וזווית ההתקפה גדלה. קצת זה מצוין לגלישה ארוכה. יותר מדי והמטוס מטפס, מאבד מהירות ונופל, בדיוק כמו הסטול שראית במנהרת הרוח. <b>מדפים למטה:</b> האף יורד והמטוס צולל לרצפה. אם התוצאות שלך יצאו אחרת, זה בסדר גמור. זה מה שהמדידות אמרו, וזה מה שחשוב.</p>
+    </details>
+    <p class="note">בונוס: כופף מדף אחד למעלה ואחד למטה. לאן המטוס פונה?</p>
+    <button class="done-btn" data-m="7">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- 8 -->
+<article class="mission" id="m8" data-m="8">
+  <div class="mission-head"><div class="num">8</div><div><div class="tag">משימת בונוס · 10 דקות · דף אחד</div><h2>המסוק הנופל</h2></div></div>
+  <div class="stack">
+    <p>לא צריך סרגל או מספריים: מודדים בקיפולים, וקורעים רק לאורך קו קיפול.</p>
+    <div class="rule">הטריק לקריעה ישרה<small>קפל ולחץ חזק על הקיפול עם הציפורן. קפל לצד השני ובחזרה, פעמיים. עכשיו החזק את הדף צמוד לקו משני צדדיו וקרע לאט, סנטימטר אחרי סנטימטר.</small></div>
+    <div class="folds">
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true">
+        <rect x="12" y="8" width="96" height="144" fill="var(--card)" stroke="var(--ink)" stroke-width="2"/>
+        <rect x="12" y="8" width="24" height="144" fill="var(--signal)" fill-opacity=".55"/>
+        <g stroke="var(--high)" stroke-width="2" stroke-dasharray="5 4"><line x1="36" y1="8" x2="36" y2="152"/><line x1="60" y1="8" x2="60" y2="152"/><line x1="84" y1="8" x2="84" y2="152"/></g>
+        <rect x="12" y="8" width="96" height="144" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      </svg><p><b>1.</b> קפל את הדף לאורך לחצי, ושוב לחצי. פתח: יש 4 פסים ארוכים. קרע פס אחד לאורך הקיפול. הוא ברוחב של כ-5 ס"מ.</p></div>
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true">
+        <rect x="48" y="8" width="24" height="72" fill="var(--signal)" fill-opacity=".55" stroke="var(--ink)" stroke-width="2"/>
+        <rect x="48" y="80" width="24" height="72" fill="var(--grid)" stroke="var(--ink)" stroke-width="2"/>
+        <line x1="36" y1="80" x2="84" y2="80" stroke="var(--low)" stroke-width="2.5" stroke-dasharray="5 4"/>
+        <text x="100" y="84" text-anchor="middle" font-family="Assistant, sans-serif" font-size="12" font-weight="700" fill="var(--low)">קורעים</text>
+        <text x="60" y="120" text-anchor="middle" font-family="Assistant, sans-serif" font-size="10" fill="var(--ink-soft)" transform="rotate(-90 60 120)">לא צריך</text>
+      </svg><p><b>2.</b> קפל את הפס לחצי לרוחב וקרע לאורך הקיפול. משתמשים בחצי אחד: חתיכה של כ-5 על 15 ס"מ.</p></div>
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true">
+        <rect x="40" y="16" width="40" height="128" fill="var(--card)" stroke="var(--ink)" stroke-width="2"/>
+        <line x1="60" y1="74" x2="60" y2="144" stroke="var(--ink-soft)" stroke-width="1" stroke-dasharray="2 4"/>
+        <line x1="60" y1="16" x2="60" y2="74" stroke="var(--low)" stroke-width="3" stroke-dasharray="6 4"/>
+        <circle cx="60" cy="74" r="4" fill="var(--low)"/>
+        <text x="100" y="44" text-anchor="middle" font-family="Assistant, sans-serif" font-size="12" font-weight="700" fill="var(--low)">קורעים</text>
+        <text x="100" y="78" text-anchor="middle" font-family="Assistant, sans-serif" font-size="12" font-weight="700" fill="var(--ink)">עוצרים</text>
+        <text x="20" y="80" text-anchor="middle" font-family="Assistant, sans-serif" font-size="11" fill="var(--ink-soft)">15 ס"מ</text>
+        <text x="60" y="11" text-anchor="middle" font-family="Assistant, sans-serif" font-size="11" fill="var(--ink-soft)">5 ס"מ</text>
+      </svg><p><b>3.</b> קפל את החתיכה לאורך לחצי ופתח. קרע מהקצה העליון לאורך הקו, ועצור קצת לפני האמצע של החתיכה.</p></div>
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true">
+        <defs><marker id="ah8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="var(--high)"/></marker></defs>
+        <rect x="40" y="74" width="40" height="70" fill="var(--card)" stroke="var(--ink)" stroke-width="2"/>
+        <rect x="40" y="16" width="19" height="58" fill="var(--signal)" fill-opacity=".55" stroke="var(--ink)" stroke-width="2"/>
+        <rect x="61" y="16" width="19" height="58" fill="var(--grid)" stroke="var(--ink)" stroke-width="2"/>
+        <line x1="36" y1="74" x2="84" y2="74" stroke="var(--high)" stroke-width="2" stroke-dasharray="4 3"/>
+        <text x="49.5" y="50" text-anchor="middle" font-family="Secular One, sans-serif" font-size="16" fill="var(--ink)">א</text>
+        <text x="70.5" y="50" text-anchor="middle" font-family="Secular One, sans-serif" font-size="16" fill="var(--ink)">ב</text>
+        <path d="M44 22 C 18 24, 10 46, 16 68" fill="none" stroke="var(--high)" stroke-width="2.5" marker-end="url(#ah8)"/>
+        <path d="M76 22 C 102 24, 110 46, 104 68" fill="none" stroke="var(--high)" stroke-width="2.5" stroke-dasharray="4 3" marker-end="url(#ah8)"/>
+        <text x="16" y="86" text-anchor="middle" font-family="Assistant, sans-serif" font-size="11" font-weight="700" fill="var(--high)">אליך</text>
+        <text x="104" y="86" text-anchor="middle" font-family="Assistant, sans-serif" font-size="11" font-weight="700" fill="var(--high)">ממך</text>
+      </svg><p><b>4.</b> בדיוק בנקודה שבה עצרת לקרוע: קפל את להב א׳ <b>אליך</b> ואת להב ב׳ <b>ממך</b>.</p></div>
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true">
+        <rect x="10" y="56" width="47" height="6" fill="var(--signal)" stroke="var(--ink)" stroke-width="1.5"/>
+        <rect x="63" y="56" width="47" height="6" fill="var(--grid)" stroke="var(--ink)" stroke-width="1.5"/>
+        <rect x="57" y="56" width="6" height="88" fill="var(--card)" stroke="var(--ink)" stroke-width="1.5"/>
+        <text x="33" y="48" text-anchor="middle" font-family="Secular One, sans-serif" font-size="15" fill="var(--ink)">א</text>
+        <text x="87" y="48" text-anchor="middle" font-family="Secular One, sans-serif" font-size="15" fill="var(--ink)">ב</text>
+        <text x="60" y="20" text-anchor="middle" font-family="Assistant, sans-serif" font-size="11" fill="var(--ink-soft)">מבט מהצד</text>
+      </svg><p><b>5.</b> כך זה נראה מהצד: צורת T. שני הלהבים עומדים כמעט ישר לצדדים, אחד לכל כיוון.</p></div>
+      <div class="fold"><svg viewBox="0 0 120 160" aria-hidden="true">
+        <defs><marker id="ah9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="var(--high)"/></marker></defs>
+        <path d="M40 40 L24 30 L24 22 L40 32 Z" fill="var(--signal)" fill-opacity=".55" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M80 40 L96 30 L96 22 L80 32 Z" fill="var(--grid)" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/>
+        <rect x="40" y="36" width="40" height="88" fill="var(--card)" stroke="var(--ink)" stroke-width="2"/>
+        <rect x="40" y="124" width="40" height="10" fill="var(--signal)" stroke="var(--ink)" stroke-width="2"/>
+        <rect x="40" y="134" width="40" height="10" fill="var(--signal)" stroke="var(--ink)" stroke-width="2"/>
+        <path d="M92 146 C 104 140, 104 126, 90 122" fill="none" stroke="var(--high)" stroke-width="2.5" marker-end="url(#ah9)"/>
+        <text x="20" y="134" text-anchor="middle" font-family="Assistant, sans-serif" font-size="11" font-weight="700" fill="var(--ink)">×2</text>
+      </svg><p><b>6.</b> קפל את התחתית למעלה ברוחב של אצבע, ושוב פעם. המשקל בתחתית עוזר למסוק ליפול ישר ולהסתובב.</p></div>
+    </div>
+    <div class="rule">7. משגרים<small>עמוד על כיסא יציב (עם מבוגר לידך) או פשוט הרם את היד גבוה. החזק את המסוק בתחתית כשהלהבים למעלה, ושחרר.</small></div>
+    <details>
+      <summary>זה לא עובד? בדוק כאן</summary>
+      <ul style="margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px">
+        <li><b>לא מסתובב:</b> בדוק שהלהבים מקופלים לכיוונים הפוכים, אחד אליך ואחד ממך, ולא שניהם לאותו צד.</li>
+        <li><b>נופל על הצד או מתהפך:</b> הוסף עוד קיפול משקל בתחתית.</li>
+        <li><b>הקרע המשיך רחוק מדי:</b> זה בסדר. קפל את הלהבים בנקודה שבה הקרע נגמר, והגוף פשוט יהיה קצר יותר.</li>
+        <li><b>נופל מהר מדי:</b> שחרר מגובה רב יותר, וודא שהלהבים פתוחים ולא מקופלים כלפי מטה.</li>
+      </ul>
+    </details>
+    <div class="predict" data-answer="spin">
+      <p class="q">מה יעשה המסוק כשתשחרר אותו?</p>
+      <div class="opts">
+        <button class="opt" data-v="drop">ייפול ישר כמו אבן</button>
+        <button class="opt" data-v="spin">יסתובב וירד לאט</button>
+        <button class="opt" data-v="float">ירחף במקום</button>
+      </div>
+      <div class="reveal" hidden>
+        <span class="verdict"></span>
+        <p>הוא מסתובב ויורד לאט. האוויר פוגע בלהבים המוטים ומוסט הצידה. האוויר נדחף לצד אחד, והלהב נדחף לצד השני, אז המסוק מסתובב. הלהבים המסתובבים פוגשים כל הזמן אוויר חדש ויוצרים עילוי, כמו כנפיים קטנות, וזה מאט את הנפילה. כך בדיוק נופלים זרעי מייפל.</p>
+      </div>
+    </div>
+    <ul class="challenge">
+      <li><input type="checkbox" id="c81"><label for="c81">החלף את כיוון הלהבים. לאיזה כיוון הוא מסתובב עכשיו?</label></li>
+      <li><input type="checkbox" id="c82"><label for="c82">קצר את הלהבים בקיפול. נופל מהר יותר או לאט יותר?</label></li>
+      <li><input type="checkbox" id="c83"><label for="c83">הוסף עוד קיפול משקל. מה השתנה?</label></li>
+    </ul>
+    <button class="done-btn" data-m="8">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<!-- final -->
+<section class="mission" id="final" style="border-style:dashed">
+  <div class="mission-head"><div class="num" style="background:var(--signal);color:var(--signal-ink)">★</div><div><div class="tag">מבחן הטייס</div><h2>4 שאלות לתעודה</h2></div></div>
+  <div class="quiz" id="quiz"></div>
+  <div class="namebox" style="margin-top:20px"><label for="pilotName"><b>השם שלך לתעודה:</b></label><input id="pilotName" type="text" placeholder="הקלד כאן" maxlength="30"></div>
+  <div class="cert" style="margin-top:16px">
+    <div class="seal">טייס<br>ניסוי</div>
+    <h3>תעודת טייס ניסוי</h3>
+    <div class="who" id="certName">&nbsp;</div>
+    <p id="certText">השלים 0 מתוך 8 משימות ו-0 מתוך 4 שאלות במעבדת הנייר המעופף.</p>
+    <p style="color:var(--ink-soft);font-size:15px" id="certDate"></p>
+  </div>
+</section>
+
+<details class="adult" id="adult">
+  <summary>למבוגר שמלווה</summary>
+  <ul>
+    <li><b>זמן:</b> כשעה. משימות 1–4 כ-20 דקות, הסימולטורים כ-15, מטוס הניסוי כ-20, והמסוק כבונוס. אפשר לחלק לשני מפגשים.</li>
+    <li><b>ניבוי לפני כל ניסוי:</b> בקשו ממנו להגיד את הניבוי בקול, ולשאול &quot;מה ראית?&quot; לפני &quot;למה?&quot;. ההפתעה היא מה שגורם לזה להיזכר.</li>
+    <li><b>דיוק פיזיקלי:</b> ההסבר של &quot;זמן מעבר שווה&quot; מעל ומתחת לכנף שגוי. עילוי נובע מכך שהכנף מסיטה אוויר כלפי מטה (ניוטון), וזה בא יחד עם לחץ נמוך מעל הכנף (ברנולי). אלה שני תיאורים של אותה תופעה, לא הסברים מתחרים.</li>
+    <li><b>הרצועה ושני הדפים:</b> חלק מהאפקט נובע מכך שזרם האוויר נצמד למשטח מעוקל ומתעקם איתו. ההסבר במשימה 3 מנוסח כך בכוונה, ולא רק &quot;אוויר מהיר = לחץ נמוך&quot;.</li>
+    <li><b>הסימולטורים</b> הם המחשה ולא חישוב מדויק. הם כן שומרים על היחסים הנכונים: עילוי גדל עם ריבוע המהירות, ועולה עם הזווית עד סטול בסביבות 15°.</li>
+  </ul>
+</details>
+
+</main>
+<footer class="wrap">ההתקדמות נשמרת בדפדפן הזה בלבד.</footer>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('fpl:'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('fpl:'+k,JSON.stringify(v))}catch(e){}}};
+const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- progress ---------- */
+const titles=['האוויר הוא לא כלום','הגשר','הרצועה','שני הדפים','צינור ברנולי','בתוך כנף','מטוס הניסוי','המסוק'];
+let done=new Set(store.get('done',[]));
+const stampsEl=$('#stamps'), mapEl=$('#map');
+titles.forEach((t,i)=>{
+  const a=document.createElement('a');a.className='stamp';a.href='#m'+(i+1);a.textContent=i+1;a.title=t;stampsEl.appendChild(a);
+  const m=document.createElement('a');m.href='#m'+(i+1);m.innerHTML='<i>'+(i+1)+'</i>'+t;mapEl.appendChild(m);
+});
+function renderProgress(){
+  [...stampsEl.children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
+  [...mapEl.children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
+  $$('.mission[data-m]').forEach(m=>{const n=+m.dataset.m;m.classList.toggle('done',done.has(n));const b=m.querySelector('.done-btn');if(b)b.textContent=done.has(n)?'בוצע! (לחץ לביטול)':'סמן משימה כבוצעה'});
+  $('#count').textContent=done.size+' / 8';
+  renderCert();
+}
+$$('.done-btn').forEach(b=>b.addEventListener('click',()=>{const n=+b.dataset.m;done.has(n)?done.delete(n):done.add(n);store.set('done',[...done]);renderProgress()}));
+
+/* ---------- predictions ---------- */
+$$('.predict').forEach(p=>{
+  const ans=p.dataset.answer, rev=p.querySelector('.reveal'), ver=p.querySelector('.verdict');
+  p.querySelectorAll('.opt').forEach(o=>o.addEventListener('click',()=>{
+    p.querySelectorAll('.opt').forEach(x=>x.classList.remove('picked','right'));
+    o.classList.add('picked');p.classList.add('answered');
+    if(ans==='any'){ver.textContent='הניבוי שלך: '+o.textContent;ver.className='verdict good';}
+    else{
+      const r=p.querySelector('.opt[data-v="'+ans+'"]');r.classList.add('right');
+      if(o===r){ver.textContent='ניבאת נכון!';ver.className='verdict good'}
+      else{ver.textContent='הפתעה! עכשיו נסה ובדוק בעצמך.';ver.className='verdict surprise'}
+    }
+    rev.hidden=false;
+  }));
+});
+
+/* ---------- checklists remember ---------- */
+const checks=store.get('checks',{});
+$$('.challenge input').forEach(c=>{c.checked=!!checks[c.id];c.addEventListener('change',()=>{checks[c.id]=c.checked;store.set('checks',checks)})});
+
+/* ---------- forces ---------- */
+function pickForce(f){$$('.force').forEach(b=>b.classList.toggle('on',b.dataset.f===f));$$('.farrow').forEach(g=>g.style.opacity=(!f||g.dataset.f===f)?1:.2)}
+$$('.force').forEach(b=>b.addEventListener('click',()=>pickForce(b.classList.contains('on')?null:b.dataset.f)));
+$$('.farrow').forEach(g=>{g.style.cursor='pointer';g.addEventListener('click',()=>pickForce(g.dataset.f))});
+
+/* ---------- canvas helper ---------- */
+function setup(cv,onResize){
+  const ctx=cv.getContext('2d');const s={ctx,W:0,H:0,visible:true};
+  function rs(){const d=window.devicePixelRatio||1;s.W=cv.clientWidth;s.H=cv.clientHeight;cv.width=Math.round(s.W*d);cv.height=Math.round(s.H*d);ctx.setTransform(d,0,0,d,0,0);onResize&&onResize(s)}
+  rs();window.addEventListener('resize',rs);
+  if('IntersectionObserver' in window){new IntersectionObserver(e=>{s.visible=e[0].isIntersecting}).observe(cv)}
+  return s;
+}
+function arrow(ctx,x1,y1,x2,y2,col,w){
+  const a=Math.atan2(y2-y1,x2-x1),h=Math.min(14,Math.hypot(x2-x1,y2-y1)*.6);
+  ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=w;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2-Math.cos(a)*h*.6,y2-Math.sin(a)*h*.6);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-h*Math.cos(a-.45),y2-h*Math.sin(a-.45));ctx.lineTo(x2-h*Math.cos(a+.45),y2-h*Math.sin(a+.45));ctx.closePath();ctx.fill();
+}
+
+/* ---------- venturi ---------- */
+(function(){
+  const cv=$('#venturi'),sl=$('#squeeze');
+  const S=setup(cv);const ctx=S.ctx;
+  const P=[];for(let i=0;i<170;i++)P.push({x:Math.random(),s:Math.random()*1.8-.9});
+  const gauges=[.14,.5,.86];let gH=[1,1,1];
+  const half=(x,hn)=>{if(x<.28||x>.72)return 1;const t=(x-.28)/.44,k=(1-Math.cos(t*2*Math.PI))/2;return 1-(1-hn)*k};
+  let last=performance.now();
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000);last=now;
+    if(S.visible){
+      const W=S.W,H=S.H,hn=1-sl.value/100,cy=H*.7,hp=Math.min(H*.2,60);
+      const rmax=1/.3,pf=x=>{const r=1/half(x,hn);return 1-.85*(r*r-1)/(rmax*rmax-1)};
+      ctx.clearRect(0,0,W,H);
+      const hi=tok('--high'),lo=tok('--low'),ink=tok('--ink'),soft=tok('--ink-soft'),card=tok('--card');
+      // pressure tint
+      for(let px=0;px<W;px+=3){const x=px/W,h=half(x,hn)*hp,p=pf(x);
+        ctx.globalAlpha=.10+.22*p;ctx.fillStyle=hi;ctx.fillRect(px,cy-h,3,2*h);
+        ctx.globalAlpha=.40*(1-p);ctx.fillStyle=lo;ctx.fillRect(px,cy-h,3,2*h)}
+      ctx.globalAlpha=1;
+      // gauges
+      const gTop=12,gMax=cy-hp-gTop-6;
+      gauges.forEach((g,i)=>{const x=g*W,h=half(g,hn)*hp,target=pf(g);gH[i]+=(target-gH[i])*Math.min(1,dt*4);
+        ctx.fillStyle=card;ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.fillRect(x-9,gTop,18,cy-h-gTop);ctx.strokeRect(x-9,gTop,18,cy-h-gTop);
+        const wh=gMax*gH[i];ctx.fillStyle=hi;ctx.globalAlpha=.85;ctx.fillRect(x-7,cy-h-wh,14,wh);ctx.globalAlpha=1;
+        ctx.fillStyle=ink;ctx.font='700 15px Assistant, sans-serif';ctx.textAlign='center';ctx.fillText(['א','ב','ג'][i],x+22,gTop+14)});
+      // walls
+      ctx.strokeStyle=ink;ctx.lineWidth=3;
+      [-1,1].forEach(sg=>{ctx.beginPath();for(let px=0;px<=W;px+=2){const y=cy+sg*half(px/W,hn)*hp;px?ctx.lineTo(px,y):ctx.moveTo(px,y)}ctx.stroke()});
+      // particles
+      const v0=.11;ctx.strokeStyle=ink;ctx.lineWidth=1.6;ctx.globalAlpha=.75;
+      P.forEach(p=>{const h=half(p.x,hn),v=v0/h;p.x+=v*dt*(reduce?.4:1);if(p.x>1.02){p.x=-.02;p.s=Math.random()*1.8-.9}
+        const X=p.x*W,Y=cy+p.s*h*hp,L=v*W*.07;ctx.beginPath();ctx.moveTo(X-L,Y);ctx.lineTo(X,Y);ctx.stroke()});
+      ctx.globalAlpha=1;
+      $('#sqOut').textContent=sl.value+'%';
+      const r=1/hn,pm=pf(.5);
+      $('#vOut').textContent='מהירות באמצע: ×'+r.toFixed(1);
+      $('#pOut').textContent='לחץ באמצע: '+Math.round(pm*100)+'% מהקצוות';
+      $('#pOut').className='chip'+(pm<.5?' warn':'');
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* ---------- wing tunnel ---------- */
+(function(){
+  const cv=$('#wing'),aIn=$('#aoa'),vIn=$('#spd');
+  let cx,cy,c,top=[],bot=[],lastA=null,teX=0,teY=0,P=[];
+  function newP(x,H){return{x,d0:(Math.random()*2-1)*H*.5,h:[],race:0}}
+  function init(s){P=[];for(let i=0;i<240;i++)P.push(newP(Math.random()*s.W,s.H))}
+  const S=setup(cv,s=>{cx=s.W*.47;cy=s.H*.5;c=Math.min(s.W*.42,300);lastA=null;init(s)});
+  const ctx=S.ctx;
+  function foil(a){
+    const th=a*Math.PI/180,co=Math.cos(th),si=Math.sin(th),up=[],lo=[];
+    for(let i=0;i<=60;i++){const t=i/60,x=(1-Math.cos(t*Math.PI))/2;
+      const yt=5*.12*(.2969*Math.sqrt(x)-.126*x-.3516*x*x+.2843*x**3-.1015*x**4);
+      const yc=x<.4?.04*(2*.4*x-x*x)/.16:.04*((1-.8)+.8*x-x*x)/.36;
+      const u=(x-.5)*c;
+      [[yc+yt,up],[yc-yt,lo]].forEach(([y,arr])=>{const yy=-y*c;arr.push([cx+u*co-yy*si,cy+u*si+yy*co])});
+    }
+    return{up,lo,poly:up.concat(lo.slice().reverse())};
+  }
+  let F;
+  function raster(a){F=foil(a);top=[];bot=[];const pts=F.poly;
+    for(let i=0;i<pts.length;i++){const[a1,b1]=pts[i],[a2,b2]=pts[(i+1)%pts.length];
+      for(let k=0;k<=8;k++){const x=a1+(a2-a1)*k/8,y=b1+(b2-b1)*k/8,xi=Math.round(x);
+        if(top[xi]===undefined||y<top[xi])top[xi]=y;if(bot[xi]===undefined||y>bot[xi])bot[xi]=y}}
+    const te=F.up[F.up.length-1];teX=te[0];teY=te[1];
+  }
+  const CLof=a=>a<=14?.11*a:Math.max(.75,1.54-.09*(a-14));
+  let last=performance.now(),T=0;
+  $('#race').addEventListener('click',()=>{
+    const x0=cx-c*.95;
+    for(let i=0;i<14;i++){const side=i%2?1:-1,d=side*(6+Math.floor(i/2)*7);P.push({x:x0,d0:d,h:[],race:side<0?1:2})}
+  });
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000);last=now;T+=dt;
+    if(S.visible){
+      const W=S.W,H=S.H,a=+aIn.value,v=+vIn.value;
+      if(a!==lastA){raster(a);lastA=a}
+      const CL=CLof(a),stall=a>14,k=stall?(a-14)/8:0;
+      const lift=CL*v*v,drag=(.03+.04*CL*CL+(stall?.04*(a-14):0))*v*v;
+      const liftN=lift/(1.54*9),dragN=Math.min(1,drag/3.4);
+      const ink=tok('--ink'),soft=tok('--ink-soft'),card=tok('--card'),hi=tok('--high'),lo=tok('--low'),ok=tok('--ok'),sig=tok('--signal');
+      ctx.clearRect(0,0,W,H);
+      const base=W*.16*(.55+.3*v)*(reduce?.5:1),Dw=CL*16*(.6+.4*v);
+      // particles
+      P.forEach(p=>{
+        const dx=(p.x-cx)/c,near=Math.exp(-(((p.d0)/(c*.55))**2)),bell=Math.exp(-((dx/.55)**2));
+        const sgn=p.d0<0?1:-.4;let m=1+.9*CL*bell*near*sgn;
+        if(stall&&p.d0<0&&dx>-.1&&dx<1.6&&-p.d0<c*.4)m*=1-.45*k;
+        p.x+=base*Math.max(.2,m)*dt;
+        let y=cy+p.d0+Dw*near/(1+Math.exp(-(dx+.1)*5))-Dw*.35*near*Math.exp(-(((dx+.75)/.3)**2));
+        const xi=Math.round(p.x);
+        if(top[xi]!==undefined){const clr=2+Math.abs(p.d0)*.3;if(p.d0<0)y=Math.min(y,top[xi]-clr);else y=Math.max(y,bot[xi]+clr)}
+        if(stall&&p.d0<0&&dx>0&&dx<2.4&&-p.d0<c*.4){const fade=Math.min(1,dx*2)*Math.exp(-dx*.4);y+=Math.sin(T*7+p.x*.06+p.d0*.3)*k*14*fade-k*8*fade}
+        p.h.push([p.x,y]);if(p.h.length>(p.race?10:7))p.h.shift();
+        if(p.x>W+20){if(p.race){p.dead=1}else{p.x=-20-Math.random()*40;p.d0=(Math.random()*2-1)*H*.5;p.h=[]}}
+      });
+      P=P.filter(p=>!p.dead);
+      ctx.lineCap='round';
+      P.forEach(p=>{if(p.h.length<2)return;
+        ctx.strokeStyle=p.race===1?sig:p.race===2?hi:soft;ctx.lineWidth=p.race?4:1.5;ctx.globalAlpha=p.race?1:.7;
+        ctx.beginPath();p.h.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke()});
+      ctx.globalAlpha=1;
+      // trailing edge marker
+      ctx.setLineDash([4,5]);ctx.strokeStyle=soft;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(teX,teY-70);ctx.lineTo(teX,teY+70);ctx.stroke();ctx.setLineDash([]);
+      // wing
+      ctx.beginPath();F.poly.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();
+      ctx.fillStyle=card;ctx.fill();ctx.strokeStyle=ink;ctx.lineWidth=2.5;ctx.stroke();
+      // arrows
+      const ax=cx-c*.08,ay=cy-4;
+      const LL=12+Math.abs(liftN)*Math.min(130,H*.42);
+      arrow(ctx,ax,ay,ax,ay-Math.sign(lift||1)*LL,ok,5);
+      arrow(ctx,teX+6,teY,teX+10+dragN*Math.min(150,W*.25),teY,lo,5);
+      ctx.font='700 15px Assistant, sans-serif';ctx.textAlign='center';
+      ctx.fillStyle=ok;ctx.fillText('עילוי',ax+28,ay-Math.sign(lift||1)*LL+(lift>=0?12:-4));
+      ctx.fillStyle=lo;ctx.fillText('גרר',teX+24+dragN*Math.min(150,W*.25),teY-10);
+      ctx.fillStyle=soft;ctx.textAlign='left';ctx.fillText('רוח →',10,22);
+      // dom
+      $('#aoaOut').textContent=a+'°';$('#spdOut').textContent='×'+v.toFixed(1);
+      $('#liftBar').style.width=Math.max(0,liftN*100)+'%';$('#liftOut').textContent=Math.round(liftN*100)+'%';
+      $('#dragBar').style.width=dragN*100+'%';$('#dragOut').textContent=Math.round(dragN*100)+'%';
+      const st=$('#wingState');
+      if(stall){st.textContent='סטול! האוויר נקרע מגב הכנף והעילוי יורד';st.className='chip warn'}
+      else if(lift<0){st.textContent='עילוי שלילי: הכנף נדחפת למטה';st.className='chip warn'}
+      else if(a>=12){st.textContent='קרוב לעילוי המקסימלי';st.className='chip good'}
+      else{st.textContent='טיסה רגילה';st.className='chip'}
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* ---------- flight log ---------- */
+const configs=[['flat','מדפים ישרים'],['up','מדפים למעלה'],['down','מדפים למטה']];
+const log=store.get('log',{});
+const body=$('#logBody'),bars=$('#bars');
+configs.forEach(([k,n])=>{
+  const tr=document.createElement('tr');tr.innerHTML='<td>'+n+'</td>'+[0,1,2].map(i=>'<td><input type="number" min="0" step="0.5" inputmode="decimal" id="t-'+k+'-'+i+'" aria-label="'+n+' זריקה '+(i+1)+'"></td>').join('')+'<td class="avg" id="avg-'+k+'">–</td>';
+  body.appendChild(tr);
+  const br=document.createElement('div');br.className='barrow';br.id='bar-'+k;br.innerHTML='<span>'+n+'</span><div class="track"><div class="fill"></div></div><output>–</output>';bars.appendChild(br);
+});
+function renderLog(){
+  const avgs={};
+  configs.forEach(([k])=>{const vals=[0,1,2].map(i=>parseFloat($('#t-'+k+'-'+i).value)).filter(x=>!isNaN(x));
+    avgs[k]=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;
+    $('#avg-'+k).textContent=avgs[k]==null?'–':avgs[k].toFixed(1)});
+  const vals=Object.values(avgs).filter(x=>x!=null),mx=Math.max(1,...vals);
+  let best=null;configs.forEach(([k])=>{if(avgs[k]!=null&&(best==null||avgs[k]>avgs[best]))best=k});
+  configs.forEach(([k])=>{const r=$('#bar-'+k);r.querySelector('.fill').style.width=avgs[k]==null?0:(avgs[k]/mx*100)+'%';r.querySelector('output').textContent=avgs[k]==null?'–':avgs[k].toFixed(1);r.classList.toggle('win',k===best&&vals.length>1)});
+  const msg=$('#logMsg');
+  if(vals.length<2)msg.textContent='מלא את המדידות, והגרף יראה מי ניצח.';
+  else msg.textContent='הכי רחוק עד עכשיו: '+configs.find(c=>c[0]===best)[1]+' עם ממוצע של '+avgs[best].toFixed(1)+' צעדים.';
+}
+configs.forEach(([k])=>[0,1,2].forEach(i=>{const el=$('#t-'+k+'-'+i);if(log[el.id]!=null)el.value=log[el.id];el.addEventListener('input',()=>{log[el.id]=el.value;store.set('log',log);renderLog()})}));
+renderLog();
+
+/* ---------- quiz + certificate ---------- */
+const Q=[
+  ['כשאוויר זורם מהר יותר, הלחץ שלו...',['עולה','יורד','לא משתנה'],1],
+  ['למה הגשר ממשימה 2 נמעך למטה?',['הנשיפה דחפה אותו למטה','האוויר המהיר מתחתיו לחץ פחות מהאוויר שמעליו','הוא היה כבד מדי'],1],
+  ['האוויר שעובר מעל הכנף מגיע לקצה האחורי...',['באותו זמן כמו האוויר שמתחת','אחרי האוויר שמתחת','לפני האוויר שמתחת'],2],
+  ['מטוס הנייר שלך צולל ישר לרצפה. מה תעשה?',['אכופף את המדפים קצת למעלה','אכופף את המדפים למטה','אזרוק חזק יותר למטה'],0]
+];
+const qa=store.get('quiz',{});
+const quizEl=$('#quiz');
+Q.forEach(([q,opts,ans],qi)=>{
+  const d=document.createElement('div');d.className='predict quizq';d.innerHTML='<p class="q">'+(qi+1)+'. '+q+'</p><div class="opts">'+opts.map((o,i)=>'<button class="opt" data-i="'+i+'">'+o+'</button>').join('')+'</div>';
+  quizEl.appendChild(d);
+  const btns=[...d.querySelectorAll('.opt')];
+  function show(i){btns.forEach(b=>b.classList.remove('picked','right'));btns[i].classList.add('picked');if(i===ans)btns[i].classList.add('right');else btns[ans].classList.add('right');d.classList.add('answered')}
+  btns.forEach((b,i)=>b.addEventListener('click',()=>{qa[qi]=i;store.set('quiz',qa);show(i);renderCert()}));
+  if(qa[qi]!=null)show(qa[qi]);
+});
+const nameEl=$('#pilotName');nameEl.value=store.get('name','');
+nameEl.addEventListener('input',()=>{store.set('name',nameEl.value);renderCert()});
+function renderCert(){
+  const right=Q.filter((q,i)=>qa[i]===q[2]).length;
+  $('#certName').textContent=nameEl&&nameEl.value.trim()?nameEl.value.trim():' ';
+  $('#certText').textContent='השלים '+done.size+' מתוך 8 משימות ו-'+right+' מתוך 4 שאלות במעבדת הנייר המעופף, ויודע להסביר למה מטוסים עפים.';
+}
+$('#certDate').textContent=new Date().toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
+renderProgress();
+})();
+</script>
+
+</body>
+</html>
