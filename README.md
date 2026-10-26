@@ -86,14 +86,15 @@ Games never use the browser's own speech voice. Every line a game says is writte
 Hebrew voice:
 
 ```bash
-VOICE_PROVIDER=edge node tools/generate-voice.mjs
+node tools/generate-voice.mjs
 ```
 
-That uses Microsoft's neural Hebrew voice Hila through
-[edge-tts](https://github.com/rany2/edge-tts) (`pip install edge-tts`; free, no key; set
-`VOICE_ID=he-IL-AvriNeural` for a male voice). With `ELEVENLABS_API_KEY=...` or
-`CARTESIA_API_KEY=...` instead, it uses those services. Only new or changed lines are generated; commit the files it writes
-under `site/games/<game>/voice/`.
+The clips are recorded with Cartesia (model sonic-3, Hebrew voice Ayala). Put
+`CARTESIA_API_KEY=...` (or `ELEVENLABS_API_KEY=...`) in the git-ignored `.env.local`; the key is
+only used on your computer to record, never by the site. `VOICE_ID` picks another voice;
+`VOICE_PROVIDER=edge` uses Microsoft's free neural voices through
+[edge-tts](https://github.com/rany2/edge-tts) instead. Only new or changed lines are generated
+(`FORCE=1` redoes all); commit the files it writes under `site/games/<game>/voice/`.
 
 ## Running locally
 
