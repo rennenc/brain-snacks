@@ -10,9 +10,19 @@
       "kind": "game",
       "title": "Rotem's Sky Letters",
       "path": "games/rotem-sky/",
-      "ages": [4, 7],
-      "languages": ["he", "en"],
-      "skills": ["reading aloud", "English phonics: consonant + vowel syllables", "Hebrew words with nikud"],
+      "ages": [
+        4,
+        7
+      ],
+      "languages": [
+        "he",
+        "en"
+      ],
+      "skills": [
+        "reading aloud",
+        "English phonics: consonant + vowel syllables",
+        "Hebrew words with nikud"
+      ],
       "uses_microphone": true,
       "docs": "docs/games/rotem-sky.md",
       "summary": "A Flappy-Bird-style game: read the syllable or Hebrew word out loud and the bird flies through the gate. Levels get faster and add golden, moving, double and triple gates; 17 birds with their own powers; badges."
@@ -23,9 +33,19 @@
       "title": "מעבדת הנייר המעופף",
       "title_en": "The Flying Paper Lab",
       "path": "lessons/flying-paper-lab/",
-      "ages": [8, 12],
-      "languages": ["he"],
-      "skills": ["air pressure", "Bernoulli's principle", "lift and drag", "running a fair experiment"],
+      "ages": [
+        8,
+        12
+      ],
+      "languages": [
+        "he"
+      ],
+      "skills": [
+        "air pressure",
+        "Bernoulli's principle",
+        "lift and drag",
+        "running a fair experiment"
+      ],
       "uses_microphone": false,
       "docs": "docs/lessons/flying-paper-lab.md",
       "summary": "Why planes fly: 8 home missions with sheets of paper, a Bernoulli tube simulator, a wind tunnel, a paper-plane flight log and a pilot certificate."
@@ -36,12 +56,46 @@
       "title": "מעבדת הצליל",
       "title_en": "The Sound Lab",
       "path": "lessons/sound-lab/",
-      "ages": [9, 13],
-      "languages": ["he"],
-      "skills": ["vibration and waves", "frequency and pitch", "inverse proportion", "musical ratios", "speed of sound"],
+      "ages": [
+        9,
+        13
+      ],
+      "languages": [
+        "he"
+      ],
+      "skills": [
+        "vibration and waves",
+        "frequency and pitch",
+        "inverse proportion",
+        "musical ratios",
+        "speed of sound"
+      ],
       "uses_microphone": true,
       "docs": "docs/lessons/sound-lab.md",
       "summary": "See your voice on a live oscilloscope, measure pitch in Hz, build a straw flute and a rubber-band guitar, tune water glasses to a scale, mix waves, and race lightning against thunder."
+    },
+    {
+      "id": "calendars",
+      "kind": "lesson",
+      "title": "כמה ארוכה שנה?",
+      "title_en": "How Long Is a Year?",
+      "path": "lessons/calendars/",
+      "ages": [
+        10,
+        14
+      ],
+      "languages": [
+        "he"
+      ],
+      "skills": [
+        "the tropical year and the lunar month",
+        "division, remainders and decimals",
+        "leap-year rules: Gregorian, Hebrew, Islamic",
+        "approximation and error"
+      ],
+      "uses_microphone": false,
+      "docs": "docs/lessons/calendars.md",
+      "summary": "How long the Earth takes to circle the Sun, and how the Gregorian, Hebrew and Islamic calendars correct for it. Leap-year rules in each; every mission unlocks only after the child calculates the corrections."
     }
   ]
 }

@@ -103,7 +103,7 @@ h1,h2{font-family:var(--font-display);margin:0;line-height:1;text-wrap:balance}
 h1{font-size:clamp(44px,8vw,88px);font-weight:700;letter-spacing:-.01em}
 h1 .a{color:var(--vowel-a)} h1 .e{color:var(--vowel-e)}
 h2{font-size:clamp(32px,5vw,52px)}
-.back{position:fixed;top:max(14px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));background:rgba(255,255,255,.85);border-radius:999px;padding:10px 18px;
+.back{position:fixed;top:max(14px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));direction:rtl;background:rgba(255,255,255,.85);border-radius:999px;padding:10px 18px;
   font:700 18px var(--font-display);color:var(--ink);text-decoration:none;box-shadow:0 4px 0 var(--shadow)}
 .sub{font-size:clamp(17px,2.2vw,22px);margin:0;color:#4A5585;font-weight:800}
 .big{background:var(--vowel-a);color:#fff;font-size:clamp(30px,4.6vw,46px);font-weight:700;padding:16px 64px;border-radius:999px;
@@ -128,7 +128,7 @@ h2{font-size:clamp(32px,5vw,52px)}
 [lang="he"]{font-family:var(--font-hebrew)}
 textarea.words{font:500 22px/1.6 var(--font-hebrew);direction:rtl;text-align:right;border:2px solid #DDE3F5;border-radius:14px;padding:10px 14px;min-height:150px;resize:vertical;color:var(--ink);background:var(--paper)}
 .total b{color:#E0A100}
-.gear{position:fixed;top:max(14px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));
+.gear{position:fixed;top:max(14px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));
   width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.8);font-size:28px;display:grid;place-items:center}
 .gear svg.prog{position:absolute;inset:0;transform:rotate(-90deg)}
 .gear svg.prog circle{fill:none;stroke:var(--vowel-e);stroke-width:5;stroke-dasharray:188;stroke-dashoffset:188}
@@ -208,7 +208,7 @@ td.s{font:700 20px var(--font-display)}
     <p class="hint">Grown-ups: press and hold ⚙ for settings.</p>
   </div>
 </div>
-<a class="back" id="backLink" href="../../" hidden>← All games</a>
+<a class="back" id="backLink" href="../../" hidden>→ כל המשחקים והשיעורים</a>
 <button class="gear" id="gear" aria-label="Grown-up settings (press and hold)">
   <svg class="prog" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30"/></svg>⚙</button>
 

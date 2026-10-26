@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>כמה ארוכה שנה?</title>
+<meta name="description" content="שיעור אינטראקטיבי: כמה זמן באמת לוקח לכדור הארץ להקיף את השמש, ואיך הלוח העברי, הלוח הגרגוריאני והלוח המוסלמי מתקנים את זה בשנים מעוברות. מחשבים בעצמכם.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@400;500;700&display=swap">
+<style>
+/* Layout: an observatory at night. The page is the night sky; each mission is a page of
+   parchment pinned under it, with brass instruments (orbits, wheels, dials) set into dark sky
+   panels. Classic Hebrew serif for titles and numbers, missions numbered א–ח. */
+:root{
+  --night:#0A1230; --night2:#121C45; --deep:#060B20;
+  --star:#FFF4D6;                         /* text on the sky */
+  --parch:#F6EDD6; --parch2:#EEDFBC;      /* the pages */
+  --ink:#2A2012; --ink-soft:#6A5638;      /* text on the pages */
+  --brass:#B8893B; --brass2:#E2B860; --line:#D8C596;
+  --sun:#F5A93A; --moon:#C9D4F0; --earth:#3F8EDC;
+  --ok:#2D7A47; --low:#B1392C; --greg:#3F8EDC; --heb:#C77B12; --isl:#2D7A47; --jul:#8C5BD1;
+  --title:"Frank Ruhl Libre","Times New Roman",serif;
+  --body:"Heebo","Arial Hebrew",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px)}
+body{margin:0;direction:rtl;font-family:var(--body);font-size:18px;line-height:1.65;color:var(--star);background:var(--night)}
+#sky{position:fixed;inset:0;z-index:-1;width:100%;height:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--deep)}
+h1,h2,h3{font-family:var(--title);font-weight:900;line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--brass2);outline-offset:2px;border-radius:6px}
+.wrap{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.n{font-family:var(--title);font-variant-numeric:lining-nums tabular-nums;direction:ltr;unicode-bidi:isolate}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:rgba(6,11,32,.9);backdrop-filter:blur(6px);border-bottom:1px solid rgba(226,184,96,.25)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px}
+.home{font-size:14px;font-weight:700;color:var(--brass2);text-decoration:none;white-space:nowrap;border:1px solid rgba(226,184,96,.4);border-radius:999px;padding:4px 12px}
+.home:hover{background:rgba(226,184,96,.12)}
+.brand{font-family:var(--title);font-weight:900;font-size:20px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.medals{display:flex;gap:5px}
+.medal{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(226,184,96,.45);display:grid;place-items:center;font:700 13px var(--title);color:rgba(255,244,214,.6);text-decoration:none}
+.medal.on{background:radial-gradient(circle at 35% 35%,#FFE6A6,var(--brass) 70%);border-color:var(--brass2);color:var(--ink)}
+@media (max-width:640px){.brand span{display:none}.medal{width:20px;height:20px;font-size:11px}}
+
+/* hero, on the sky */
+.hero{padding-block:52px 28px;display:grid;grid-template-columns:1.15fr 1fr;gap:28px;align-items:center}
+.eyebrow{font-size:14px;font-weight:700;color:var(--brass2);letter-spacing:.02em}
+.hero h1{font-size:clamp(40px,7vw,70px);margin-block:10px 16px}
+.hero h1 em{font-style:normal;color:var(--brass2)}
+.lead{font-size:20px;color:rgba(255,244,214,.82);max-width:34em}
+.hero-dial{position:relative;min-width:0}
+.hero-dial canvas{width:100%;height:300px;display:block}
+@media (max-width:720px){.hero{grid-template-columns:1fr}.hero-dial{order:-1}}
+.today{margin-top:18px;display:grid;gap:8px;max-width:34em}
+.today div{display:flex;gap:10px;align-items:baseline;border-bottom:1px dashed rgba(226,184,96,.3);padding-bottom:6px}
+.today b{min-width:7.5em;color:var(--brass2);font-weight:700;font-size:15px}
+.today span{font-family:var(--title);font-size:20px}
+
+/* map */
+.map{display:flex;flex-wrap:wrap;gap:8px;padding-block:6px 34px}
+.map a{display:flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid rgba(226,184,96,.35);border-radius:999px;color:var(--star);text-decoration:none;font-size:15px;background:rgba(6,11,32,.6)}
+.map a i{font:700 15px var(--title);font-style:normal;color:var(--brass2)}
+.map a.on{background:var(--brass);border-color:var(--brass2);color:var(--ink)}
+.map a.on i{color:var(--ink)}
+
+/* missions: parchment pages pinned under the sky */
+.page{position:relative;background:linear-gradient(180deg,var(--parch),var(--parch2));color:var(--ink);border-radius:6px;padding:34px clamp(18px,4.5vw,46px) 30px;margin-bottom:40px;scroll-margin-top:84px;
+  box-shadow:0 0 0 1px #CDB680,0 0 0 7px rgba(184,137,59,.18),0 24px 50px rgba(0,0,0,.45)}
+.page::before{content:"";position:absolute;inset:10px;border:1px solid rgba(184,137,59,.45);border-radius:3px;pointer-events:none}
+.page-head{display:flex;gap:18px;align-items:center;margin-bottom:20px}
+.seal{flex:none;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font:900 30px/1 var(--title);color:var(--parch);
+  background:radial-gradient(circle at 35% 30%,#5A4A2E,#2A2012 75%);box-shadow:inset 0 0 0 3px var(--brass),0 3px 8px rgba(0,0,0,.25)}
+.page.done .seal{background:radial-gradient(circle at 35% 30%,#FFE6A6,var(--brass) 75%);color:var(--ink)}
+.page h2{font-size:clamp(28px,4.4vw,38px)}
+.kicker{font-size:14px;font-weight:700;color:var(--ink-soft)}
+.stack{display:flex;flex-direction:column;gap:16px}
+.page b{color:#120D05}
+.fact{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;padding:14px 18px;border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.35)}
+.fact .big{font:900 clamp(32px,6vw,48px)/1 var(--title);color:var(--brass);direction:ltr}
+.rule{border-inline-start:5px solid var(--brass);padding:10px 16px;background:rgba(184,137,59,.1);font-weight:700}
+.rule small{display:block;font-weight:400;color:var(--ink-soft);font-size:16px;margin-top:4px}
+.scroll{font-family:var(--title);font-size:22px;line-height:1.4;text-align:center;padding:10px;color:var(--ink)}
+.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:10px}
+.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;border:1.5px solid var(--brass);display:grid;place-items:center;font:700 15px var(--title);color:var(--brass);margin-top:2px}
+.table{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:16px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:center}
+th{background:rgba(184,137,59,.14);font-weight:700}
+
+/* a calculation the child must solve */
+.calc{border:2px solid var(--ink);border-radius:8px;padding:16px;background:#FFFBEF;display:flex;flex-direction:column;gap:10px;position:relative}
+.calc::before{content:"✍ חשבו";position:absolute;top:-13px;right:14px;background:var(--ink);color:var(--parch);font:700 13px var(--body);padding:2px 10px;border-radius:999px}
+.calc .q{font-weight:700}
+.calc .ans{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.calc input{width:150px;padding:7px 10px;border:2px solid var(--ink-soft);border-radius:6px;background:#fff;color:var(--ink);font:700 20px var(--title);text-align:center;direction:ltr}
+.calc .unit{font-weight:700;color:var(--ink-soft)}
+.calc .fb{font-weight:700;min-height:1.6em}
+.calc .fb.good{color:var(--ok)}.calc .fb.bad{color:var(--low)}
+.calc .hint{background:rgba(184,137,59,.12);border-radius:6px;padding:8px 12px;font-size:16px}
+.calc.solved{border-color:var(--ok);background:#F2FAEF}
+.calc.solved::before{content:"✓ נפתר";background:var(--ok)}
+.calc.solved input{border-color:var(--ok)}
+.btn{border:none;background:var(--ink);color:var(--parch);border-radius:6px;padding:8px 16px;font-weight:700;cursor:pointer}
+.btn:hover{background:#000}
+.btn.brass{background:var(--brass);color:var(--ink)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn.small{padding:4px 10px;font-size:14px}
+.btn:disabled{opacity:.4;cursor:default}
+.lock{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lock .why{font-size:15px;color:var(--ink-soft)}
+
+/* predictions */
+.predict{border:1.5px dashed var(--ink-soft);border-radius:8px;padding:16px}
+.predict .q{font-weight:700;margin-bottom:10px}
+.predict .q::before{content:"ניבוי: ";color:var(--brass)}
+.quizq .q::before{content:none}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1.5px solid var(--ink);background:transparent;border-radius:999px;padding:6px 16px;cursor:pointer;font-weight:700;font-size:16px;color:var(--ink)}
+.opt.picked{background:var(--ink);color:var(--parch)}
+.opt.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.predict.answered .opt:not(.picked):not(.right){opacity:.4}
+.reveal{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.verdict{font:900 22px var(--title);display:block;margin-bottom:4px}
+.verdict.good{color:var(--ok)}.verdict.surprise{color:var(--low)}
+
+/* instruments: windows onto the night sky, set into the page */
+.inst{background:radial-gradient(800px 300px at 50% 0,#1A2660,var(--night) 70%);color:var(--star);border-radius:6px;overflow:hidden;box-shadow:inset 0 0 0 2px var(--brass),0 0 0 4px rgba(184,137,59,.25)}
+.inst canvas{display:block;width:100%;height:300px;touch-action:none}
+.inst canvas.tall{height:360px}
+.inst .bar2{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 16px;border-top:1px solid rgba(226,184,96,.25);background:rgba(6,11,32,.6)}
+.inst .ctl{display:flex;flex-direction:column;gap:2px;flex:1;min-width:200px}
+.inst label{display:flex;justify-content:space-between;font-size:15px;font-weight:700;gap:8px}
+.inst output{font:700 16px var(--title);color:var(--brass2);direction:ltr}
+.inst input[type=range]{width:100%;accent-color:var(--brass2)}
+.inst .btn{background:rgba(226,184,96,.15);border:1px solid var(--brass);color:var(--star)}
+.inst .btn:hover{background:rgba(226,184,96,.3)}
+.inst .btn.brass{background:var(--brass);color:var(--ink)}
+.inst .btn[aria-pressed="true"]{background:var(--brass2);color:var(--ink)}
+.pill{padding:3px 12px;border-radius:999px;font-size:14px;font-weight:700;border:1px solid rgba(226,184,96,.4);color:var(--brass2);font-variant-numeric:tabular-nums}
+.pill.good{border-color:#7FD69A;color:#9BE6B1}.pill.bad{border-color:#FF8D80;color:#FFB0A6}
+
+/* leap-year sorter */
+.sorter{display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 16px}
+.sorter .year{font:900 64px/1 var(--title);color:var(--star);direction:ltr;letter-spacing:.02em}
+.sorter .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* Hebrew 19-year wheel */
+.cycle{display:grid;grid-template-columns:repeat(19,minmax(0,1fr));gap:3px;padding:12px 14px 4px;direction:rtl}
+.cy{border:1px solid rgba(226,184,96,.4);border-radius:4px;background:rgba(6,11,32,.6);color:var(--star);font:700 14px var(--title);padding:6px 0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.cy small{font:500 10px var(--body);color:rgba(255,244,214,.6)}
+.cy.leap{background:var(--heb);border-color:#FFD08A;color:var(--ink)}
+.cy.leap small{color:var(--ink)}
+@media (max-width:620px){.cycle{grid-template-columns:repeat(10,minmax(0,1fr))}}
+
+/* converter */
+.conv{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:16px}
+.conv .card{border:1px solid rgba(226,184,96,.4);border-radius:6px;padding:12px;background:rgba(6,11,32,.55);display:flex;flex-direction:column;gap:4px}
+.conv .card b{color:var(--brass2);font-size:14px}
+.conv .card span{font:700 20px var(--title)}
+.conv .card small{font-size:14px;color:rgba(255,244,214,.75)}
+.inst input[type=date],.inst input[type=number]{background:var(--deep);border:1px solid var(--brass);border-radius:6px;padding:5px 10px;color:var(--star);font:700 17px var(--title);color-scheme:dark}
+
+.done-btn{align-self:flex-start}
+.page.done .done-btn{background:var(--ok)}
+details{border:1px solid var(--line);border-radius:6px;padding:10px 14px;background:rgba(255,255,255,.3)}
+details summary{cursor:pointer;font-weight:700}
+details[open] summary{margin-bottom:8px}
+
+/* quiz + certificate */
+.quiz{display:flex;flex-direction:column;gap:12px}
+.cert{border:3px double var(--brass);border-radius:6px;padding:28px 18px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;background:radial-gradient(400px 160px at 50% 0,rgba(226,184,96,.22),transparent)}
+.cert h3{font-size:32px}
+.cert .who{font:900 46px/1.1 var(--title);color:var(--brass);min-height:52px}
+.namebox{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.namebox input{padding:6px 10px;border:1.5px solid var(--ink);border-radius:6px;background:#fff;color:var(--ink);width:220px;max-width:100%}
+.adult{margin-block:8px 70px;background:rgba(6,11,32,.7);border-color:rgba(226,184,96,.35);color:var(--star)}
+.adult ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px}
+footer{padding-block:0 50px;color:rgba(255,244,214,.6);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="../../">→ כל המשחקים והשיעורים</a>
+    <div class="brand"><svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="#E2B860" stroke-width="2"/><circle cx="16" cy="16" r="4" fill="#F5A93A"/><circle cx="27" cy="11" r="3" fill="#3F8EDC"/></svg><span>כמה ארוכה שנה?</span></div>
+    <div class="medals" id="medals" aria-label="משימות שהושלמו"></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">מצפה כוכבים ביתי · 8 משימות · מחשבים בעצמכם</div>
+    <h1>כמה ארוכה <em>שנה</em>?</h1>
+    <p class="lead">"365 ימים" זאת לא התשובה. כדור הארץ, הירח והשמש לא מסתדרים במספרים עגולים, וכל לוח שנה בעולם הוא פתרון חכם לבעיה הזאת. היום תגלו איך הלוח העברי, הלוח הגרגוריאני והלוח המוסלמי פותרים אותה, ותחשבו את התיקונים בעצמכם.</p>
+    <div class="today" id="today" aria-live="polite">
+      <div><b>היום בלוח הגרגוריאני</b><span id="tG">…</span></div>
+      <div><b>היום בלוח העברי</b><span id="tH">…</span></div>
+      <div><b>היום בלוח המוסלמי</b><span id="tI">…</span></div>
+    </div>
+  </div>
+  <div class="hero-dial"><canvas id="heroDial" aria-label="שעון שמיים: כדור הארץ סביב השמש והירח סביב כדור הארץ"></canvas></div>
+</section>
+
+<nav class="map" id="map" aria-label="מפת המשימות"></nav>
+
+<!-- א -->
+<article class="page" id="m1" data-m="1">
+  <div class="page-head"><div class="seal">א</div><div><div class="kicker">משימה · סימולטור מסלול</div><h2>מה זה בעצם "שנה"?</h2></div></div>
+  <div class="stack">
+    <p>שנה היא הזמן שלוקח לכדור הארץ להקיף את השמש פעם אחת, ולחזור לאותו מקום ביחס לעונות. בואו נבדוק אם זה באמת 365 ימים.</p>
+    <div class="predict" data-answer="more">
+      <p class="q">אחרי 365 ימים בדיוק, איפה יהיה כדור הארץ?</p>
+      <div class="opts"><button class="opt" data-v="exact">בדיוק בנקודת ההתחלה</button><button class="opt" data-v="more">עוד לא הגיע, חסר לו קצת</button><button class="opt" data-v="past">כבר עבר אותה</button></div>
+      <div class="reveal" hidden><span class="verdict"></span><p>חסר לו עוד רבע יום, בערך. הסיבוב המלא לוקח <b>365.2422 ימים</b>. לחצו "קפוץ 365 ימים" ותראו את הפער.</p></div>
+    </div>
+    <div class="inst">
+      <canvas id="orbit" class="tall" aria-label="כדור הארץ מקיף את השמש, עם מונה ימים"></canvas>
+      <div class="bar2">
+        <button class="btn" id="oPlay" aria-pressed="false">▶ הפעל</button>
+        <button class="btn brass" id="o365">קפוץ 365 ימים</button>
+        <button class="btn" id="oQuarter">+ רבע יום</button>
+        <button class="btn" id="oReset">↺ מההתחלה</button>
+        <span class="pill" id="oDays">יום 0</span><span class="pill" id="oGap">–</span>
+      </div>
+    </div>
+    <div class="calc" data-answer="5.81" data-tol="0.06" data-unit="שעות">
+      <p class="q">שנה = 365.2422 ימים. אחרי 365 ימים שלמים, כמה <b>שעות</b> חסרות לכדור הארץ כדי להשלים את הסיבוב?</p>
+      <div class="hint" hidden>החלק שאחרי הנקודה הוא חלק מיום: 0.2422 יום. ביום יש 24 שעות.</div>
+      <div class="hint" hidden>0.2422 × 24 = ?</div>
+      <div class="hint" hidden>זה 5.81 שעות: כמעט 6 שעות, כלומר כמעט רבע יום. (בדיוק: 5 שעות, 48 דקות ו-45 שניות.)</div>
+    </div>
+    <div class="calc" data-answer="4" data-tol="0" data-unit="שנים">
+      <p class="q">אם כל שנה חסרות כמעט 6 שעות, אחרי כמה שנים הן מצטברות ליום שלם?</p>
+      <div class="hint" hidden>כמה פעמים 6 שעות נכנסות ב-24 שעות?</div>
+      <div class="hint" hidden>24 ÷ 6 = ?</div>
+    </div>
+    <div class="rule">ככה נולדה השנה המעוברת:<small>פעם בערך 4 שנים מוסיפים יום שלם (29 בפברואר), כדי שהלוח יחזור להתאים לעונות. נסו בסימולטור: "מההתחלה", ארבע פעמים "קפוץ 365 ימים" (חסר כמעט יום שלם!), ואז ארבע פעמים "+ רבע יום".</small></div>
+    <div class="lock"><button class="btn done-btn" data-m="1" disabled>סיימתי את המשימה</button><span class="why">פתרו את החישובים כדי לסמן</span></div>
+  </div>
+</article>
+
+<!-- ב -->
+<article class="page" id="m2" data-m="2">
+  <div class="page-head"><div class="seal">ב</div><div><div class="kicker">משימה · מחזור הירח</div><h2>חודש = ירח</h2></div></div>
+  <div class="stack">
+    <p>המילה "חודש" באה מ"חידוש" הירח: מתי שהירח מופיע מחדש בשמיים. גררו את המחוון וספרו כמה ימים עוברים ממולד (ירח חדש, חשוך) למולד הבא.</p>
+    <div class="inst">
+      <canvas id="moonCv" aria-label="מופע הירח לפי מספר הימים"></canvas>
+      <div class="bar2">
+        <div class="ctl"><label for="mDay">ימים מהמולד <output id="mDayOut">0</output></label><input type="range" id="mDay" min="0" max="60" step="0.25" value="0"></div>
+        <span class="pill" id="mPhase">מולד</span>
+      </div>
+    </div>
+    <div class="fact"><div class="big">29.53</div><p>ימים בין מולד למולד. חז"ל חישבו אותו בדיוק מדהים: 29 ימים, 12 שעות ו-793 "חלקים" (חלק = 1/1080 שעה). זה שונה מהמדידה המודרנית בפחות משנייה!</p></div>
+    <div class="calc" data-answer="354.36" data-tol="0.1" data-unit="ימים">
+      <p class="q">כמה ימים יש ב-12 חודשי ירח? (חודש = 29.53 ימים)</p>
+      <div class="hint" hidden>12 × 29.53</div>
+      <div class="hint" hidden>12 × 29 = 348, ועוד 12 × 0.53 = 6.36. ביחד?</div>
+    </div>
+    <div class="calc" data-answer="11" data-tol="0.3" data-unit="ימים">
+      <p class="q">שנת שמש = 365.24 ימים. כמה ימים <b>קצרה</b> יותר שנה של 12 חודשי ירח? (עגלו למספר שלם)</p>
+      <div class="hint" hidden>365.24 פחות התשובה הקודמת.</div>
+      <div class="hint" hidden>365.24 − 354.36 = 10.88, כלומר כמעט 11 ימים.</div>
+    </div>
+    <div class="scroll">11 הימים האלה הם כל הסיפור.<br>כל לוח שנה בעולם בחר מה לעשות איתם.</div>
+    <div class="table"><table>
+      <thead><tr><th>לוח</th><th>עוקב אחרי</th><th>מה עושה עם 11 הימים</th></tr></thead>
+      <tbody>
+        <tr><td><b>גרגוריאני</b> (הלוח הבינלאומי)</td><td>☀️ שמש בלבד</td><td>מתעלם מהירח: החודשים שלו כבר לא קשורים לירח</td></tr>
+        <tr><td><b>מוסלמי</b> (הג'רי)</td><td>🌙 ירח בלבד</td><td>מתעלם מהשמש: השנה קצרה ב-11 ימים, והחגים נודדים בין העונות</td></tr>
+        <tr><td><b>עברי</b></td><td>🌙 + ☀️ שניהם</td><td>מוסיף חודש שלם (אדר א׳) כשהפער גדל מדי</td></tr>
+      </tbody>
+    </table></div>
+    <div class="lock"><button class="btn done-btn" data-m="2" disabled>סיימתי את המשימה</button><span class="why">פתרו את החישובים כדי לסמן</span></div>
+  </div>
+</article>
+
+<!-- ג -->
+<article class="page" id="m3" data-m="3">
+  <div class="page-head"><div class="seal">ג</div><div><div class="kicker">משימה · יוליוס קיסר</div><h2>הלוח של קיסר, והטעות של 11 דקות</h2></div></div>
+  <div class="stack">
+    <p>ב-46 לפני הספירה קבע יוליוס קיסר: שנה = 365 ימים, ופעם ב-4 שנים מוסיפים יום. כלומר, בממוצע שנה של <b>365.25</b> ימים. נשמע מושלם? השנה האמיתית היא 365.2422.</p>
+    <div class="calc" data-answer="11.2" data-tol="0.25" data-unit="דקות">
+      <p class="q">בכמה <b>דקות</b> השנה של קיסר ארוכה מהשנה האמיתית?</p>
+      <div class="hint" hidden>קודם ההפרש בימים: 365.25 − 365.2422.</div>
+      <div class="hint" hidden>0.0078 יום. ביום יש 24 × 60 = 1440 דקות.</div>
+      <div class="hint" hidden>0.0078 × 1440 ≈ 11.2 דקות.</div>
+    </div>
+    <div class="calc" data-answer="128" data-tol="4" data-unit="שנים">
+      <p class="q">11 דקות בשנה, זה הרבה? אחרי כמה שנים הטעות מצטברת ליום שלם? (יום = 1440 דקות)</p>
+      <div class="hint" hidden>1440 ÷ 11.2</div>
+      <div class="hint" hidden>בערך 128 שנים.</div>
+    </div>
+    <p><b>הסימולטור:</b> קו העונות. האביב (יום השוויון, שבו היום והלילה שווים) צריך ליפול תמיד ב-21 במרץ. בחרו כלל, והזיזו את השנים.</p>
+    <div class="inst">
+      <canvas id="drift" aria-label="גרף: באיזה תאריך נופל האביב לאורך השנים, לפי כל כלל"></canvas>
+      <div class="bar2">
+        <button class="btn" data-rule="none" aria-pressed="false">365 ימים בלי תיקון</button>
+        <button class="btn" data-rule="julian" aria-pressed="true">יוליאני: כל 4 שנים</button>
+        <button class="btn" data-rule="greg" aria-pressed="false">גרגוריאני</button>
+      </div>
+      <div class="bar2">
+        <div class="ctl"><label for="dYear">שנה <output id="dYearOut">1582</output></label><input type="range" id="dYear" min="0" max="3000" step="1" value="1582"></div>
+        <span class="pill" id="dDate">–</span>
+      </div>
+    </div>
+    <div class="calc" data-answer="10" data-tol="0.6" data-unit="ימים">
+      <p class="q">בשנת 325 האביב נפל ב-21 במרץ. כמה ימים בערך התרחק ממנו הלוח של קיסר עד שנת 1582? (טעות של 0.0078 יום בשנה)</p>
+      <div class="hint" hidden>כמה שנים עברו? 1582 − 325.</div>
+      <div class="hint" hidden>1257 × 0.0078 ≈ ?</div>
+    </div>
+    <div class="lock"><button class="btn done-btn" data-m="3" disabled>סיימתי את המשימה</button><span class="why">פתרו את החישובים כדי לסמן</span></div>
+  </div>
+</article>
+
+<!-- ד -->
+<article class="page" id="m4" data-m="4">
+  <div class="page-head"><div class="seal">ד</div><div><div class="kicker">משימה · הלוח הגרגוריאני</div><h2>היום שבו נעלמו 10 ימים</h2></div></div>
+  <div class="stack">
+    <p>ב-1582 האפיפיור גרגוריוס ה-13 תיקן את הלוח. קודם, הוא פשוט <b>מחק 10 ימים</b>: אחרי יום חמישי, 4 באוקטובר 1582, הגיע יום שישי, 15 באוקטובר. ואז הוא שינה את חוק השנה המעוברת, כדי שזה לא יקרה שוב:</p>
+    <div class="scroll">שנה מעוברת = מתחלקת ב-4<br>חוץ משנות מאה (1700, 1800, 1900)<br>אבל כן אם מתחלקת ב-400 (1600, 2000)</div>
+    <div class="inst">
+      <div class="sorter">
+        <div class="pill" id="sortMsg">מעוברת או לא? 10 שנים, כמה תצליחו?</div>
+        <div class="year" id="sortYear">2024</div>
+        <div class="row"><button class="btn brass" id="sortLeap">מעוברת (366)</button><button class="btn" id="sortCommon">רגילה (365)</button></div>
+        <div class="pill" id="sortScore">0 / 0</div>
+      </div>
+    </div>
+    <div class="calc" data-answer="97" data-tol="0" data-unit="ימים">
+      <p class="q">בכל 400 שנים: כמה שנים מעוברות יש בלוח הגרגוריאני?</p>
+      <div class="hint" hidden>אם כל 4 שנים: 400 ÷ 4 = 100. עכשיו תורידו את שנות המאה שאינן מתחלקות ב-400.</div>
+      <div class="hint" hidden>ב-400 שנים יש 4 שנות מאה (למשל 1700, 1800, 1900, 2000). רק אחת מהן מתחלקת ב-400. אז מורידים 3.</div>
+    </div>
+    <div class="calc" data-answer="365.2425" data-tol="0.0001" data-unit="ימים">
+      <p class="q">מה האורך הממוצע של שנה גרגוריאנית? (רמז: 400 שנים, וכמה ימים מעוברים עליהן)</p>
+      <div class="hint" hidden>365 + 97 ÷ 400</div>
+      <div class="hint" hidden>97 ÷ 400 = 0.2425</div>
+    </div>
+    <div class="calc" data-answer="3226" data-tol="120" data-unit="שנים">
+      <p class="q">השנה האמיתית: 365.2422. אחרי כמה שנים הלוח הגרגוריאני יטעה ביום שלם?</p>
+      <div class="hint" hidden>ההפרש: 365.2425 − 365.2422 = 0.0003 יום בשנה.</div>
+      <div class="hint" hidden>1 ÷ 0.0003 ≈ 3,300. בחישוב מדויק (0.00031) יוצא בערך 3,226 שנים. גם 3,300 נחשבת תשובה טובה.</div>
+    </div>
+    <p class="scroll" style="font-size:18px">עכשיו חזרו לסימולטור במשימה ג׳ ובחרו "גרגוריאני". מה קרה לקו?</p>
+    <div class="lock"><button class="btn done-btn" data-m="4" disabled>סיימתי את המשימה</button><span class="why">פתרו את החישובים כדי לסמן</span></div>
+  </div>
+</article>
+
+<!-- ה -->
+<article class="page" id="m5" data-m="5">
+  <div class="page-head"><div class="seal">ה</div><div><div class="kicker">משימה · הלוח המוסלמי (הג'רי)</div><h2>חג שנודד בין העונות</h2></div></div>
+  <div class="stack">
+    <p>הלוח המוסלמי סופר רק חודשי ירח, ולא מתקן לפי השמש. השנה בו היא 354 או 355 ימים. לכן חודש הרמדאן, למשל, מתחיל כל שנה <b>כ-11 ימים מוקדם יותר</b> בלוח הגרגוריאני, ועובר בין קיץ לחורף.</p>
+    <div class="inst">
+      <canvas id="ramadan" class="tall" aria-label="גלגל השנה: איפה נופל תחילת הרמדאן בכל שנה"></canvas>
+      <div class="bar2">
+        <div class="ctl"><label for="rYear">שנה גרגוריאנית <output id="rYearOut">2026</output></label><input type="range" id="rYear" min="2026" max="2070" step="1" value="2026"></div>
+        <button class="btn" id="rPlay" aria-pressed="false">▶ הרץ שנים</button>
+        <span class="pill" id="rSeason">–</span>
+      </div>
+    </div>
+    <div class="calc" data-answer="33" data-tol="1.2" data-unit="שנים">
+      <p class="q">אם הרמדאן זז 10.9 ימים אחורה כל שנה, אחרי כמה שנים הוא יחזור לאותה עונה? (שנה = 365.24 ימים)</p>
+      <div class="hint" hidden>כמה פעמים 10.9 נכנס ב-365.24?</div>
+      <div class="hint" hidden>365.24 ÷ 10.9 ≈ 33.5 שנים. תשובה של 33 או 34 מתקבלת.</div>
+    </div>
+    <p><b>השנים המעוברות בלוח המוסלמי</b> (בלוח המחושב, "הטבלאי") הן לא בשביל השמש, אלא בשביל הירח: 12 חודשים של 29 ו-30 ימים לסירוגין יוצאים 354 ימים, אבל 12 חודשי ירח אמיתיים הם 354.37. אז ב-11 שנים מתוך כל 30 מוסיפים יום אחד לחודש האחרון.</p>
+    <div class="calc" data-answer="354.367" data-tol="0.004" data-unit="ימים">
+      <p class="q">מה האורך הממוצע של שנה מוסלמית, אם ב-30 שנים יש 11 שנים של 355 ימים והשאר 354?</p>
+      <div class="hint" hidden>354 + 11 ÷ 30</div>
+      <div class="hint" hidden>11 ÷ 30 = 0.3667</div>
+    </div>
+    <div class="rule">החוק:<small>שנה מוסלמית (בלוח הטבלאי) היא מעוברת אם השארית של (14 + 11 × מספר השנה) בחלוקה ל-30 קטנה מ-11. כך יוצאות השנים 2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29 בכל מחזור של 30. (בפועל רוב המדינות קובעות את תחילת החודש לפי ראיית הירח או לפי חישוב אסטרונומי, ולכן יש לפעמים הבדל של יום.)</small></div>
+    <div class="lock"><button class="btn done-btn" data-m="5" disabled>סיימתי את המשימה</button><span class="why">פתרו את החישובים כדי לסמן</span></div>
+  </div>
+</article>
+
+<!-- ו -->
+<article class="page" id="m6" data-m="6">
+  <div class="page-head"><div class="seal">ו</div><div><div class="kicker">משימה · הלוח העברי</div><h2>הצילו את פסח!</h2></div></div>
+  <div class="stack">
+    <p>התורה אומרת: "שָׁמוֹר אֶת חֹדֶשׁ הָאָבִיב, וְעָשִׂיתָ פֶּסַח". החודשים בלוח העברי הם חודשי ירח, אבל פסח <b>חייב</b> ליפול באביב. אם לא נעשה כלום, פסח יזוז 11 ימים אחורה כל שנה, כמו הרמדאן. הפתרון: פעם בכמה שנים מוסיפים חודש שלם, <b>אדר א׳</b>. זאת שנה מעוברת.</p>
+    <div class="inst">
+      <canvas id="pesach" aria-label="היכן נופל פסח בכל אחת מ-19 השנים"></canvas>
+      <div class="cycle" id="cycle"></div>
+      <div class="bar2">
+        <span class="pill" id="cyCount">0 שנים מעוברות</span>
+        <span class="pill" id="cyMsg">לחצו על שנה כדי להוסיף לה אדר א׳. המטרה: פסח באביב בכל 19 השנים</span>
+        <button class="btn" id="cyReset">↺ התחל מחדש</button>
+        <button class="btn" id="cyReal" disabled>הצג את המחזור האמיתי</button>
+      </div>
+    </div>
+    <div class="calc" data-answer="235" data-tol="0" data-unit="חודשים">
+      <p class="q">במחזור של 19 שנים יש 12 שנים רגילות (12 חודשים) ו-7 מעוברות (13 חודשים). כמה חודשים בסך הכול?</p>
+      <div class="hint" hidden>12 × 12 + 7 × 13</div>
+      <div class="hint" hidden>או: 19 × 12 = 228, ועוד 7 חודשי אדר א׳.</div>
+    </div>
+    <div class="calc" data-answer="6939.6" data-tol="0.6" data-unit="ימים">
+      <p class="q">כמה ימים יש ב-235 חודשי ירח? (חודש = 29.5306 ימים)</p>
+      <div class="hint" hidden>235 × 29.5306</div>
+      <div class="hint" hidden>235 × 29.5306 ≈ 6,939.7</div>
+    </div>
+    <div class="calc" data-answer="6939.6" data-tol="0.6" data-unit="ימים">
+      <p class="q">ועכשיו: כמה ימים יש ב-19 שנות שמש? (שנה = 365.2422)</p>
+      <div class="hint" hidden>19 × 365.2422</div>
+      <div class="hint" hidden>≈ 6,939.6. כמעט בדיוק אותו מספר כמו 235 חודשים! זה הסוד של המחזור.</div>
+    </div>
+    <div class="rule">המחזור של 19 שנים (מחזור מטוני):<small>235 חודשי ירח ≈ 19 שנות שמש, בהפרש של שעתיים בלבד. השנים המעוברות במחזור הן 3, 6, 8, 11, 14, 17, 19. איך זוכרים? <b>גו״ח אדז״ט</b> (ג=3, ו=6, ח=8, א=11, ד=14, ז=17, ט=19, ובעשרות מוסיפים 10). כדי לדעת אם שנה עברית מעוברת: מחלקים את מספר השנה ב-19, ובודקים אם השארית היא 3, 6, 8, 11, 14, 17 או 0.</small></div>
+    <div class="calc" data-answer="11" data-tol="0" data-unit="">
+      <p class="q">השנה העברית שהתחילה בספטמבר 2026 היא תשפ״ז, שנת 5787. מה השארית של 5787 בחלוקה ל-19?</p>
+      <div class="hint" hidden>19 × 300 = 5,700. כמה נשאר? 87. ו-19 × 4 = 76.</div>
+      <div class="hint" hidden>87 − 76 = 11. ועכשיו: 11 ברשימה? אז תשפ״ז מעוברת או לא?</div>
+    </div>
+    <div class="lock"><button class="btn done-btn" data-m="6" disabled>סיימתי את המשימה</button><span class="why">פתרו את החישובים ואת משחק הפסח כדי לסמן</span></div>
+  </div>
+</article>
+
+<!-- ז -->
+<article class="page" id="m7" data-m="7">
+  <div class="page-head"><div class="seal">ז</div><div><div class="kicker">משימה · מחשבון המצפה</div><h2>בדקו כל שנה, בכל לוח</h2></div></div>
+  <div class="stack">
+    <p>עכשיו אתם יודעים את שלושת החוקים. הקלידו שנה, <b>תחליטו בעצמכם</b> אם היא מעוברת, ואז המצפה יבדוק.</p>
+    <div class="inst">
+      <div class="conv" id="checker">
+        <div class="card"><b>גרגוריאני</b><label>שנה: <input type="number" id="kG" value="2100" min="1" max="99999"></label><div class="opts" style="margin-top:6px"><button class="btn small" data-cal="G" data-guess="1">מעוברת</button><button class="btn small" data-cal="G" data-guess="0">רגילה</button></div><small id="kGres"> </small></div>
+        <div class="card"><b>עברי</b><label>שנה: <input type="number" id="kH" value="5790" min="1" max="99999"></label><div class="opts" style="margin-top:6px"><button class="btn small" data-cal="H" data-guess="1">מעוברת</button><button class="btn small" data-cal="H" data-guess="0">רגילה</button></div><small id="kHres"> </small></div>
+        <div class="card"><b>מוסלמי (טבלאי)</b><label>שנה: <input type="number" id="kI" value="1450" min="1" max="99999"></label><div class="opts" style="margin-top:6px"><button class="btn small" data-cal="I" data-guess="1">מעוברת</button><button class="btn small" data-cal="I" data-guess="0">רגילה</button></div><small id="kIres"> </small></div>
+      </div>
+      <div class="bar2"><span class="pill" id="kScore">ניחושים נכונים: 0 / 0</span><span class="pill">כדי לסיים: 6 ניחושים נכונים, לפחות 2 בכל לוח</span></div>
+    </div>
+    <p><b>ממיר תאריכים אמיתי:</b> בחרו תאריך, למשל יום ההולדת שלכם, וראו אותו בשלושת הלוחות. הדפדפן יודע לחשב את כולם.</p>
+    <div class="inst">
+      <div class="bar2"><label for="bday" style="display:flex;gap:10px;align-items:center">תאריך: <input type="date" id="bday"></label></div>
+      <div class="conv">
+        <div class="card"><b>גרגוריאני</b><span id="cG">–</span><small id="cGy"> </small></div>
+        <div class="card"><b>עברי</b><span id="cH">–</span><small id="cHy"> </small></div>
+        <div class="card"><b>מוסלמי</b><span id="cI">–</span><small id="cIy"> </small></div>
+      </div>
+    </div>
+    <div class="lock"><button class="btn done-btn" data-m="7" disabled>סיימתי את המשימה</button><span class="why">צריך 6 ניחושים נכונים כדי לסמן</span></div>
+  </div>
+</article>
+
+<!-- ח -->
+<article class="page" id="m8" data-m="8">
+  <div class="page-head"><div class="seal">ח</div><div><div class="kicker">משימה · מרוץ הדיוק</div><h2>איזה לוח הכי מדויק?</h2></div></div>
+  <div class="stack">
+    <p>כל לוח הוא קירוב. השאלה היא כמה זמן לוקח לו לטעות ביום שלם. הגרף מראה כמה ימים כל לוח "בורח" מהשמש לאורך 10,000 שנים.</p>
+    <div class="table"><table>
+      <thead><tr><th>לוח</th><th>אורך שנה ממוצע</th><th>ההפרש מ-365.2422</th><th>טועה ביום אחרי…</th></tr></thead>
+      <tbody>
+        <tr><td><b>יוליאני</b></td><td class="n">365.25</td><td class="n">0.0078</td><td>128 שנים <small>(חישבתם במשימה ג׳)</small></td></tr>
+        <tr><td><b>עברי</b></td><td class="n">365.2468</td><td class="n" id="hebDiff">?</td><td id="hebYears">?</td></tr>
+        <tr><td><b>גרגוריאני</b></td><td class="n">365.2425</td><td class="n">0.0003</td><td>כ-3,226 שנים <small>(משימה ד׳)</small></td></tr>
+      </tbody>
+    </table></div>
+    <div class="calc" data-answer="0.0046" data-tol="0.00015" data-unit="ימים" data-fill="hebDiff">
+      <p class="q">השנה העברית הממוצעת היא 365.2468 ימים. בכמה היא ארוכה מהשנה האמיתית (365.2422)?</p>
+      <div class="hint" hidden>365.2468 − 365.2422</div>
+    </div>
+    <div class="calc" data-answer="217" data-tol="8" data-unit="שנים" data-fill="hebYears">
+      <p class="q">אחרי כמה שנים הלוח העברי זז ביום שלם מהשמש?</p>
+      <div class="hint" hidden>1 ÷ 0.0046</div>
+      <div class="hint" hidden>≈ 217 שנים. לכן היום פסח נופל בממוצע כמה ימים מאוחר יותר מאשר לפני 1,600 שנה, כשהלוח נקבע.</div>
+    </div>
+    <div class="inst">
+      <canvas id="race" aria-label="גרף: כמה ימים כל לוח זז מהשמש לאורך 10,000 שנים"></canvas>
+      <div class="bar2"><div class="ctl"><label for="raceY">שנים מהיום <output id="raceYOut">2,000</output></label><input type="range" id="raceY" min="0" max="10000" step="50" value="2000"></div><span class="pill" id="raceOut">–</span></div>
+    </div>
+    <div class="lock"><button class="btn done-btn" data-m="8" disabled>סיימתי את המשימה</button><span class="why">פתרו את החישובים כדי לסמן</span></div>
+  </div>
+</article>
+
+<!-- final -->
+<section class="page" id="final">
+  <div class="page-head"><div class="seal">★</div><div><div class="kicker">מבחן שומר הזמן</div><h2>5 שאלות לתעודה</h2></div></div>
+  <div class="quiz" id="quiz"></div>
+  <div class="namebox" style="margin-top:18px"><label for="who"><b>השם שלך לתעודה:</b></label><input id="who" type="text" maxlength="30" placeholder="הקלידו כאן"></div>
+  <div class="cert" style="margin-top:16px">
+    <svg width="70" height="70" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#B8893B" stroke-width="1.5"/><circle cx="16" cy="16" r="9" fill="none" stroke="#B8893B" stroke-width="1" stroke-dasharray="2 2"/><circle cx="16" cy="16" r="3.5" fill="#F5A93A"/><circle cx="25" cy="16" r="2" fill="#3F8EDC"/><circle cx="28" cy="13" r="1" fill="#C9D4F0"/></svg>
+    <h3>תעודת שומר הזמן</h3>
+    <div class="who" id="certName">&nbsp;</div>
+    <p id="certText"></p>
+    <p style="color:var(--ink-soft);font-size:15px" id="certDate"></p>
+  </div>
+</section>
+
+<details class="adult">
+  <summary>למבוגר שמלווה</summary>
+  <ul>
+    <li><b>זמן:</b> כשעה וחצי. אפשר לחלק: א׳–ג׳ (שנה, חודש, הלוח היוליאני), ואז ד׳–ח׳.</li>
+    <li><b>מחשבון:</b> מותר ורצוי. החישובים מקבלים טעות קטנה, ואחרי טעות מופיעים רמזים בהדרגה. התשובה המלאה מופיעה ברמז האחרון.</li>
+    <li><b>השנה הטרופית</b> (מאביב לאביב) היא 365.24219 ימים. זאת השנה שהלוחות מנסים להתאים לה, ולא השנה ה"סידרית" (365.256), שמודדים ביחס לכוכבים.</li>
+    <li><b>הלוח העברי</b> קבוע (מחושב) מאז תקופת הלל השני. השנים בו הן 353–355 ימים (רגילה) ו-383–385 (מעוברת), בגלל "דחיות" שקובעות באיזה יום בשבוע ייפול ראש השנה. במשחק הפסח החישוב פשוט יותר: 11 ימים אחורה בשנה רגילה, ו-19 קדימה במעוברת.</li>
+    <li><b>הלוח המוסלמי:</b> החוק שבשיעור הוא של הלוח ה"טבלאי". בפועל, רוב המדינות קובעות את החודשים לפי תצפית בירח או לפי לוח אום אל-קורא הסעודי, ולכן התאריך יכול להשתנות ביום. הממיר משתמש באום אל-קורא.</li>
+    <li><b>שאלה טובה לסיום:</b> "למה פסח, ראש השנה ורמדאן נופלים כל שנה בתאריך אחר בלוח הגרגוריאני, אבל כריסמס תמיד ב-25 בדצמבר?"</li>
+  </ul>
+</details>
+
+</main>
+<footer class="wrap">ההתקדמות נשמרת בדפדפן הזה בלבד.</footer>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('cal:'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('cal:'+k,JSON.stringify(v))}catch(e){}}};
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TAU=Math.PI*2, YEAR=365.24219, MONTH=29.530589;
+const LETTERS=['א','ב','ג','ד','ה','ו','ז','ח'];
+const fmt=(x,d=0)=>x.toLocaleString('he-IL',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+/* ---------- the three calendars, as code ---------- */
+const isGreg=y=>(y%4===0&&y%100!==0)||y%400===0;
+const isHeb=y=>[0,3,6,8,11,14,17].includes(((y%19)+19)%19);
+const isHijri=y=>((14+11*y)%30+30)%30<11;
+const parts=(d,cal)=>{ try{ const p=new Intl.DateTimeFormat('en-u-ca-'+cal,{year:'numeric',month:'numeric',day:'numeric'}).formatToParts(d); const g=t=>+((p.find(x=>x.type===t)||{}).value||NaN); return {y:g('year')||g('relatedYear'),m:g('month'),d:g('day')}; }catch(e){ return null; } };
+const heFmt=(d,cal)=>{ try{ return new Intl.DateTimeFormat('he-IL-u-ca-'+cal,{day:'numeric',month:'long',year:'numeric'}).format(d); }catch(e){ return '–'; } };
+// the length of the year (in that calendar) that contains date d: find the days where the year number changes
+function yearLength(d,cal){
+  const day=864e5, p0=parts(d,cal); if(!p0||!p0.y) return null;
+  let a=new Date(+d); for(let i=0;i<400;i++){ const prev=parts(new Date(+a-day),cal); if(prev.y!==p0.y) break; a=new Date(+a-day); }
+  let b=new Date(+a+day*340); for(let i=0;i<80;i++){ if(parts(b,cal).y!==p0.y) break; b=new Date(+b+day); }
+  return Math.round((b-a)/day);
+}
+
+/* ---------- today, in three calendars ---------- */
+(function(){
+  const now=new Date();
+  $('#tG').textContent=new Intl.DateTimeFormat('he-IL',{day:'numeric',month:'long',year:'numeric'}).format(now);
+  $('#tH').textContent=heFmt(now,'hebrew');
+  $('#tI').textContent=heFmt(now,'islamic-umalqura');
+})();
+
+/* ---------- the starry sky behind everything ---------- */
+(function(){
+  const cv=$('#sky'), ctx=cv.getContext('2d'); let stars=[];
+  function rs(){ const d=Math.min(2,devicePixelRatio||1); cv.width=innerWidth*d; cv.height=innerHeight*d; ctx.setTransform(d,0,0,d,0,0);
+    stars=Array.from({length:Math.round(innerWidth*innerHeight/5000)},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.3+.2,p:Math.random()*TAU})); }
+  rs(); addEventListener('resize',rs);
+  function frame(t){ ctx.clearRect(0,0,cv.width,cv.height);
+    const g=ctx.createRadialGradient(innerWidth*.8,0,0,innerWidth*.8,0,innerWidth); g.addColorStop(0,'#1A2560'); g.addColorStop(1,'#0A1230'); ctx.fillStyle=g; ctx.fillRect(0,0,innerWidth,innerHeight);
+    for(const s of stars){ ctx.globalAlpha=reduce?.7:.45+.45*Math.sin(t/900+s.p); ctx.fillStyle='#FFF4D6'; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,TAU); ctx.fill(); }
+    ctx.globalAlpha=1; requestAnimationFrame(frame); }
+  requestAnimationFrame(frame);
+})();
+
+/* ---------- canvas helper ---------- */
+function setup(cv){ const ctx=cv.getContext('2d'); const s={ctx,W:0,H:0,visible:true};
+  function rs(){ const d=devicePixelRatio||1; s.W=cv.clientWidth; s.H=cv.clientHeight; cv.width=Math.round(s.W*d); cv.height=Math.round(s.H*d); ctx.setTransform(d,0,0,d,0,0); }
+  rs(); addEventListener('resize',rs);
+  if('IntersectionObserver' in window) new IntersectionObserver(e=>{s.visible=e[0].isIntersecting}).observe(cv);
+  return s; }
+const FONT='Heebo, Arial Hebrew, sans-serif', TFONT='Frank Ruhl Libre, serif';
+
+/* ---------- progress ---------- */
+const titles=['מה זה שנה','חודש = ירח','הלוח של קיסר','10 הימים שנעלמו','חג שנודד','הצילו את פסח','מחשבון המצפה','מרוץ הדיוק'];
+const done=new Set(store.get('done',[]));
+const solved=store.get('solved',{});   // calc id -> true
+const extra=store.get('extra',{});     // non-calc requirements: pesach game, checker
+titles.forEach((t,i)=>{
+  const a=document.createElement('a'); a.className='medal'; a.href='#m'+(i+1); a.textContent=LETTERS[i]; a.title=t; $('#medals').appendChild(a);
+  const m=document.createElement('a'); m.href='#m'+(i+1); m.innerHTML='<i>'+LETTERS[i]+'</i>'; m.append(t); $('#map').appendChild(m);
+});
+const need={6:'pesach',7:'checker'};
+function missionReady(n){ const page=$('#m'+n); const calcs=[...page.querySelectorAll('.calc')]; return calcs.every(c=>solved[c.dataset.id]) && (!need[n]||extra[need[n]]); }
+function renderProgress(){
+  for(let n=1;n<=8;n++){ const page=$('#m'+n), b=page.querySelector('.done-btn'), why=page.querySelector('.why'), ready=missionReady(n);
+    b.disabled=!ready; why.hidden=ready; page.classList.toggle('done',done.has(n)); b.textContent=done.has(n)?'✓ המשימה הושלמה':'סיימתי את המשימה'; }
+  [...$('#medals').children].forEach((m,i)=>m.classList.toggle('on',done.has(i+1)));
+  [...$('#map').children].forEach((m,i)=>m.classList.toggle('on',done.has(i+1)));
+  renderCert();
+}
+$$('.done-btn').forEach(b=>b.addEventListener('click',()=>{ const n=+b.dataset.m; done.has(n)?done.delete(n):done.add(n); store.set('done',[...done]); renderProgress(); }));
+
+/* ---------- calculation boxes: try, get hints, solve ---------- */
+$$('.calc').forEach((c,i)=>{
+  const id='c'+i; c.dataset.id=id;
+  const answer=+c.dataset.answer, tol=+c.dataset.tol, hints=[...c.querySelectorAll('.hint')];
+  const ans=document.createElement('div'); ans.className='ans';
+  ans.innerHTML='<input type="text" inputmode="decimal" autocomplete="off" aria-label="התשובה שלכם"><span class="unit"></span><button class="btn">בדיקה</button>';
+  ans.querySelector('.unit').textContent=c.dataset.unit||'';
+  const fb=document.createElement('div'); fb.className='fb'; fb.setAttribute('aria-live','polite');
+  c.insertBefore(ans,hints[0]||null); c.insertBefore(fb,hints[0]||null);
+  const inp=ans.querySelector('input'), btn=ans.querySelector('button'); let tries=0;
+  const markSolved=()=>{ c.classList.add('solved'); inp.disabled=true; btn.disabled=true; inp.value=inp.value||c.dataset.answer; fb.className='fb good'; fb.textContent='נכון! כל הכבוד.';
+    if(c.dataset.fill){ const el=document.getElementById(c.dataset.fill); if(el) el.textContent=c.dataset.fill==='hebYears'?'כ-'+c.dataset.answer+' שנים':c.dataset.answer; } };
+  if(solved[id]) markSolved();
+  function check(){
+    const raw=inp.value.replace(/[,\s]/g,'').replace('٫','.'); const v=parseFloat(raw);
+    if(isNaN(v)){ fb.className='fb bad'; fb.textContent='כתבו מספר.'; return; }
+    if(Math.abs(v-answer)<=tol+1e-9){ solved[id]=true; store.set('solved',solved); markSolved(); renderProgress(); return; }
+    tries++; fb.className='fb bad';
+    // a nudge on the size of the mistake, then the next hint
+    const ratio=v/answer;
+    fb.textContent=(Math.abs(ratio-10)<1||Math.abs(ratio-.1)<.01)?'קרוב! נראה שהנקודה העשרונית זזה.':(v>answer?'קצת פחות.':'קצת יותר.')+' נסו שוב.';
+    const h=hints[Math.min(tries-1,hints.length-1)]; if(h) h.hidden=false;
+  }
+  btn.addEventListener('click',check); inp.addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
+});
+
+/* ---------- predictions ---------- */
+$$('.predict').forEach(p=>{ const ans=p.dataset.answer, rev=p.querySelector('.reveal'), ver=p.querySelector('.verdict');
+  p.querySelectorAll('.opt').forEach(o=>o.addEventListener('click',()=>{ p.querySelectorAll('.opt').forEach(x=>x.classList.remove('picked','right')); o.classList.add('picked'); p.classList.add('answered');
+    const r=p.querySelector('.opt[data-v="'+ans+'"]'); r.classList.add('right');
+    if(o===r){ver.textContent='ניבאתם נכון!';ver.className='verdict good'} else {ver.textContent='הפתעה!';ver.className='verdict surprise'} rev.hidden=false; })); });
+
+/* ---------- hero: a sky clock ---------- */
+(function(){ const S=setup($('#heroDial')), ctx=S.ctx; let t=0,last=performance.now();
+  function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; t+=dt*(reduce?.15:1);
+    if(S.visible){ const W=S.W,H=S.H,cx=W/2,cy=H/2,R=Math.min(W,H)*.38; ctx.clearRect(0,0,W,H);
+      // brass rings with 12 marks
+      ctx.strokeStyle='#B8893B'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(cx,cy,R*1.18,0,TAU); ctx.stroke(); ctx.lineWidth=1; ctx.setLineDash([2,5]); ctx.beginPath(); ctx.arc(cx,cy,R,0,TAU); ctx.stroke(); ctx.setLineDash([]);
+      for(let i=0;i<12;i++){ const a=i/12*TAU; ctx.beginPath(); ctx.moveTo(cx+Math.cos(a)*R*1.12,cy+Math.sin(a)*R*1.12); ctx.lineTo(cx+Math.cos(a)*R*1.24,cy+Math.sin(a)*R*1.24); ctx.stroke(); }
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.3); g.addColorStop(0,'#FFE29A'); g.addColorStop(1,'rgba(245,169,58,0)'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,R*.3,0,TAU); ctx.fill();
+      ctx.fillStyle='#F5A93A'; ctx.beginPath(); ctx.arc(cx,cy,R*.13,0,TAU); ctx.fill();
+      const ea=t*.35, ex=cx+Math.cos(ea)*R, ey=cy+Math.sin(ea)*R; ctx.fillStyle='#3F8EDC'; ctx.beginPath(); ctx.arc(ex,ey,R*.07,0,TAU); ctx.fill();
+      const ma=t*.35*12.37; ctx.strokeStyle='rgba(201,212,240,.35)'; ctx.beginPath(); ctx.arc(ex,ey,R*.18,0,TAU); ctx.stroke(); ctx.fillStyle='#C9D4F0'; ctx.beginPath(); ctx.arc(ex+Math.cos(ma)*R*.18,ey+Math.sin(ma)*R*.18,R*.035,0,TAU); ctx.fill();
+      ctx.fillStyle='rgba(255,244,214,.7)'; ctx.font='500 13px '+FONT; ctx.textAlign='center'; ctx.fillText('12.37 חודשי ירח בכל סיבוב',cx,H-10); }
+    requestAnimationFrame(frame); }
+  requestAnimationFrame(frame); })();
+
+/* ---------- א: orbit ---------- */
+(function(){ const S=setup($('#orbit')), ctx=S.ctx; let day=0, playing=false, last=performance.now(), target=null;
+  const setDay=d=>{ day=d; };
+  $('#oPlay').addEventListener('click',e=>{ playing=!playing; target=null; e.currentTarget.textContent=playing?'⏸ עצור':'▶ הפעל'; e.currentTarget.setAttribute('aria-pressed',playing); });
+  $('#o365').addEventListener('click',()=>{ target=day+365; playing=false; $('#oPlay').textContent='▶ הפעל'; });
+  $('#oQuarter').addEventListener('click',()=>{ target=day+.25; });
+  $('#oReset').addEventListener('click',()=>{ setDay(0); target=null; });
+  function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now;
+    if(target!=null){ const step=Math.max(.02,(target-day)*Math.min(1,dt*3)); day=Math.min(target,day+step); if(target-day<.005){day=target;target=null;} }
+    else if(playing) day+=dt*60;
+    if(S.visible){ const W=S.W,H=S.H,cx=W/2,cy=H/2+4,R=Math.min(W*.42,H*.4); ctx.clearRect(0,0,W,H);
+      ctx.strokeStyle='rgba(226,184,96,.5)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.ellipse(cx,cy,R,R*.9,0,0,TAU); ctx.stroke();
+      // start marker (spring)
+      const a0=-Math.PI/2; ctx.strokeStyle='#E2B860'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cx,cy-R*.9-12); ctx.lineTo(cx,cy-R*.9+12); ctx.stroke();
+      ctx.fillStyle='#E2B860'; ctx.font='700 13px '+FONT; ctx.textAlign='center'; ctx.fillText('נקודת ההתחלה (אביב)',cx,cy-R*.9-18);
+      ctx.fillStyle='#F5A93A'; ctx.beginPath(); ctx.arc(cx,cy,18,0,TAU); ctx.fill();
+      const frac=(day%YEAR)/YEAR, a=a0+frac*TAU, ex=cx+Math.cos(a)*R, ey=cy+Math.sin(a)*R*.9;
+      // the arc already travelled this orbit
+      ctx.strokeStyle='#3F8EDC'; ctx.lineWidth=4; ctx.beginPath(); ctx.ellipse(cx,cy,R,R*.9,0,a0,a); ctx.stroke();
+      ctx.fillStyle='#3F8EDC'; ctx.beginPath(); ctx.arc(ex,ey,10,0,TAU); ctx.fill();
+      // magnifier near the start, to show the quarter-day gap that is too small to see
+      const left=YEAR-(day%YEAR); if(day>=360 && left<5){ const mx=cx+R*.55, my=cy-R*.55; ctx.strokeStyle='#E2B860'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(mx,my,46,0,TAU); ctx.stroke();
+        const gap=Math.min(1,left/1.2)*70; ctx.fillStyle='#E2B860'; ctx.fillRect(mx-1,my-30,2,60); ctx.fillStyle='#3F8EDC'; ctx.beginPath(); ctx.arc(mx-gap*.5-6,my,8,0,TAU); ctx.fill();
+        ctx.fillStyle='#FFF4D6'; ctx.font='700 12px '+FONT; ctx.fillText('זכוכית מגדלת',mx,my+62); }
+      const years=Math.floor(day/YEAR+1e-9);
+      $('#oDays').textContent='יום '+fmt(day,2)+(years?' ('+years+' סיבובים)':'');
+      const rem=day%YEAR; $('#oGap').textContent=rem>364&&rem<YEAR-.001?'חסרים עוד '+fmt((YEAR-rem)*24,1)+' שעות לסיבוב מלא':(rem<.05&&day>1?'סיבוב מלא, כמעט בדיוק!':'–'); }
+    requestAnimationFrame(frame); }
+  requestAnimationFrame(frame); })();
+
+/* ---------- ב: the moon ---------- */
+(function(){ const S=setup($('#moonCv')), ctx=S.ctx, sl=$('#mDay');
+  const phaseName=f=>f<.03||f>.97?'מולד (ירח חדש)':f<.22?'סהר מתמלא':f<.28?'רבע ראשון':f<.47?'ירח מתמלא':f<.53?'ירח מלא':f<.72?'ירח מתמעט':f<.78?'רבע אחרון':'סהר מתמעט';
+  function draw(){ const W=S.W,H=S.H,d=+sl.value,f=(d%MONTH)/MONTH; ctx.clearRect(0,0,W,H);
+    const cx=W/2, cy=H/2-10, r=Math.min(W,H)*.3;
+    // the lit part of the moon: a terminator ellipse between a dark and a lit half
+    ctx.fillStyle='#1B2452'; ctx.beginPath(); ctx.arc(cx,cy,r,0,TAU); ctx.fill();
+    ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,r,0,TAU); ctx.clip(); ctx.fillStyle='#E9EEFF';
+    const k=Math.cos(f*TAU), waxing=f<.5;
+    ctx.beginPath(); ctx.arc(cx,cy,r,-Math.PI/2,Math.PI/2,!waxing); ctx.ellipse(cx,cy,Math.abs(k)*r,r,0,Math.PI/2,-Math.PI/2,waxing?k>0:k<0); ctx.fill(); ctx.restore();
+    ctx.strokeStyle='#B8893B'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(cx,cy,r+8,0,TAU); ctx.stroke();
+    // a timeline with the new moons marked
+    const x0=40,x1=W-40,y=H-28; ctx.strokeStyle='rgba(226,184,96,.6)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke();
+    ctx.font='700 12px '+FONT; ctx.textAlign='center';
+    [0,MONTH,2*MONTH].forEach(m=>{ const x=x1-(m/60)*(x1-x0); ctx.fillStyle='#E2B860'; ctx.beginPath(); ctx.arc(x,y,5,0,TAU); ctx.fill(); ctx.fillText('מולד',x,y-10); });
+    const xd=x1-(d/60)*(x1-x0); ctx.fillStyle='#FFF4D6'; ctx.beginPath(); ctx.moveTo(xd,y+4); ctx.lineTo(xd-6,y+14); ctx.lineTo(xd+6,y+14); ctx.fill();
+    $('#mDayOut').textContent=fmt(d,2); $('#mPhase').textContent=phaseName(f); }
+  sl.addEventListener('input',draw); addEventListener('resize',draw); draw(); })();
+
+/* ---------- ג: where spring falls under each rule ---------- */
+(function(){ const S=setup($('#drift')), ctx=S.ctx, sl=$('#dYear'); let rule='julian';
+  // leap days in years 1..y-1 under a rule, and how far the calendar has run ahead of the sun since 325
+  const L=(y,r)=>r==='none'?0:r==='julian'?Math.floor((y-1)/4):Math.floor((y-1)/4)-Math.floor((y-1)/100)+Math.floor((y-1)/400);
+  const span=(a,b,r)=>365*(b-a)+L(b,r)-L(a,r)-YEAR*(b-a);
+  // the Gregorian line is the Julian one until 1582, when 10 days were dropped and the new rule began
+  const driftR=(y,r)=>r!=='greg'||y<1582?span(325,y,r==='greg'?'julian':r):span(325,1582,'julian')-10+span(1582,y,'greg');
+  $$('[data-rule]').forEach(b=>b.addEventListener('click',()=>{ rule=b.dataset.rule; $$('[data-rule]').forEach(x=>x.setAttribute('aria-pressed',x===b)); draw(); }));
+  function dateOf(dd){ const d=new Date(2001,2,21); d.setDate(d.getDate()-Math.round(dd)); return new Intl.DateTimeFormat('he-IL',{day:'numeric',month:'long'}).format(d); }
+  function draw(){ const W=S.W,H=S.H; ctx.clearRect(0,0,W,H); const x0=50,x1=W-20,y0=20,y1=H-36;
+    const yr=+sl.value; const ys=[]; for(let y=0;y<=3000;y+=10) ys.push(y);
+    const vals=ys.map(y=>driftR(y,rule)); const lim=rule==='none'?Math.max(...vals.map(Math.abs)):40;
+    const X=y=>x1-(y/3000)*(x1-x0), Y=v=>(y0+y1)/2-(v/lim)*((y1-y0)/2);
+    ctx.strokeStyle='rgba(226,184,96,.35)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x0,Y(0)); ctx.lineTo(x1,Y(0)); ctx.stroke();
+    ctx.fillStyle='#E2B860'; ctx.font='700 12px '+FONT; ctx.textAlign='right'; ctx.fillText('21 במרץ: האביב במקום',x1,Y(0)-6);
+    ctx.textAlign='center'; ctx.fillStyle='rgba(255,244,214,.7)'; for(let y=0;y<=3000;y+=500) ctx.fillText(y,X(y),H-14);
+    const col={none:'#FF8D80',julian:'#B79BFF',greg:'#7DC1FF'}[rule];
+    ctx.strokeStyle=col; ctx.lineWidth=3; ctx.beginPath(); ys.forEach((y,i)=>{ const v=Math.max(-lim,Math.min(lim,vals[i])); i?ctx.lineTo(X(y),Y(v)):ctx.moveTo(X(y),Y(v)); }); ctx.stroke();
+    const v=driftR(yr,rule); ctx.fillStyle='#FFF4D6'; ctx.beginPath(); ctx.arc(X(yr),Y(Math.max(-lim,Math.min(lim,v))),6,0,TAU); ctx.fill();
+    $('#dYearOut').textContent=yr; $('#dDate').textContent='בשנת '+yr+' האביב נופל ב-'+dateOf(v)+(Math.abs(v)>=1?' ('+fmt(Math.abs(v),1)+' ימים '+(v>0?'מוקדם':'מאוחר')+' מדי בלוח)':' ✓'); }
+  sl.addEventListener('input',draw); addEventListener('resize',draw); draw(); })();
+
+/* ---------- ד: leap-year sorter ---------- */
+(function(){ const POOL=[1600,1700,1800,1900,2000,2023,2024,2025,2028,2096,2100,2200,2300,2400,1996,2004,1500,2012,2026,3000];
+  let deck=[], score=store.get('sorter',{ok:0,n:0}), cur;
+  const next=()=>{ if(!deck.length) deck=POOL.slice().sort(()=>Math.random()-.5); cur=deck.pop(); $('#sortYear').textContent=cur; };
+  function guess(leap){ const right=isGreg(cur)===leap; score.n++; if(right) score.ok++; store.set('sorter',score);
+    $('#sortMsg').textContent=(right?'✓ נכון! ':'✗ לא בדיוק. ')+cur+(isGreg(cur)?' מעוברת':' רגילה')+(cur%100===0?(cur%400===0?': שנת מאה שמתחלקת ב-400':': שנת מאה שלא מתחלקת ב-400'):cur%4===0?': מתחלקת ב-4':': לא מתחלקת ב-4');
+    $('#sortMsg').className='pill '+(right?'good':'bad'); $('#sortScore').textContent=score.ok+' / '+score.n; next(); }
+  $('#sortLeap').addEventListener('click',()=>guess(true)); $('#sortCommon').addEventListener('click',()=>guess(false));
+  $('#sortScore').textContent=score.ok+' / '+score.n; next(); })();
+
+/* ---------- ה: Ramadan's wheel ---------- */
+(function(){ const S=setup($('#ramadan')), ctx=S.ctx, sl=$('#rYear'); let playing=false, t0=0;
+  // Ramadan 1447 began around 18 Feb 2026; each Islamic year is 354.367 days
+  const START=new Date(2026,1,18), HY=354.367;
+  const startOf=y=>{ let d=new Date(START); while(d.getFullYear()<y) d=new Date(+d+HY*864e5); return d; };
+  const season=m=>[11,0,1].includes(m)?'חורף ❄️':[2,3,4].includes(m)?'אביב 🌸':[5,6,7].includes(m)?'קיץ ☀️':'סתיו 🍂';
+  function draw(){ const W=S.W,H=S.H,cx=W/2,cy=H/2,R=Math.min(W,H)*.38; ctx.clearRect(0,0,W,H);
+    const cols=['#7FB8FF','#7FB8FF','#9BE6B1','#9BE6B1','#9BE6B1','#FFD27A','#FFD27A','#FFD27A','#F2A27A','#F2A27A','#F2A27A','#7FB8FF'];
+    const names=['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
+    for(let m=0;m<12;m++){ const a0=-Math.PI/2+m/12*TAU, a1=a0+TAU/12; ctx.strokeStyle=cols[m]; ctx.globalAlpha=.55; ctx.lineWidth=R*.22; ctx.beginPath(); ctx.arc(cx,cy,R,a0,a1); ctx.stroke(); ctx.globalAlpha=1;
+      ctx.fillStyle='#0A1230'; ctx.font='700 12px '+FONT; ctx.textAlign='center'; const am=(a0+a1)/2; ctx.fillText(names[m],cx+Math.cos(am)*R,cy+Math.sin(am)*R+4); }
+    // trail of earlier years
+    const yr=+sl.value; for(let y=2026;y<=yr;y++){ const d=startOf(y), doy=(d-new Date(d.getFullYear(),0,1))/864e5, a=-Math.PI/2+doy/365.24*TAU;
+      ctx.fillStyle=y===yr?'#FFF4D6':'rgba(255,244,214,.3)'; ctx.beginPath(); ctx.arc(cx+Math.cos(a)*R*.68,cy+Math.sin(a)*R*.68,y===yr?9:4,0,TAU); ctx.fill();
+      if(y===yr){ ctx.font='700 13px '+FONT; ctx.fillText('🌙',cx+Math.cos(a)*R*.68,cy+Math.sin(a)*R*.68-14); } }
+    const d=startOf(yr); ctx.fillStyle='#FFF4D6'; ctx.font='900 22px '+TFONT; ctx.fillText(yr,cx,cy-6); ctx.font='500 13px '+FONT; ctx.fillText('הרמדאן מתחיל בערך ב-'+new Intl.DateTimeFormat('he-IL',{day:'numeric',month:'long'}).format(d),cx,cy+16);
+    $('#rYearOut').textContent=yr; $('#rSeason').textContent='עונה: '+season(d.getMonth()); }
+  $('#rPlay').addEventListener('click',e=>{ playing=!playing; e.currentTarget.textContent=playing?'⏸ עצור':'▶ הרץ שנים'; e.currentTarget.setAttribute('aria-pressed',playing); });
+  let last=0; function frame(now){ if(playing&&now-last>350){ last=now; sl.value=+sl.value>=+sl.max?sl.min:+sl.value+1; draw(); } requestAnimationFrame(frame); }
+  sl.addEventListener('input',draw); addEventListener('resize',draw); draw(); requestAnimationFrame(frame); })();
+
+/* ---------- ו: save Passover (a 19-year cycle game) ---------- */
+(function(){ const S=setup($('#pesach')), ctx=S.ctx, REAL=[3,6,8,11,14,17,19];
+  let leaps=new Set(store.get('pesach',[])), won=!!extra.pesach;
+  // Pesach's offset in days from 10 April, year by year: a common year moves it 11 days earlier
+  // (12 lunar months are 10.9 days short of the sun), a leap year 19 days later (13 months).
+  const WIN=[-15,15];   // roughly 26 March – 25 April: still spring, still before the barley harvest
+  const series=()=>{ let o=12.4; return Array.from({length:19},(_,i)=>{ const y=i+1; o+= leaps.has(y)? (13*MONTH-YEAR) : (12*MONTH-YEAR); return o; }); };
+  const cyc=$('#cycle');
+  for(let y=1;y<=19;y++){ const b=document.createElement('button'); b.className='cy'; b.innerHTML=y+'<small>שנה</small>'; b.setAttribute('aria-label','שנה '+y+' במחזור');
+    b.addEventListener('click',()=>{ leaps.has(y)?leaps.delete(y):leaps.add(y); store.set('pesach',[...leaps]); update(); }); cyc.appendChild(b); }
+  function update(){ [...cyc.children].forEach((b,i)=>{ const on=leaps.has(i+1); b.classList.toggle('leap',on); b.querySelector('small').textContent=on?'אדר א׳':'שנה'; b.setAttribute('aria-pressed',on); });
+    const s=series(), bad=s.filter(o=>o<WIN[0]||o>WIN[1]).length;
+    $('#cyCount').textContent=leaps.size+' שנים מעוברות';
+    let msg;
+    if(bad===0&&leaps.size===7){ msg='🎉 הצלתם את פסח! כל 19 השנים באביב, עם 7 שנים מעוברות בדיוק'; if(!won){ won=true; extra.pesach=true; store.set('extra',extra); renderProgress(); } $('#cyReal').disabled=false; }
+    else if(bad===0) msg='פסח באביב בכל השנים, אבל עם '+leaps.size+' שנים מעוברות. אפשר עם בדיוק 7?';
+    else msg=bad+' שנים שבהן פסח יוצא מהאביב. הוסיפו או הזיזו שנה מעוברת';
+    $('#cyMsg').textContent=msg; $('#cyMsg').className='pill '+(bad===0&&leaps.size===7?'good':bad?'bad':'');
+    draw(s); }
+  function draw(s){ const W=S.W,H=S.H; ctx.clearRect(0,0,W,H); const x0=24,x1=W-24,y0=30,y1=H-30, lim=45;
+    const X=i=>x1-(i+.5)/19*(x1-x0), Y=o=>y0+(1-(o+lim)/(2*lim))*(y1-y0);
+    ctx.fillStyle='rgba(155,230,177,.18)'; ctx.fillRect(x0,Y(WIN[1]),x1-x0,Y(WIN[0])-Y(WIN[1]));
+    ctx.fillStyle='#9BE6B1'; ctx.font='700 12px '+FONT; ctx.textAlign='left'; ctx.fillText('אביב 🌸',x0+4,Y(WIN[0])+14);
+    ctx.fillStyle='rgba(255,244,214,.6)'; ctx.textAlign='right'; ctx.fillText('מאוחר ↑',x1,y0-10); ctx.fillText('מוקדם ↓',x1,y1+20);
+    ctx.strokeStyle='#E2B860'; ctx.lineWidth=2; ctx.beginPath(); s.forEach((o,i)=>{ const v=Math.max(-lim,Math.min(lim,o)); i?ctx.lineTo(X(i),Y(v)):ctx.moveTo(X(i),Y(v)); }); ctx.stroke();
+    s.forEach((o,i)=>{ const ok=o>=WIN[0]&&o<=WIN[1], v=Math.max(-lim,Math.min(lim,o)); ctx.fillStyle=ok?'#9BE6B1':'#FF8D80'; ctx.beginPath(); ctx.arc(X(i),Y(v),leaps.has(i+1)?8:6,0,TAU); ctx.fill(); }); }
+  $('#cyReset').addEventListener('click',()=>{ leaps=new Set(); store.set('pesach',[]); update(); });
+  $('#cyReal').addEventListener('click',()=>{ leaps=new Set(REAL); store.set('pesach',REAL); update(); $('#cyMsg').textContent='זה המחזור האמיתי: גו״ח אדז״ט (3, 6, 8, 11, 14, 17, 19)'; });
+  addEventListener('resize',()=>draw(series())); update(); })();
+
+/* ---------- ז: leap checker and real converter ---------- */
+(function(){ const sc=store.get('checker',{G:0,H:0,I:0,n:0});
+  const rule={G:isGreg,H:isHeb,I:isHijri};
+  const why={G:y=>y%100===0?(y%400===0?'שנת מאה שמתחלקת ב-400':'שנת מאה שלא מתחלקת ב-400'):(y%4===0?'מתחלקת ב-4':'לא מתחלקת ב-4'),
+             H:y=>'השארית בחלוקה ל-19 היא '+(y%19),
+             I:y=>'(14 + 11 × '+y+') בחלוקה ל-30 נותן שארית '+((14+11*y)%30)};
+  const show=()=>{ const ok=sc.G+sc.H+sc.I; $('#kScore').textContent='ניחושים נכונים: '+ok+' / '+sc.n+' (גרגוריאני '+sc.G+', עברי '+sc.H+', מוסלמי '+sc.I+')';
+    if(ok>=6&&sc.G>=2&&sc.H>=2&&sc.I>=2&&!extra.checker){ extra.checker=true; store.set('extra',extra); renderProgress(); } };
+  $$('#checker [data-cal]').forEach(b=>b.addEventListener('click',()=>{ const cal=b.dataset.cal, y=parseInt($('#k'+cal).value,10); if(!(y>0)) return;
+    const truth=rule[cal](y), guess=b.dataset.guess==='1', right=truth===guess; sc.n++; if(right) sc[cal]++; store.set('checker',sc);
+    const out=$('#k'+cal+'res'); out.textContent=(right?'✓ נכון: ':'✗ לא: ')+y+' '+(truth?'מעוברת':'רגילה')+' ('+why[cal](y)+')'; out.style.color=right?'#9BE6B1':'#FFB0A6';
+    $('#k'+cal).value=y+1; show(); }));
+  show();
+  // the converter uses the browser's own calendars (Hebrew, and Umm al-Qura for the Islamic one)
+  const bd=$('#bday'); bd.value=new Date().toISOString().slice(0,10);
+  function conv(){ const v=bd.value; if(!v) return; const [y,m,d]=v.split('-').map(Number); const dt=new Date(y,m-1,d,12);
+    $('#cG').textContent=new Intl.DateTimeFormat('he-IL',{day:'numeric',month:'long',year:'numeric'}).format(dt);
+    $('#cH').textContent=heFmt(dt,'hebrew'); $('#cI').textContent=heFmt(dt,'islamic-umalqura');
+    const gL=isGreg(y)?366:365; $('#cGy').textContent='השנה הזאת: '+gL+' ימים, '+(gL===366?'מעוברת':'רגילה');
+    const hp=parts(dt,'hebrew'), hl=yearLength(dt,'hebrew'); $('#cHy').textContent=hp&&hl?'שנת '+hp.y+': '+hl+' ימים, '+(hl>380?'מעוברת (13 חודשים)':'רגילה (12 חודשים)'):'';
+    const ip=parts(dt,'islamic-umalqura'), il=yearLength(dt,'islamic-umalqura'); $('#cIy').textContent=ip&&il?'שנת '+ip.y+': '+il+' ימים':''; }
+  bd.addEventListener('input',conv); conv(); })();
+
+/* ---------- ח: the accuracy race ---------- */
+(function(){ const S=setup($('#race')), ctx=S.ctx, sl=$('#raceY');
+  const CALS=[['יוליאני',365.25,'#B79BFF'],['עברי',365.2468,'#FFC46B'],['גרגוריאני',365.2425,'#7DC1FF']];
+  function draw(){ const W=S.W,H=S.H; ctx.clearRect(0,0,W,H); const x0=46,x1=W-20,y0=20,y1=H-34, maxY=10000, maxD=80;
+    const X=y=>x1-(y/maxY)*(x1-x0), Y=d=>y1-(Math.min(d,maxD)/maxD)*(y1-y0);
+    ctx.strokeStyle='rgba(226,184,96,.25)'; ctx.lineWidth=1; for(let d=0;d<=maxD;d+=20){ ctx.beginPath(); ctx.moveTo(x0,Y(d)); ctx.lineTo(x1,Y(d)); ctx.stroke(); ctx.fillStyle='rgba(255,244,214,.6)'; ctx.font='500 12px '+FONT; ctx.textAlign='left'; ctx.fillText(d+' ימים',4,Y(d)+4); }
+    ctx.textAlign='center'; for(let y=0;y<=maxY;y+=2000) ctx.fillText(fmt(y),X(y),H-12);
+    const yr=+sl.value; const outs=[];
+    CALS.forEach(([n,len,col])=>{ ctx.strokeStyle=col; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(X(0),Y(0)); ctx.lineTo(X(maxY),Y((len-YEAR)*maxY)); ctx.stroke();
+      const d=(len-YEAR)*yr; ctx.fillStyle=col; ctx.beginPath(); ctx.arc(X(yr),Y(d),5,0,TAU); ctx.fill(); outs.push(n+': '+fmt(d,1)); });
+    ctx.strokeStyle='#FFF4D6'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(X(yr),y0); ctx.lineTo(X(yr),y1); ctx.stroke(); ctx.setLineDash([]);
+    $('#raceYOut').textContent=fmt(yr); $('#raceOut').textContent='אחרי '+fmt(yr)+' שנים, ימים מהשמש: '+outs.join(' · '); }
+  sl.addEventListener('input',draw); addEventListener('resize',draw); draw(); })();
+
+/* ---------- quiz and certificate ---------- */
+const Q=[
+  ['כמה זמן לוקח לכדור הארץ להקיף את השמש?',['365 ימים בדיוק','365.2422 ימים','354 ימים'],1],
+  ['האם שנת 2100 תהיה שנה מעוברת בלוח הגרגוריאני?',['כן, היא מתחלקת ב-4','לא, היא שנת מאה שלא מתחלקת ב-400','כן, כל שנות המאה מעוברות'],1],
+  ['למה הרמדאן נופל כל שנה בעונה אחרת?',['כי הלוח המוסלמי עוקב רק אחרי הירח, והשנה בו קצרה ב-11 ימים','כי יש בו חודש מעובר','כי הוא עוקב רק אחרי השמש'],0],
+  ['כמה שנים מעוברות יש במחזור של 19 שנים בלוח העברי?',['4','7','12'],1],
+  ['מה מוסיפים בשנה עברית מעוברת?',['יום אחד, 29 בפברואר','חודש שלם: אדר א׳','שבוע אחד'],1],
+];
+const qa=store.get('quiz',{});
+Q.forEach(([q,opts,ans],qi)=>{ const d=document.createElement('div'); d.className='predict quizq';
+  const p=document.createElement('p'); p.className='q';
+  p.textContent=(qi+1)+'. '+q; d.appendChild(p); const o=document.createElement('div'); o.className='opts'; d.appendChild(o);
+  const btns=opts.map(t=>{ const b=document.createElement('button'); b.className='opt'; b.textContent=t; o.appendChild(b); return b; });
+  function show(i){ btns.forEach(b=>b.classList.remove('picked','right')); btns[i].classList.add('picked'); btns[ans].classList.add('right'); d.classList.add('answered'); }
+  btns.forEach((b,i)=>b.addEventListener('click',()=>{ qa[qi]=i; store.set('quiz',qa); show(i); renderCert(); }));
+  if(qa[qi]!=null) show(qa[qi]); $('#quiz').appendChild(d); });
+const who=$('#who'); who.value=store.get('name',''); who.addEventListener('input',()=>{ store.set('name',who.value); renderCert(); });
+function renderCert(){ const right=Q.filter((q,i)=>qa[i]===q[2]).length, nCalc=Object.keys(solved).length;
+  $('#certName').textContent=who&&who.value.trim()?who.value.trim():' ';
+  $('#certText').textContent='השלים '+done.size+' מתוך 8 משימות, פתר '+nCalc+' חישובים ו-'+right+' מתוך 5 שאלות, ויודע לחשב שנה מעוברת בשלושה לוחות.'; }
+$('#certDate').textContent=new Intl.DateTimeFormat('he-IL',{day:'numeric',month:'long',year:'numeric'}).format(new Date())+' · '+heFmt(new Date(),'hebrew');
+renderProgress();
+
+if(location.search.includes('test')) window.__cal={isGreg,isHeb,isHijri,yearLength,parts};
+})();
+</script>
+</body>
+</html>

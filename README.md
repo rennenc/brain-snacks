@@ -16,6 +16,7 @@ tracking.
 | 🎮 Game | [Rotem's Sky Letters](https://brainsnacks.pages.dev/games/rotem-sky/) | 4–7 | עברית + English | Reading aloud: English syllables (BA, DE…) and Hebrew words with nikud | [docs](docs/games/rotem-sky.md) |
 | 🧪 Lesson | [מעבדת הנייר המעופף · The Flying Paper Lab](https://brainsnacks.pages.dev/lessons/flying-paper-lab/) | 8–12 | עברית | Air pressure, Bernoulli, lift and drag, fair experiments | [docs](docs/lessons/flying-paper-lab.md) |
 | 🧪 Lesson | [מעבדת הצליל · The Sound Lab](https://brainsnacks.pages.dev/lessons/sound-lab/) | 9–13 | עברית | Waves, frequency, inverse proportion, musical ratios, speed of sound | [docs](docs/lessons/sound-lab.md) |
+| 🧪 Lesson | [כמה ארוכה שנה? · How Long Is a Year?](https://brainsnacks.pages.dev/lessons/calendars/) | 10–14 | עברית | The solar year vs. the lunar month; leap years in the Gregorian, Hebrew and Islamic calendars, calculated by hand | [docs](docs/lessons/calendars.md) |
 
 The same list, machine-readable, is in [`site/catalog.json`](site/catalog.json) (ages,
 languages, skills, microphone use). Keep it in step with the catalogue page.
@@ -31,7 +32,8 @@ languages, skills, microphone use). Keep it in step with the catalogue page.
 - **Kind to mistakes.** Unclear answers are retried, not punished; real mistakes cost a little
   and teach something (the bird says the sound; the lesson explains the surprise).
 - **Its own look.** Every game and lesson has a design of its own: the Flying Paper Lab is a
-  paper lab notebook, the Sound Lab is a recording studio at night.
+  paper lab notebook, the Sound Lab is a recording studio at night, How Long Is a Year? is an
+  observatory: parchment pages under a night sky.
 - **Private by default.** No logins, no ads, no analytics. Progress is saved only in the
   player's browser. Speech is recognised on the device (Whisper in the browser); Chrome's
   built-in speech service also runs in the game, and that one sends audio to Google.
@@ -46,6 +48,7 @@ site/                                   published as-is to Cloudflare Pages (no 
   games/rotem-sky/index.html            Rotem's Sky Letters (one self-contained file)
   lessons/flying-paper-lab/index.html   The Flying Paper Lab
   lessons/sound-lab/index.html          The Sound Lab
+  lessons/calendars/index.html          How Long Is a Year?
   favicon.svg, favicon.ico, …           the Brain Snacks icon
   _redirects                            keeps old addresses working
 docs/
@@ -66,7 +69,8 @@ need it.
 ## Adding a game or lesson
 
 1. Create `site/games/<id>/index.html` or `site/lessons/<id>/index.html`.
-2. Give it a link back to the catalogue (`../../`) and the icon links (`../../favicon.svg`).
+2. Give it the link back to the catalogue, worded and placed the same everywhere: `→ כל המשחקים והשיעורים`,
+   linking to `../../`, at the top right. Add the icon links (`../../favicon.svg`).
 3. Add a card on the right shelf of `site/index.html` (copy an existing card), with
    `data-age-min` / `data-age-max` and a matching `גילאי X–Y` tag.
 4. Add an entry to `site/catalog.json`, and a short doc in `docs/games/` or `docs/lessons/`.
