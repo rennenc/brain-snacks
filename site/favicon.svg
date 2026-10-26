@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Brain Snacks: a pink brain with a bite taken out of it -->
+  <defs>
+    <mask id="bite">
+      <rect width="64" height="64" fill="#fff"/>
+      <circle cx="55" cy="13" r="8" fill="#000"/>
+      <circle cx="60" cy="25" r="7" fill="#000"/>
+    </mask>
+  </defs>
+  <g mask="url(#bite)">
+    <path d="M32 7C22 3 11 9 11 18C4 21 3 32 8 37C4 44 9 53 18 53C21 59 30 60 33 55C37 60 47 59 50 52C58 51 61 42 57 36C62 30 59 19 52 17C51 8 40 3 32 7Z"
+          fill="#FF8FB1" stroke="#B93D78" stroke-width="3.2" stroke-linejoin="round"/>
+    <g fill="none" stroke="#B93D78" stroke-width="2.8" stroke-linecap="round">
+      <path d="M32 9C29 18 35 24 31 32C28 39 33 46 32 54"/>
+      <path d="M13 26C19 23 22 30 27 27"/>
+      <path d="M38 23C43 27 48 23 52 28"/>
+      <path d="M15 43C21 38 24 45 28 41"/>
+      <path d="M37 44C42 40 46 45 50 41"/>
+    </g>
+  </g>
+  <!-- bite edge and crumbs -->
+  <path d="M47 9A8 8 0 0 0 53 21A7 7 0 0 0 57 31" fill="none" stroke="#B93D78" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="60" cy="8" r="2.4" fill="#FF8FB1" stroke="#B93D78" stroke-width="1.2"/>
+  <circle cx="62" cy="38" r="1.8" fill="#FF8FB1" stroke="#B93D78" stroke-width="1"/>
+</svg>

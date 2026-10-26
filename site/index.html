@@ -1,14 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Brain Snacks</title>
-<meta name="description" content="Snack-size games that feed the brain. Kids read out loud, fly and collect stars: English sounds and Hebrew words.">
+<title>Brain Snacks · חטיפים למוח</title>
+<meta name="description" content="חטיפים למוח: משחקים ושיעורים קצרים לילדים שמלמדים באמת. קוראים בקול, עפים, אוספים כוכבים ועושים ניסויים בבית.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;800&family=Rubik:wght@500;700&display=swap">
 <style>
-/* Layout: a sunny sky header with the name, then a shelf of game cards; one bright look. */
+/* Layout: a sunny sky header with the name, then a shelf of games and a shelf of lessons; one bright look, Hebrew, right to left. */
 :root{
   --ink:#24305E;
   --sky:#7FD3FF;
@@ -19,8 +22,8 @@
   --paper:#FFFFFF;
   --mist:#F3F6FD;
   --shadow:rgba(36,48,94,.18);
-  --font-display:"Fredoka","Arial Rounded MT Bold",ui-rounded,system-ui,sans-serif;
-  --font-body:"Nunito",ui-rounded,system-ui,sans-serif;
+  --font-display:"Fredoka","Rubik","Arial Rounded MT Bold",ui-rounded,system-ui,sans-serif;
+  --font-body:"Rubik","Arial Hebrew",ui-rounded,system-ui,sans-serif;
   --font-hebrew:"Rubik","Arial Hebrew",sans-serif;
   color-scheme:light;
 }
@@ -36,28 +39,28 @@ header{max-width:960px;margin:0 auto;padding-block:clamp(36px,8vw,80px) 28px;tex
 .logo{font:700 clamp(54px,11vw,104px)/1 var(--font-display);margin:0;letter-spacing:-.01em;text-wrap:balance}
 .logo .c1{color:var(--coral)} .logo .c2{color:var(--teal)}
 .logo .snack{display:inline-block;background:var(--sun);color:var(--ink);border-radius:.28em;padding:0 .14em;transform:rotate(-4deg);box-shadow:0 .08em 0 #D69A00}
-.tag{font:800 clamp(18px,2.6vw,24px)/1.4 var(--font-body);margin:18px 0 4px}
-.tag-he{font:500 clamp(18px,2.4vw,22px) var(--font-hebrew);margin:0;opacity:.85}
-.sun{position:absolute;right:max(0px,4%);top:18px;width:clamp(70px,12vw,120px);aspect-ratio:1;border-radius:50%;background:var(--sun);
+.tag{font:700 clamp(26px,4vw,38px)/1.2 var(--font-display);margin:20px 0 6px}
+.tag-sub{font:500 clamp(18px,2.4vw,22px)/1.5 var(--font-body);margin:0 auto;opacity:.85;max-width:34em}
+.sun{position:absolute;left:max(0px,4%);top:18px;width:clamp(70px,12vw,120px);aspect-ratio:1;border-radius:50%;background:var(--sun);
   box-shadow:0 0 0 14px rgba(255,201,60,.25),0 0 0 30px rgba(255,201,60,.12);animation:float 6s ease-in-out infinite}
 @keyframes float{50%{transform:translateY(8px)}}
 @media (max-width:640px){.sun{display:none}}
 
 main{max-width:960px;margin:0 auto;padding-block:8px 48px}
-.shelf-title{font:700 22px var(--font-display);margin:0 0 14px;letter-spacing:.02em}
+.shelf-title{font:700 26px var(--font-display);margin:0 0 14px}
 .shelf + .shelf-title{margin-top:40px}
-.shelf-title small{display:block;font:600 16px var(--font-body);opacity:.75;letter-spacing:0;margin-top:2px}
+.shelf-title small{display:block;font:500 17px var(--font-body);opacity:.75;margin-top:2px}
 .play-btn.lesson{background:var(--teal);box-shadow:0 5px 0 #12867C}
-.card .he{font-family:var(--font-hebrew);font-weight:700}
+.card .en{direction:ltr;text-align:right}
 .shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
 
 .card{background:var(--paper);border-radius:28px;box-shadow:0 8px 0 var(--shadow);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;
   transition:transform .15s ease}
-a.card:hover{transform:translateY(-4px) rotate(-.4deg)}
+a.card:hover{transform:translateY(-4px) rotate(.4deg)}
 .art{aspect-ratio:16/9;max-width:100%;display:block;background:linear-gradient(180deg,#6CCBFF,#D6F3FF)}
 .body{padding:18px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
 .body h2{font:700 30px/1.1 var(--font-display);margin:0}
-.body p{margin:0;font-size:16px;line-height:1.5;font-weight:600}
+.body p{margin:0;font-size:17px;line-height:1.55;font-weight:500}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
 .tags span{background:var(--mist);border-radius:999px;padding:4px 12px;font:600 14px var(--font-display)}
 .play-btn{margin-top:auto;align-self:flex-start;background:var(--coral);color:#fff;border-radius:999px;padding:10px 28px;font:700 22px var(--font-display);box-shadow:0 5px 0 #C9363B}
@@ -68,7 +71,7 @@ a.card:hover{transform:translateY(-4px) rotate(-.4deg)}
 .soon .icons{font-size:30px;letter-spacing:6px}
 
 .notes{margin-top:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.note{background:rgba(255,255,255,.7);border-radius:20px;padding:14px 18px;font-size:15px;line-height:1.5;font-weight:600}
+.note{background:rgba(255,255,255,.7);border-radius:20px;padding:14px 18px;font-size:16px;line-height:1.55;font-weight:500}
 .note b{font-family:var(--font-display);font-size:17px;display:block;margin-bottom:2px}
 footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font-weight:600;font-size:14px;opacity:.7}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -77,16 +80,16 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
 <body>
 <header>
   <div class="sun" aria-hidden="true"></div>
-  <h1 class="logo"><span class="c1">Br</span><span class="c2">ai</span><span class="c1">n</span> <span class="snack">Snacks</span></h1>
-  <p class="tag">Snack-size games that feed the brain, instead of junk.</p>
-  <p class="tag-he" lang="he" dir="rtl">חטיפים למוח: משחקים קצרים שמלמדים באמת</p>
+  <h1 class="logo" dir="ltr" lang="en"><span class="c1">Br</span><span class="c2">ai</span><span class="c1">n</span> <span class="snack">Snacks</span></h1>
+  <p class="tag">חטיפים למוח</p>
+  <p class="tag-sub">משחקים ושיעורים קצרים שמלמדים באמת, במקום משחקים שסתם מבזבזים עליהם זמן.</p>
 </header>
 
 <main>
-  <h2 class="shelf-title">Games</h2>
+  <h2 class="shelf-title">משחקים</h2>
   <div class="shelf">
     <a class="card" href="games/rotem-sky/">
-      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="A yellow bird hovering next to a bubble that says Ba">
+      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="ציפור צהובה מרחפת ליד בועה שכתוב בה Ba">
         <rect width="320" height="180" fill="#8ED8FF"/>
         <circle cx="270" cy="38" r="22" fill="#FFD84D"/>
         <ellipse cx="70" cy="40" rx="34" ry="14" fill="#fff" opacity=".9"/><ellipse cx="96" cy="34" rx="22" ry="12" fill="#fff" opacity=".9"/>
@@ -105,23 +108,23 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
         </g>
       </svg>
       <div class="body">
-        <h2>Rotem's Sky Letters</h2>
-        <p>Read the sound or word out loud and the bird flies through the gate. Collect stars, unlock 17 birds with their own powers.</p>
-        <div class="tags"><span>🎤 Read out loud</span><span>BA · DE</span><span lang="he">עברית</span><span>Ages 4–7</span></div>
-        <span class="play-btn">Play ➜</span>
+        <h2 class="en" lang="en">Rotem's Sky Letters</h2>
+        <p>קוראים בקול את ההברה או המילה, והציפור עפה דרך השער. אוספים כוכבים ופותחים 17 ציפורים, ולכל אחת כוח מיוחד.</p>
+        <div class="tags"><span>🎤 קוראים בקול</span><span lang="en">BA · DE</span><span>עברית</span><span>גילאי 4–7</span></div>
+        <span class="play-btn">לשחק ←</span>
       </div>
     </a>
     <div class="card soon">
       <div class="icons" aria-hidden="true">🔢 🧩 🎨</div>
-      <b>More games coming</b>
-      <p>New games land here as we make them.</p>
+      <b>עוד משחקים בדרך</b>
+      <p>משחקים חדשים יופיעו כאן ברגע שנכין אותם.</p>
     </div>
   </div>
 
-  <h2 class="shelf-title">Interactive lessons<small>Hands-on science: try it at home, then play with the simulator.</small></h2>
+  <h2 class="shelf-title">שיעורים אינטראקטיביים<small>מדע בידיים: מנסים בבית, ואז משחקים עם הסימולטור.</small></h2>
   <div class="shelf">
     <a class="card" href="lessons/flying-paper-lab/">
-      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="A paper plane gliding over graph paper with air flowing over its wing">
+      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="מטוס נייר גולש מעל נייר משבצות, ואוויר זורם מעל הכנף">
         <defs><pattern id="gridp" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#DCE7F3" stroke-width="1"/></pattern></defs>
         <rect width="320" height="180" fill="#F4F8FC"/><rect width="320" height="180" fill="url(#gridp)"/>
         <path d="M300 150 C 230 160, 170 120, 110 100" fill="none" stroke="#4C6185" stroke-width="2" stroke-dasharray="6 7"/>
@@ -137,25 +140,25 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
         <text x="250" y="40" font-family="Secular One, Rubik, sans-serif" font-size="22" fill="#178F62">עילוי ↑</text>
       </svg>
       <div class="body">
-        <h2 class="he" lang="he" dir="rtl">מעבדת הנייר המעופף</h2>
-        <p>How does a 400-ton plane stay in the air? 8 missions with sheets of paper, a Bernoulli tube and a wind tunnel simulator, a flight log, and a pilot certificate at the end.</p>
-        <div class="tags"><span>🧪 Bernoulli &amp; lift</span><span>📄 Paper only</span><span>2 simulators</span><span lang="he">עברית</span></div>
-        <span class="play-btn lesson">Start lesson ➜</span>
+        <h2>מעבדת הנייר המעופף</h2>
+        <p>איך מטוס של 400 טון נשאר באוויר? 8 משימות עם דפי נייר, צינור ברנולי ומנהרת רוח, יומן טיסות ותעודת טייס בסוף.</p>
+        <div class="tags"><span>🧪 ברנולי ועילוי</span><span>📄 רק דפי נייר</span><span>2 סימולטורים</span></div>
+        <span class="play-btn lesson">להתחיל ←</span>
       </div>
     </a>
     <div class="card soon">
       <div class="icons" aria-hidden="true">🧲 🌋 🪐</div>
-      <b>More lessons coming</b>
-      <p>Each lesson mixes a home experiment with an interactive simulator.</p>
+      <b>עוד שיעורים בדרך</b>
+      <p>כל שיעור משלב ניסוי בבית עם סימולטור אינטראקטיבי.</p>
     </div>
   </div>
 
   <div class="notes">
-    <div class="note"><b>Best in Chrome</b>On a computer or tablet. Games that listen ask to use the microphone once.</div>
-    <div class="note"><b>Privacy</b>Progress is saved only in this browser. Speech is recognised on your device, and also by Chrome's built-in speech service.</div>
-    <div class="note"><b>For grown-ups</b>Press and hold ⚙ in a game to choose letters, words and how strict it listens.</div>
+    <div class="note"><b>הכי טוב ב-Chrome</b>במחשב או בטאבלט. משחקים שמקשיבים מבקשים גישה למיקרופון פעם אחת.</div>
+    <div class="note"><b>פרטיות</b>ההתקדמות נשמרת רק בדפדפן הזה. הדיבור מזוהה במכשיר שלכם, וגם בשירות זיהוי הדיבור המובנה של Chrome.</div>
+    <div class="note"><b>להורים</b>לחיצה ארוכה על ⚙ במשחק פותחת הגדרות: אילו אותיות ומילים, וכמה קפדני הזיהוי.</div>
   </div>
 </main>
-<footer>Made with love by the Chacham family</footer>
+<footer>נעשה באהבה על ידי משפחת חכם</footer>
 </body>
 </html>
