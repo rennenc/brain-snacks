@@ -1,0 +1,47 @@
+{
+  "name": "Brain Snacks",
+  "name_he": "חטיפים למוח",
+  "tagline_he": "פחות גלילה, יותר גדילה.",
+  "url": "https://brainsnacks.pages.dev",
+  "repo": "https://github.com/rennenc/brain-snacks",
+  "items": [
+    {
+      "id": "rotem-sky",
+      "kind": "game",
+      "title": "Rotem's Sky Letters",
+      "path": "games/rotem-sky/",
+      "ages": [4, 7],
+      "languages": ["he", "en"],
+      "skills": ["reading aloud", "English phonics: consonant + vowel syllables", "Hebrew words with nikud"],
+      "uses_microphone": true,
+      "docs": "docs/games/rotem-sky.md",
+      "summary": "A Flappy-Bird-style game: read the syllable or Hebrew word out loud and the bird flies through the gate. Levels get faster and add golden, moving, double and triple gates; 17 birds with their own powers; badges."
+    },
+    {
+      "id": "flying-paper-lab",
+      "kind": "lesson",
+      "title": "מעבדת הנייר המעופף",
+      "title_en": "The Flying Paper Lab",
+      "path": "lessons/flying-paper-lab/",
+      "ages": [8, 12],
+      "languages": ["he"],
+      "skills": ["air pressure", "Bernoulli's principle", "lift and drag", "running a fair experiment"],
+      "uses_microphone": false,
+      "docs": "docs/lessons/flying-paper-lab.md",
+      "summary": "Why planes fly: 8 home missions with sheets of paper, a Bernoulli tube simulator, a wind tunnel, a paper-plane flight log and a pilot certificate."
+    },
+    {
+      "id": "sound-lab",
+      "kind": "lesson",
+      "title": "מעבדת הצליל",
+      "title_en": "The Sound Lab",
+      "path": "lessons/sound-lab/",
+      "ages": [9, 13],
+      "languages": ["he"],
+      "skills": ["vibration and waves", "frequency and pitch", "inverse proportion", "musical ratios", "speed of sound"],
+      "uses_microphone": true,
+      "docs": "docs/lessons/sound-lab.md",
+      "summary": "See your voice on a live oscilloscope, measure pitch in Hz, build a straw flute and a rubber-band guitar, tune water glasses to a scale, mix waves, and race lightning against thunder."
+    }
+  ]
+}
