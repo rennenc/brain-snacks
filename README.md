@@ -14,6 +14,7 @@ tracking.
 | | Name | Ages | Language | What you learn | Docs |
 |---|---|---|---|---|---|
 | 🎮 Game | [Rotem's Sky Letters](https://brainsnacks.pages.dev/games/rotem-sky/) | 4–7 | עברית + English | Reading aloud: English syllables (BA, DE…) and Hebrew words with nikud | [docs](docs/games/rotem-sky.md) |
+| 🎮 Game | [דגי המספרים · Number Fish](https://brainsnacks.pages.dev/games/number-fish/) | 4–7 | עברית | Numbers to 20, counting, adding and subtracting within 10 | [docs](docs/games/number-fish.md) |
 | 🧪 Lesson | [מעבדת הנייר המעופף · The Flying Paper Lab](https://brainsnacks.pages.dev/lessons/flying-paper-lab/) | 8–12 | עברית | Air pressure, Bernoulli, lift and drag, fair experiments | [docs](docs/lessons/flying-paper-lab.md) |
 | 🧪 Lesson | [מעבדת הצליל · The Sound Lab](https://brainsnacks.pages.dev/lessons/sound-lab/) | 9–13 | עברית | Waves, frequency, inverse proportion, musical ratios, speed of sound | [docs](docs/lessons/sound-lab.md) |
 | 🧪 Lesson | [כמה ארוכה שנה? · How Long Is a Year?](https://brainsnacks.pages.dev/lessons/calendars/) | 10–14 | עברית | The solar year vs. the lunar month; leap years in the Gregorian, Hebrew and Islamic calendars, calculated by hand | [docs](docs/lessons/calendars.md) |
@@ -46,6 +47,7 @@ site/                                   published as-is to Cloudflare Pages (no 
   index.html                            the catalogue page (Hebrew, right to left)
   catalog.json                          the list of games and lessons, machine-readable
   games/rotem-sky/index.html            Rotem's Sky Letters (one self-contained file)
+  games/number-fish/index.html          Number Fish
   lessons/flying-paper-lab/index.html   The Flying Paper Lab
   lessons/sound-lab/index.html          The Sound Lab
   lessons/calendars/index.html          How Long Is a Year?
@@ -55,6 +57,7 @@ docs/
   games/   lessons/                     how each game or lesson works, and why
 tools/
   play-local.command                    double-click to run the site locally in Chrome
+  voice-lines.json, generate-voice.mjs  every spoken line, and the script that records them
   deploy-local.sh                       publish by hand (personal account only)
   testclips/                            recorded syllables and words for testing speech recognition
 .github/workflows/deploy.yml            publishes site/ on every push to main
@@ -75,6 +78,19 @@ need it.
    `data-age-min` / `data-age-max` and a matching `גילאי X–Y` tag.
 4. Add an entry to `site/catalog.json`, and a short doc in `docs/games/` or `docs/lessons/`.
 5. Push to `main`. It's live about a minute later.
+
+## Voice
+
+Games never use the browser's own speech voice. Every line a game says is written in
+[`tools/voice-lines.json`](tools/voice-lines.json) and recorded once into mp3 files with a good
+Hebrew voice:
+
+```bash
+ELEVENLABS_API_KEY=... node tools/generate-voice.mjs
+```
+
+(or `CARTESIA_API_KEY=...`). Only new or changed lines are generated; commit the files it writes
+under `site/games/<game>/voice/`.
 
 ## Running locally
 

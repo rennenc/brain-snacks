@@ -28,6 +28,29 @@
       "summary": "A Flappy-Bird-style game: read the syllable or Hebrew word out loud and the bird flies through the gate. Levels get faster and add golden, moving, double and triple gates; 17 birds with their own powers; badges."
     },
     {
+      "id": "number-fish",
+      "kind": "game",
+      "title": "דגי המספרים",
+      "title_en": "Number Fish",
+      "path": "games/number-fish/",
+      "ages": [
+        4,
+        7
+      ],
+      "languages": [
+        "he"
+      ],
+      "skills": [
+        "recognising numbers 1–20",
+        "counting objects",
+        "adding within 10",
+        "subtracting within 10"
+      ],
+      "uses_microphone": false,
+      "docs": "docs/games/number-fish.md",
+      "summary": "A fishing game: a voice asks for a number (then a count, a sum or a difference) and the child taps the fish carrying the answer. Nine levels, a new fish species for the aquarium after each one."
+    },
+    {
       "id": "flying-paper-lab",
       "kind": "lesson",
       "title": "מעבדת הנייר המעופף",
