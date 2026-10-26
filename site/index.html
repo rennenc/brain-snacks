@@ -156,16 +156,19 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
       </div>
     </a>
     <a class="card" href="lessons/sound-lab/" data-kind="lesson" data-age-min="9" data-age-max="13">
-      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="גל קול סגול, מיתר וכוס עם מים">
-        <defs><pattern id="gridq" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#E2DFF3" stroke-width="1"/></pattern></defs>
-        <rect width="320" height="180" fill="#F6F5FC"/><rect width="320" height="180" fill="url(#gridq)"/>
-        <path d="M10 80 Q 30 20 50 80 T 90 80 T 130 80 T 170 80 T 210 80" fill="none" stroke="#7A5CFA" stroke-width="5" stroke-linecap="round"/>
-        <path d="M10 80 Q 20 50 30 80 T 50 80 T 70 80 T 90 80 T 110 80 T 130 80 T 150 80 T 170 80 T 190 80 T 210 80" fill="none" stroke="#E3484E" stroke-width="2.5" opacity=".7"/>
-        <line x1="20" y1="140" x2="200" y2="140" stroke="#1F1A4A" stroke-width="3"/><rect x="16" y="130" width="7" height="20" fill="#1F1A4A"/><rect x="196" y="130" width="7" height="20" fill="#FFBE2E"/>
-        <path d="M20 140 Q 110 122 200 140" fill="none" stroke="#7A5CFA" stroke-width="3"/>
-        <path d="M240 60 L290 60 L284 150 L246 150 Z" fill="#fff" stroke="#1F1A4A" stroke-width="3" stroke-linejoin="round"/>
-        <path d="M243 100 L287 100 L284 150 L246 150 Z" fill="#2B78DD" opacity=".55"/>
-        <text x="265" y="44" text-anchor="middle" font-family="Secular One, Rubik, sans-serif" font-size="20" fill="#7A5CFA">440 Hz</text>
+      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="מסך אוסצילוסקופ כהה עם גל ניאון ירוק, מיתר וכוס מים">
+        <defs><pattern id="gridq" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#211B3E" stroke-width="1"/></pattern>
+          <filter id="glowq"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        <rect width="320" height="180" fill="#07050F"/><rect width="320" height="180" fill="url(#gridq)"/>
+        <g filter="url(#glowq)" fill="none" stroke-linecap="round">
+          <path d="M14 78 Q 34 22 54 78 T 94 78 T 134 78 T 174 78 T 214 78" stroke="#B8FF3C" stroke-width="4"/>
+          <path d="M14 78 Q 24 52 34 78 T 54 78 T 74 78 T 94 78 T 114 78 T 134 78 T 154 78 T 174 78 T 194 78 T 214 78" stroke="#FF4F8B" stroke-width="2" opacity=".8"/>
+          <path d="M22 142 Q 112 124 202 142" stroke="#39D5FF" stroke-width="3"/>
+          <path d="M240 58 L290 58 L284 150 L246 150 Z" stroke="#39D5FF" stroke-width="2.5" stroke-linejoin="round"/>
+        </g>
+        <rect x="18" y="132" width="6" height="20" fill="#A9A2D6"/><rect x="200" y="132" width="6" height="20" fill="#FFB020"/>
+        <path d="M243 100 L287 100 L284 150 L246 150 Z" fill="#39D5FF" opacity=".35"/>
+        <text x="265" y="42" text-anchor="middle" direction="ltr" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="700" font-size="18" fill="#FFB020">440 Hz</text>
       </svg>
       <div class="body">
         <h2>מעבדת הצליל</h2>
