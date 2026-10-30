@@ -74,6 +74,30 @@
       "summary": "Why planes fly: 8 home missions with sheets of paper, a Bernoulli tube simulator, a wind tunnel, a paper-plane flight log and a pilot certificate."
     },
     {
+      "id": "thin-air-lab",
+      "kind": "lesson",
+      "title": "מעבדת האוויר הדק",
+      "title_en": "The Thin Air Lab",
+      "path": "lessons/thin-air-lab/",
+      "ages": [
+        9,
+        13
+      ],
+      "languages": [
+        "he"
+      ],
+      "skills": [
+        "Bernoulli's equation with numbers",
+        "the lift equation",
+        "how air density changes flight",
+        "drag, wakes and vortices",
+        "testing a formula's prediction"
+      ],
+      "uses_microphone": false,
+      "docs": "docs/lessons/thin-air-lab.md",
+      "summary": "Part 2 of aerodynamics: Bernoulli with numbers, a pitot-tube speed puzzle, lift-equation locks, a real fluid simulation you can draw in, paper experiments timed with a stopwatch, and hovering a helicopter and flying a plane of your own design in the thin air of Mars."
+    },
+    {
       "id": "sound-lab",
       "kind": "lesson",
       "title": "מעבדת הצליל",

@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>מעבדת האוויר הדק</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Assistant:wght@400;600;700;800&family=Secular+One&display=swap">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<style>
+/* Layout: the lab notebook from part 1, on the same graph paper. Mission cards in one column, simulators as wide instruments. */
+:root{
+  --paper:#F4F8FC; --grid:#DCE7F3; --ink:#13274A; --ink-soft:#4C6185; --card:#FFFFFF; --line:#CBD9EA;
+  --signal:#FFBE2E; --signal-ink:#3B2900; --low:#E3484E; --high:#2B78DD; --ok:#178F62; --sim:#EAF2FB; --mars:#BF4F22; --marsbg:#F5C7A9;
+  --display:"Secular One","Assistant",system-ui,sans-serif;
+  --body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --hand:"Amatic SC","Assistant",cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0D1A31; --grid:#182A4A; --ink:#E8EFFA; --ink-soft:#A3B5D2; --card:#132442; --line:#29406A;
+  --signal:#FFC447; --signal-ink:#2A1D00; --low:#FF6B70; --high:#5EA3FF; --ok:#3ECB91; --sim:#0F203D; --mars:#FF9A6B; --marsbg:#7A3A1E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0D1A31; --grid:#182A4A; --ink:#E8EFFA; --ink-soft:#A3B5D2; --card:#132442; --line:#29406A;
+  --signal:#FFC447; --signal-ink:#2A1D00; --low:#FF6B70; --high:#5EA3FF; --ok:#3ECB91; --sim:#0F203D; --mars:#FF9A6B; --marsbg:#7A3A1E; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{
+  direction:rtl; font-family:var(--body); font-size:18px; line-height:1.6; color:var(--ink);
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--card)}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px;border-radius:6px}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.home{font-size:14px;font-weight:700;color:var(--ink-soft);text-decoration:none;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.home:hover{border-color:var(--ink);color:var(--ink)}
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--card);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px}
+.brand{font-family:var(--display);font-size:20px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.stamps{display:flex;align-items:center;gap:6px}
+.stamp{width:22px;height:22px;border-radius:50%;border:2px dashed var(--ink-soft);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--ink-soft);text-decoration:none;transition:transform .2s}
+.stamp.on{background:var(--signal);border:2px solid var(--signal);color:var(--signal-ink);transform:rotate(-12deg)}
+.count{font-size:14px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:520px){.brand span{display:none}.stamp{width:18px;height:18px;font-size:10px}}
+
+/* hero */
+.hero{padding-block:48px 24px;display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:center}
+.eyebrow{font-size:14px;font-weight:700;letter-spacing:.06em;color:var(--ink-soft)}
+.hero h1{font-size:clamp(34px,6vw,56px);margin-block:8px 14px}
+.hero h1 mark{background:linear-gradient(transparent 55%,var(--signal) 55%);color:inherit;padding-inline:4px}
+.lead{font-size:20px;color:var(--ink-soft);max-width:34em}
+.hero-art{position:relative;min-width:0}
+.hero-art svg{width:100%;height:auto;display:block}
+.float{animation:float 4s ease-in-out infinite;transform-origin:center}
+@keyframes float{0%,100%{transform:translate(0,0) rotate(-4deg)}50%{transform:translate(-10px,-12px) rotate(2deg)}}
+@media (max-width:700px){.hero{grid-template-columns:1fr}.hero-art{max-width:320px;justify-self:center;order:-1}}
+.kit{display:flex;gap:10px;align-items:center;margin-top:18px;padding:12px 14px;border:2px solid var(--ink);border-radius:10px;background:var(--card);max-width:34em}
+.kit b{font-family:var(--display);font-weight:400;font-size:18px;white-space:nowrap}
+
+/* mission map */
+.map{display:flex;flex-wrap:wrap;gap:8px;padding-block:8px 32px}
+.map a{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);text-decoration:none;font-size:15px;font-weight:600}
+.map a:hover{border-color:var(--ink)}
+.map a i{font-style:normal;font-family:var(--display);color:var(--ink-soft)}
+.map a.on{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+.map a.on i{color:var(--signal-ink)}
+
+/* mission cards */
+.mission{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:28px clamp(18px,4vw,36px);margin-bottom:36px;position:relative;scroll-margin-top:80px}
+.mission-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
+.num{flex:none;width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--card);display:grid;place-items:center;font-family:var(--display);font-size:28px;line-height:1}
+.mission.done .num{background:var(--signal);color:var(--signal-ink)}
+.mission h2{font-size:clamp(26px,4vw,34px)}
+.tag{font-size:14px;font-weight:700;letter-spacing:.05em;color:var(--ink-soft)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.note{font-family:var(--hand);font-size:28px;line-height:1.1;color:var(--high);transform:rotate(-1deg)}
+.fact{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:14px 16px;background:var(--sim);border-radius:10px}
+.fact .big{font-family:var(--display);font-size:clamp(36px,7vw,52px);line-height:1;color:var(--high);font-variant-numeric:tabular-nums}
+.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:start}
+.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:15px;margin-top:2px}
+.rule{border-inline-start:6px solid var(--signal);padding:10px 14px;background:var(--sim);border-radius:0 8px 8px 0;font-weight:700}
+.rule small{display:block;font-weight:400;color:var(--ink-soft);font-size:15px}
+
+/* predictions */
+.predict{border:2px dashed var(--ink-soft);border-radius:12px;padding:16px}
+.predict .q{font-weight:800;margin-bottom:10px}
+.predict .q::before{content:"ניבוי: ";color:var(--high)}
+.quizq .q::before{content:none}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:2px solid var(--ink);background:var(--card);border-radius:999px;padding:6px 16px;cursor:pointer;font-weight:700;font-size:16px}
+.opt:hover{background:var(--sim)}
+.opt.picked{background:var(--ink);color:var(--card)}
+.opt.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.predict.answered .opt:not(.picked):not(.right){opacity:.45}
+.reveal{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.verdict{font-family:var(--display);font-size:22px;display:block;margin-bottom:6px}
+.verdict.good{color:var(--ok)}.verdict.surprise{color:var(--low)}
+
+.done-btn{align-self:flex-start;border:2px solid var(--ink);background:transparent;border-radius:10px;padding:8px 18px;font-weight:800;cursor:pointer}
+.done-btn:hover{background:var(--sim)}
+.mission.done .done-btn{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+
+/* simulators */
+.sim{background:var(--sim);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sim canvas{display:block;width:100%;height:300px;touch-action:pan-y}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 22px;padding:14px 16px;border-top:1px solid var(--line);background:var(--card)}
+.ctl label{display:flex;justify-content:space-between;font-weight:700;font-size:15px}
+.ctl output{font-variant-numeric:tabular-nums;color:var(--high)}
+.ctl input[type=range]{width:100%;accent-color:var(--high)}
+.readouts{display:flex;flex-wrap:wrap;gap:10px;padding:0 16px 14px;background:var(--card)}
+.chip{padding:4px 12px;border-radius:999px;font-size:14px;font-weight:700;background:var(--sim);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.chip.warn{background:var(--low);border-color:var(--low);color:#fff}
+.chip.good{background:var(--ok);border-color:var(--ok);color:#fff}
+.meter{display:grid;grid-template-columns:52px 1fr 48px;gap:8px;align-items:center;font-size:14px;font-weight:700}
+.meter .track{height:12px;border-radius:6px;background:var(--sim);overflow:hidden;border:1px solid var(--line)}
+.meter .fill{height:100%;width:0;border-radius:6px;transition:width .15s}
+.meter output{font-variant-numeric:tabular-nums;text-align:end}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--ink-soft)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-inline-end:6px;vertical-align:-1px}
+.btn{border:none;background:var(--ink);color:var(--card);border-radius:10px;padding:8px 16px;font-weight:800;cursor:pointer}
+.btn:hover{opacity:.9}
+.btn.alt{background:var(--signal);color:var(--signal-ink)}
+.challenge{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.challenge li{display:flex;gap:10px;align-items:flex-start}
+.challenge input{width:20px;height:20px;margin-top:4px;accent-color:var(--ok);flex:none}
+
+.myth{border:2px solid var(--low);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.myth .stampx{align-self:flex-start;font-family:var(--display);color:var(--low);border:3px solid var(--low);padding:0 10px;border-radius:6px;transform:rotate(-4deg);font-size:20px}
+
+/* forces */
+.forces{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:center}
+.forces svg{width:100%;height:auto}
+.force-list{display:flex;flex-direction:column;gap:8px}
+.force{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--card);text-align:start;cursor:pointer}
+.force b{font-family:var(--display);font-weight:400;font-size:19px}
+.force span{display:block;font-size:15px;color:var(--ink-soft)}
+.force.on{border-color:var(--ink);border-width:2px;padding:7px 11px}
+@media (max-width:640px){.forces{grid-template-columns:1fr}}
+
+/* folding */
+.folds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.fold{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card);display:flex;flex-direction:column;gap:6px}
+.fold svg{width:100%;height:auto;max-height:150px}
+.fold p{font-size:15px;line-height:1.4}
+.fold b{font-family:var(--display);font-weight:400;color:var(--high)}
+@media (max-width:620px){.folds{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* flight log */
+.log-wrap{overflow-x:auto}
+table.log{border-collapse:collapse;width:100%;min-width:480px;font-variant-numeric:tabular-nums}
+.log th,.log td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+.log th{font-size:14px;background:var(--sim)}
+.log td:first-child{text-align:start;font-weight:700;white-space:nowrap}
+.log input{width:64px;padding:4px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);text-align:center;font:inherit}
+.log .avg{font-weight:800;color:var(--high)}
+.bars{display:flex;flex-direction:column;gap:8px}
+.barrow{display:grid;grid-template-columns:120px 1fr 56px;gap:10px;align-items:center;font-size:15px;font-weight:700}
+.barrow .track{height:22px;background:var(--sim);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.barrow .fill{height:100%;width:0;background:var(--high);transition:width .3s}
+.barrow.win .fill{background:var(--signal)}
+.barrow output{text-align:end}
+.empty{color:var(--ink-soft);font-size:15px}
+select{font:inherit;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--card)}
+details summary{cursor:pointer;font-weight:800}
+details[open] summary{margin-bottom:8px}
+
+/* quiz + certificate */
+.quiz{display:flex;flex-direction:column;gap:14px}
+.cert{border:3px double var(--ink);border-radius:12px;padding:28px 20px;text-align:center;background:var(--card);display:flex;flex-direction:column;gap:10px;align-items:center;position:relative;overflow:hidden}
+.cert h3{font-size:32px}
+.cert .who{font-family:var(--hand);font-size:52px;line-height:1;color:var(--high);min-height:52px}
+.cert .seal{width:86px;height:86px;border-radius:50%;background:var(--signal);color:var(--signal-ink);display:grid;place-items:center;font-family:var(--display);font-size:15px;line-height:1.1;transform:rotate(-10deg);border:3px dashed var(--signal-ink)}
+.namebox{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.namebox input{font:inherit;padding:6px 10px;border:2px solid var(--ink);border-radius:8px;background:var(--card);color:var(--ink);min-width:0;width:220px;max-width:100%}
+
+.adult{margin-block:8px 64px}
+.adult ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px}
+footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
+
+@media (prefers-reduced-motion:reduce){.float{animation:none}.stamp,.barrow .fill,.meter .fill{transition:none}}
+
+/* Same notebook as the Flying Paper Lab, with one new ink: Mars rust, for everything about strange air. */
+.mars-ink{color:var(--mars)}
+.hero h1 mark{background:linear-gradient(transparent 55%,var(--marsbg) 55%)}
+.series{font-family:var(--hand);font-size:26px;color:var(--mars);line-height:1}
+.sim canvas.tall{height:340px}
+.sim canvas.game{height:360px;touch-action:none;user-select:none;-webkit-user-select:none}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:2px solid var(--ink);background:var(--card);border-radius:999px;padding:4px 12px;font-weight:700;font-size:15px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+.seg button.won::after{content:" ★";color:var(--signal)}
+.seglabel{font-size:14px;font-weight:700;color:var(--ink-soft)}
+.panel{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-top:1px solid var(--line);background:var(--card)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.msg{font-weight:700;min-height:1.6em}
+.msg.good{color:var(--ok)}.msg.bad{color:var(--low)}
+.formula{direction:ltr;text-align:center;font-family:var(--display);font-size:clamp(20px,4vw,28px);padding:12px;background:var(--sim);border-radius:10px;font-variant-numeric:tabular-nums;overflow-x:auto}
+.formula small{display:block;direction:rtl;font-family:var(--body);font-size:15px;color:var(--ink-soft)}
+.knob{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+.knob label{display:flex;justify-content:space-between;font-weight:700;font-size:15px;gap:8px}
+.knob output{color:var(--high);font-variant-numeric:tabular-nums}
+.knob input{grid-column:1;width:100%;accent-color:var(--high)}
+.knob .x2{grid-row:1/3;grid-column:2;border:2px solid var(--ink);background:var(--card);border-radius:8px;padding:4px 8px;font-weight:800;cursor:pointer;font-size:14px}
+.knob.locked{opacity:.4}
+.scalebox{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end;height:190px;padding:14px 16px 0;position:relative}
+.col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;min-width:0}
+.col .pillar{width:min(120px,70%);border-radius:8px 8px 0 0;transition:height .15s}
+.col b{font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.locks{display:flex;gap:6px;flex-wrap:wrap}
+.lock{width:32px;height:32px;border-radius:8px;border:2px solid var(--ink-soft);display:grid;place-items:center;font-weight:800;color:var(--ink-soft);cursor:pointer;background:var(--card)}
+.lock.open{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+.lock.cur{border-color:var(--ink);color:var(--ink)}
+.pitot{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center}
+.pitot svg{width:100%;height:auto}
+@media (max-width:520px){.pitot{grid-template-columns:90px 1fr}}
+.numin{width:96px;font:inherit;padding:4px 8px;border:2px solid var(--ink);border-radius:8px;background:var(--card);color:var(--ink);text-align:center}
+.watch{font-family:var(--display);font-size:clamp(38px,9vw,60px);text-align:center;font-variant-numeric:tabular-nums;line-height:1}
+.watchbtn{width:100%;padding:16px;border:none;border-radius:12px;background:var(--ink);color:var(--card);font-family:var(--display);font-size:22px;cursor:pointer}
+.watchbtn.run{background:var(--low);color:#fff}
+.fly-ctl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fly-ctl button{padding:14px;border:2px solid var(--ink);border-radius:12px;background:var(--card);font-weight:800;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none}
+.fly-ctl button:active{background:var(--signal);color:var(--signal-ink)}
+.toolbar{display:flex;flex-wrap:wrap;gap:12px 20px;padding:12px 16px;background:var(--card);border-top:1px solid var(--line)}
+.toolbar>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rank{display:flex;flex-direction:column;gap:6px}
+.rankrow{display:grid;grid-template-columns:96px 1fr 44px;gap:8px;align-items:center;font-size:15px;font-weight:700}
+.rankrow .track{height:14px;background:var(--sim);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.rankrow .fill{height:100%;background:var(--low);width:0;transition:width .3s}
+.rankrow output{text-align:end;font-variant-numeric:tabular-nums}
+.planet-table{width:100%;min-width:380px;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.planet-table th,.planet-table td{border:1px solid var(--line);padding:6px 8px;text-align:center;font-size:15px}
+.planet-table th{background:var(--sim)}
+@media (max-width:520px){.bar .brand,.count{display:none}.stamps{gap:3px}.home{font-size:13px;padding:4px 8px}}
+
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="../../">→ כל המשחקים והשיעורים</a>
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="var(--mars)" stroke="var(--ink)" stroke-width="2"/><path d="M4 18 C 12 12, 20 22, 29 14" fill="none" stroke="var(--card)" stroke-width="2.5"/></svg>
+      <span>מעבדת האוויר הדק</span>
+    </div>
+    <div class="stamps" id="stamps" aria-label="משימות שהושלמו"></div>
+    <div class="count" id="count">0 / 7</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="hero">
+  <div>
+    <div class="series">חלק 2, אחרי מעבדת הנייר המעופף</div>
+    <div class="eyebrow">7 משימות · 4 סימולטורים ומשחק טיסה · דפי נייר ושעון עצר</div>
+    <h1>מה קורה לכנף כשהאוויר <mark>נעלם</mark>?</h1>
+    <p class="lead">במעבדה הקודמת גילית שאוויר מהיר לוחץ פחות, ושכנף מרימה בעזרת האוויר. עכשיו נבדוק כמה. נשים מספרים על ברנולי, נמצא את נוסחת העילוי, ונבחן אותה באוויר הכי דק שאפשר לטוס בו: האוויר של מאדים.</p>
+    <div class="kit"><b>מה צריך:</b><span>2–3 דפי A4, ושעון העצר שמובנה בעמוד. כל השאר קורה במסך.</span></div>
+  </div>
+  <div class="hero-art">
+    <svg viewBox="0 0 320 240" aria-hidden="true">
+      <circle cx="240" cy="70" r="46" fill="var(--mars)" stroke="var(--ink)" stroke-width="3"/>
+      <path d="M198 60 C 220 48, 250 76, 284 58 M204 90 C 226 80, 250 98, 276 88" fill="none" stroke="var(--card)" stroke-width="3" opacity=".7"/>
+      <g class="float">
+        <rect x="104" y="128" width="46" height="30" rx="6" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/>
+        <line x1="127" y1="128" x2="127" y2="88" stroke="var(--ink)" stroke-width="3"/>
+        <ellipse cx="127" cy="104" rx="72" ry="6" fill="var(--signal)" stroke="var(--ink)" stroke-width="2.5"/>
+        <ellipse cx="127" cy="90" rx="72" ry="6" fill="var(--grid)" stroke="var(--ink)" stroke-width="2.5"/>
+        <path d="M112 158 L98 180 M142 158 L156 180" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <path d="M10 212 C 80 196, 150 226, 310 204" fill="none" stroke="var(--mars)" stroke-width="3"/>
+      <text x="96" y="44" text-anchor="middle" font-family="Amatic SC, cursive" font-size="30" fill="var(--high)">פחות מ-2% אוויר!</text>
+    </svg>
+  </div>
+</section>
+
+<div class="predict" data-answer="one" style="margin-bottom:12px">
+  <p class="q">כמה אוויר יש במטר מעוקב על מאדים, לעומת כדור הארץ?</p>
+  <div class="opts">
+    <button class="opt" data-v="half">בערך חצי</button>
+    <button class="opt" data-v="ten">בערך עשירית</button>
+    <button class="opt" data-v="one">פחות מ-2%</button>
+  </div>
+  <div class="reveal" hidden>
+    <span class="verdict"></span>
+    <p>פחות מ-2%. האוויר על מאדים דליל כמו האוויר בגובה של 30 קילומטר מעל כדור הארץ, פי שלושה מגובה הטיסה של מטוסי נוסעים. ובכל זאת, ב-19 באפריל 2021 רחפן בשם אינג'נואיטי המריא שם. הוא שקל 1.8 ק"ג וביצע 72 טיסות. בסוף הדף תבין איך, ותטיס בעצמך.</p>
+  </div>
+</div>
+
+<nav class="map" id="map" aria-label="מפת המשימות"></nav>
+
+<article class="mission" id="m1" data-m="1">
+  <div class="mission-head"><div class="num">1</div><div><div class="tag">סימולטור · 10 דקות</div><h2>ברנולי עם מספרים</h2></div></div>
+  <div class="stack">
+    <p>זוכר את המטבעות? לאוויר יש תקציב אנרגיה קבוע לאורך הזרימה. חלק מהמטבעות הולך על <b>לחיצה</b>, וחלק על <b>מהירות</b>. עכשיו אפשר לכתוב את זה כמו מדענים:</p>
+    <div class="formula">P + ½ρv² = קבוע<small>לחץ + (חצי × צפיפות האוויר × מהירות בריבוע) נשאר אותו דבר. ρ (נקרא &quot;רו&quot;) היא צפיפות האוויר.</small></div>
+    <div class="predict" data-answer="four">
+      <p class="q">אם מכפילים את מהירות האוויר, פי כמה גדלים מטבעות המהירות?</p>
+      <div class="opts">
+        <button class="opt" data-v="two">פי 2</button>
+        <button class="opt" data-v="four">פי 4</button>
+        <button class="opt" data-v="eight">פי 8</button>
+      </div>
+      <div class="reveal" hidden><span class="verdict"></span><p>פי 4, כי המהירות כתובה בריבוע: v × v. מהירות כפולה פירושה פי 2 × 2. נסה בסימולטור: 20 מ/ש נותנים 240 מטבעות, ו-40 מ/ש נותנים 960.</p></div>
+    </div>
+    <div class="sim">
+      <canvas id="coins" aria-label="צינור עם היצרות ועמודות של תקציב האנרגיה בשלוש נקודות"></canvas>
+      <div class="controls">
+        <div class="ctl"><label for="cV">מהירות בכניסה <output id="cVo">20 מ/ש</output></label><input type="range" id="cV" min="5" max="40" step="5" value="20"></div>
+        <div class="ctl"><label for="cN">כמה להצר את האמצע <output id="cNo">פי 2</output></label><input type="range" id="cN" min="1" max="3" step=".5" value="2"></div>
+      </div>
+      <div class="readouts"><span class="chip" id="cOut1"></span><span class="chip" id="cOut2"></span></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--high)"></i>מטבעות לחיצה</span><span><i style="background:var(--signal)"></i>מטבעות מהירות</span><span>1 מטבע = 1 פסקל (יחידה של לחץ)</span></div>
+    <h3 style="font-size:24px">מד המהירות של המטוס</h3>
+    <p>כך מטוסים אמיתיים יודעים כמה מהר הם טסים. צינור קטן על גוף המטוס, <b>צינור פיטו</b>, פונה קדימה ועוצר את האוויר. כל מטבעות המהירות הופכים ללחיצה, והמכשיר מודד את ההפרש. מההפרש הטייס מקבל מהירות.</p>
+    <div class="pitot">
+      <svg viewBox="0 0 120 150" role="img" aria-label="צינור U עם מים שמראה את הפרש הלחץ">
+        <path d="M30 10 V115 A30 25 0 0 0 90 115 V10" fill="none" stroke="var(--ink)" stroke-width="3"/>
+        <path d="M46 10 V115 A14 11 0 0 0 74 115 V10" fill="none" stroke="var(--ink)" stroke-width="3"/>
+        <rect id="uL" x="31.5" y="70" width="13" height="50" fill="var(--high)"/>
+        <rect id="uR" x="75.5" y="70" width="13" height="50" fill="var(--high)"/>
+        <path d="M31.5 118 A28 23 0 0 0 88.5 118 L74 118 A14 11 0 0 1 46 118 Z" fill="var(--high)"/>
+      </svg>
+      <div class="stack" style="gap:8px">
+        <div id="pWhere" class="tag"></div>
+        <div>המכשיר מראה: <b id="pRead" style="font-size:22px"></b> פסקל</div>
+        <div id="pRule" class="tag"></div>
+        <div class="row"><label for="pIn"><b>המהירות:</b></label><input class="numin" id="pIn" type="number" inputmode="numeric"><span>מ/ש</span><button class="btn" id="pCheck">בדוק</button></div>
+        <div class="msg" id="pMsg"></div>
+      </div>
+    </div>
+    <button class="done-btn" data-m="1">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<article class="mission" id="m2" data-m="2">
+  <div class="mission-head"><div class="num">2</div><div><div class="tag">סימולטור · חידות · 10 דקות</div><h2>ארבעת הכפתורים של העילוי</h2></div></div>
+  <div class="stack">
+    <p>כנף היא בעצם מכונה שהופכת את ½ρv² לכוח. אם תכפיל את התקציב של המהירות בשטח הכנף, תקבל את הנוסחה שכל מהנדס מטוסים מכיר:</p>
+    <div class="formula">L = ½ · ρ · v² · S · C<sub>L</sub><small>עילוי = חצי × צפיפות × מהירות בריבוע × שטח כנף × כמה טוב הכנף מסובבת אוויר (תלוי בזווית)</small></div>
+    <p>מטוס קל שוקל 1,100 ק&quot;ג. המטרה: לגרום לעמודת העילוי לעבור את עמודת המשקל. בכל חידה רק חלק מהכפתורים פתוחים. כפתור ×2 מכפיל את הערך, ואתה רואה פי כמה קפץ העילוי.</p>
+    <div class="locks" id="locks" aria-label="חידות"></div>
+    <div class="sim">
+      <div class="panel" style="border-top:0">
+        <div id="lvTitle" style="font-family:var(--display);font-size:20px"></div>
+        <div id="lvText"></div>
+      </div>
+      <div class="scalebox">
+        <div class="col"><b id="liftTxt"></b><div class="pillar" id="liftP" style="background:var(--ok)"></div><b>עילוי</b></div>
+        <div class="col"><b id="weightTxt"></b><div class="pillar" id="weightP" style="background:var(--ink)"></div><b>משקל</b></div>
+      </div>
+      <div class="controls" id="knobs"></div>
+      <div class="panel"><div class="msg" id="lvMsg"></div><div class="row"><span class="chip" id="lvDelta" hidden></span><button class="btn alt" id="lvNext" hidden>לחידה הבאה</button></div></div>
+    </div>
+    <button class="done-btn" data-m="2">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<article class="mission" id="m3" data-m="3">
+  <div class="mission-head"><div class="num">3</div><div><div class="tag">מנהרת רוח אמיתית · 15 דקות</div><h2>צייר משהו, והאוויר יגיב</h2></div></div>
+  <div class="stack">
+    <p>במעבדה הקודמת הזרימה הייתה ציור מדומה. הפעם זה חישוב אמיתי: המחשב מחשב כל שנייה מיליוני התנגשויות של &quot;חבילות אוויר&quot;, ואף אחד לא אמר לו מה אמור לקרות. מערבולות, לחץ וגרר פשוט מופיעים לבד.</p>
+    <div class="predict" data-answer="plate">
+      <p class="q">לכל הצורות יש אותו גובה מול הרוח. למי יהיה הכי הרבה גרר?</p>
+      <div class="opts">
+        <button class="opt" data-v="circle">עיגול</button>
+        <button class="opt" data-v="plate">לוח שטוח</button>
+        <button class="opt" data-v="drop">טיפה</button>
+      </div>
+      <div class="reveal" hidden><span class="verdict"></span><p>הלוח השטוח (והקערה אפילו יותר). הגרר הגדול לא בא מהחיכוך בחזית, אלא מהבור מאחור: האוויר לא מצליח להיסגר מאחורי הצורה, ונוצר שם אזור של לחץ נמוך ששואב את הצורה לאחור. לטיפה יש זנב שסוגר את הבור. הפעל את כל הצורות ובדוק בטבלה.</p></div>
+    </div>
+    <div class="sim">
+      <canvas id="tunnel" class="tall" aria-label="מנהרת רוח. אפשר לצייר בה צורות באצבע"></canvas>
+      <div class="toolbar">
+        <div><span class="seglabel">צורה</span><div class="seg" id="tShape"></div></div>
+        <div><span class="seglabel">מה רואים</span><div class="seg" id="tView"></div></div>
+        <div><span class="seglabel">כלי</span><div class="seg" id="tTool"></div></div>
+      </div>
+      <div class="controls"><div class="ctl"><label for="tAng">זווית הצורה <output id="tAngO">8°</output></label><input type="range" id="tAng" min="-20" max="30" step="2" value="8"></div></div>
+      <div class="readouts" style="flex-direction:column;align-items:stretch">
+        <div class="meter"><span>עילוי</span><div class="track"><div class="fill" id="tLb" style="background:var(--ok)"></div></div><output id="tL">0.0</output></div>
+        <div class="meter"><span>גרר</span><div class="track"><div class="fill" id="tDb" style="background:var(--low)"></div></div><output id="tD">0.0</output></div>
+        <span class="chip" id="tState" style="align-self:flex-start">מודד...</span>
+      </div>
+    </div>
+    <div class="rank" id="tRank"></div>
+    <ul class="challenge">
+      <li><input type="checkbox" id="c31"><label for="c31">בחר עיגול ועבור לתצוגת &quot;מערבולות&quot;. חכה קצת. רואה מערבולות שיוצאות לסירוגין? זה נקרא שביל קרמן, והוא קיים גם מאחורי איים באוקיינוס.</label></li>
+      <li><input type="checkbox" id="c32"><label for="c32">בחר כנף ועבור לתצוגת &quot;לחץ&quot;. איפה האדום (לחץ נמוך)? מעל הכנף או מתחתיה? זה ברנולי, בלי שאף אחד תכנת אותו.</label></li>
+      <li><input type="checkbox" id="c33"><label for="c33">הכי קשה: צייר צורה משלך עם עילוי גדול מ-2. מה עובד?</label></li>
+    </ul>
+    <button class="done-btn" data-m="3">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<article class="mission" id="m4" data-m="4">
+  <div class="mission-head"><div class="num">4</div><div><div class="tag">ניסוי בבית · 5 דקות · רצועת נייר</div><h2>הכנף המתגלגלת</h2></div></div>
+  <div class="stack">
+    <p>כנף בלי צורה של כנף, ובלי שום זווית קבועה. רצועת נייר פשוטה שיוצרת עילוי כי היא <b>מסתובבת</b>.</p>
+    <div class="folds" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <div class="fold"><svg viewBox="0 0 200 90" aria-hidden="true"><rect x="10" y="30" width="180" height="36" fill="var(--card)" stroke="var(--ink)" stroke-width="2"/><g stroke="var(--high)" stroke-width="2" stroke-dasharray="5 4"><line x1="22" y1="30" x2="22" y2="66"/><line x1="178" y1="30" x2="178" y2="66"/></g><text x="100" y="22" text-anchor="middle" font-family="Assistant, sans-serif" font-size="13" fill="var(--ink-soft)">כ-15 ס&quot;מ</text><text x="100" y="53" text-anchor="middle" font-family="Assistant, sans-serif" font-size="13" fill="var(--ink-soft)">3–4 ס&quot;מ</text></svg><p><b>1.</b> קרע רצועה: קפל דף לחצי לאורך, ושוב ושוב, עד שיש פס ברוחב 3–4 ס&quot;מ. קח חלק באורך כף יד פתוחה. קפל קצה קטן של כחצי ס&quot;מ בשני הקצוות הקצרים, לאותו צד.</p></div>
+      <div class="fold"><svg viewBox="0 0 200 90" aria-hidden="true"><defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="var(--high)"/></marker></defs><path d="M20 20 L60 30 L100 22 L150 50 L190 70" fill="none" stroke="var(--ink-soft)" stroke-width="1.5" stroke-dasharray="4 5"/><rect x="88" y="14" width="30" height="6" fill="var(--signal)" stroke="var(--ink)" stroke-width="1.5" transform="rotate(30 103 17)"/><path d="M88 40 A16 16 0 1 1 120 40" fill="none" stroke="var(--high)" stroke-width="2.5" marker-end="url(#ah4)"/></svg><p><b>2.</b> החזק את הרצועה בקצה העליון של יד מורמת, הצד הארוך מקביל לרצפה. שחרר עם דחיפה קלה קדימה. אם היא נופלת ישר, עקם קלות את הקצוות ונסה שוב.</p></div>
+    </div>
+    <div class="predict" data-answer="glide">
+      <p class="q">מה תעשה הרצועה?</p>
+      <div class="opts">
+        <button class="opt" data-v="straight">תיפול ישר למטה</button>
+        <button class="opt" data-v="glide">תסתובב ותגלוש הצידה</button>
+        <button class="opt" data-v="flutter">תתנדנד ימינה ושמאלה בלבד</button>
+      </div>
+      <div class="reveal" hidden><span class="verdict"></span><p>היא מתגלגלת סביב עצמה וגולשת קדימה, הרחק מהמקום שמתחתיה. הסיבוב גורר אוויר: בצד אחד הוא נע עם הרוח, ובצד השני נגדה. כך יש אוויר מהיר יותר בצד אחד, לחץ נמוך יותר שם, וכוח לצד. זה <b>אפקט מגנוס</b>, אותו אפקט שגורם לכדור כדורגל שמסובב להתעקם.</p></div>
+    </div>
+    <p class="note">אתגר: שחרר עם סיבוב לכיוון ההפוך. לאן היא גולשת עכשיו?</p>
+    <button class="done-btn" data-m="4">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<article class="mission" id="m5" data-m="5">
+  <div class="mission-head"><div class="num">5</div><div><div class="tag">ניסוי בבית · 20 דקות · חצי דף ושעון עצר</div><h2>בודקים את הנוסחה עם מסוק נייר</h2></div></div>
+  <div class="stack">
+    <p>נוסחה טובה מנבאת מראש. כשמסוק נייר צונח במהירות קבועה, העילוי שווה למשקל. אם נקטין את שטח הלהבים S, האוויר צריך לזרום מהר יותר כדי לתת אותו עילוי. לפי נוסחת העילוי, שטח קטן פי 2 נותן מהירות גדולה פי √2, כלומר בערך פי 1.4. זה אומר שזמן הנפילה יתקצר ל-71%. בוא נבדוק.</p>
+    <ol class="steps">
+      <li>הכן מסוק נייר, כמו ב<a href="../flying-paper-lab/#m8">משימה 8 במעבדה הקודמת</a>: חתיכה של 5 על 15 ס&quot;מ, קרע של 7 ס&quot;מ, להב אחד אליך ואחד ממך, קיפול משקל בתחתית.</li>
+      <li>בחר נקודה גבוהה וקבועה: יד מורמת, או על כיסא יציב עם מבוגר לידך. שחרר תמיד משם.</li>
+      <li>מדוד 3 נפילות עם להבים של 7 ס&quot;מ. לחץ על שעון העצר כשאתה משחרר, ושוב כשהמסוק נוגע ברצפה.</li>
+      <li>קפל את קצה הלהבים פנימה כדי לקצר אותם ל-5 ס&quot;מ, ומדוד 3 נפילות. אחר כך קצר ל-3.5 ס&quot;מ ומדוד שוב. הנייר נשאר אותו נייר, אז המשקל לא משתנה.</li>
+    </ol>
+    <div class="sim" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+      <div class="watch" id="wTime">0.00</div>
+      <button class="watchbtn" id="wBtn">שחרר: התחל</button>
+      <div class="tag" id="wNext" style="text-align:center"></div>
+    </div>
+    <div class="log-wrap"><table class="log"><thead><tr><th>אורך להב</th><th>1</th><th>2</th><th>3</th><th>ממוצע (שניות)</th><th>הנוסחה מנבאת</th></tr></thead><tbody id="hBody"></tbody></table></div>
+    <p class="empty" id="hMsg">מלא את השורה הראשונה, והנוסחה תנבא את השאר.</p>
+    <button class="btn" id="hClear" style="align-self:flex-start">נקה מדידות</button>
+    <details><summary>התוצאות לא בדיוק כמו הניבוי?</summary><p>זה נורמלי ומעניין. התגובה של האצבע איטית בערך ב-0.2 שנייה, מסוק נייר מתחיל לאט, והנוסחה היא קירוב. אם הקו הכללי נכון (להבים קצרים נופלים מהר יותר, בערך ביחס שנובא), הנוסחה עברה את המבחן. ככה עובד מדע.</p></details>
+    <button class="done-btn" data-m="5">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<article class="mission" id="m6" data-m="6">
+  <div class="mission-head"><div class="num">6</div><div><div class="tag">משחק · 10 דקות</div><h2>הטס את אינג'נואיטי</h2></div></div>
+  <div class="stack">
+    <p>רחפן אמיתי: 1.8 ק&quot;ג, שני רוטורים של 1.2 מטר. להבים של רחפן הם כנפיים שמסתובבות, אז גם כאן עילוי גדל עם צפיפות האוויר ועם המהירות בריבוע. המשימה: הבא אותו לאזור הירוק והחזק אותו שם 3 שניות.</p>
+    <div class="predict" data-answer="mars">
+      <p class="q">באיזה מקום הרוטור יצטרך להסתובב הכי מהר?</p>
+      <div class="opts">
+        <button class="opt" data-v="earth">כדור הארץ</button>
+        <button class="opt" data-v="titan">טיטאן</button>
+        <button class="opt" data-v="mars">מאדים</button>
+      </div>
+      <div class="reveal" hidden><span class="verdict"></span><p>מאדים, למרות שהכבידה שם נמוכה. האוויר כל כך דליל שהרוטור חייב להסתובב בערך 2,400 סיבובים בדקה, כמעט פי 5 מאשר על כדור הארץ. עכשיו מצא את זה בעצמך.</p></div>
+    </div>
+    <div class="sim">
+      <canvas id="hover" class="game" aria-label="רחפן עולה ויורד לפי מהירות הרוטור"></canvas>
+      <div class="toolbar"><div><span class="seglabel">איפה טסים</span><div class="seg" id="hPlanet"></div></div></div>
+      <div class="controls"><div class="ctl"><label for="hRpm">מהירות רוטור <output id="hRpmO">0 סל&quot;ד</output></label><input type="range" id="hRpm" min="0" max="3600" step="2" value="0"></div></div>
+      <div class="readouts"><span class="chip" id="hState">שדה מוכן</span><span class="chip" id="hMach">קצה הלהב: 0% ממהירות הקול</span><button class="btn" id="hReset">התחל מחדש</button></div>
+    </div>
+    <div class="log-wrap"><table class="planet-table"><thead><tr><th>מקום</th><th>צפיפות אוויר (ק&quot;ג/מ³)</th><th>כבידה (מ/ש²)</th><th>סל&quot;ד ריחוף שמצאת</th></tr></thead><tbody id="hTable"></tbody></table></div>
+    <p class="note">שים לב: ככל שהאוויר דליל יותר, צריך לסובב מהר יותר. על הירח אין אוויר בכלל.</p>
+    <button class="done-btn" data-m="6">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<article class="mission" id="m7" data-m="7">
+  <div class="mission-head"><div class="num">7</div><div><div class="tag">המשחק הגדול · 15 דקות</div><h2>תכנן מטוס, ואז הטס אותו</h2></div></div>
+  <div class="stack">
+    <p>כאן הכול מתחבר. המשחק מחשב את הטיסה עם נוסחת העילוי האמיתית, 60 פעם בשנייה. תכנן מטוס, המרא לפני סוף המסלול, ועבור דרך שלוש הטבעות. אותו מטוס שעובד בבית לא בהכרח יעבוד במקום אחר. גם מנוע גדול לא תמיד יציל אותך.</p>
+    <div class="sim">
+      <canvas id="fly" class="game" aria-label="משחק טיסה: מטוס מצד, מסלול המראה ושלוש טבעות" tabindex="0"></canvas>
+      <div class="toolbar"><div><span class="seglabel">איפה טסים</span><div class="seg" id="fPlanet"></div></div></div>
+      <div class="controls">
+        <div class="ctl"><label for="fS">שטח כנף <output id="fSo"></output></label><input type="range" id="fS" min="4" max="80" step="1" value="10"></div>
+        <div class="ctl"><label for="fT">כוח מנוע <output id="fTo"></output></label><input type="range" id="fT" min="150" max="1200" step="50" value="400"></div>
+      </div>
+      <div class="readouts"><span class="chip" id="fMass"></span><span class="chip" id="fLO"></span><span class="chip" id="fThr"></span></div>
+      <div class="panel">
+        <div class="fly-ctl"><button id="fUp">אף למעלה ↑</button><button id="fDown">אף למטה ↓</button></div>
+        <div class="row"><button class="btn alt" id="fGo">המרא!</button><span class="tag">במקלדת: חצים למעלה ולמטה</span></div>
+        <div class="msg" id="fMsg"></div>
+      </div>
+    </div>
+    <ul class="challenge">
+      <li><input type="checkbox" id="c71"><label for="c71">הטס את אותו מטוס גם על האוורסט וגם על כדור הארץ. במה הטיסה שונה?</label></li>
+      <li><input type="checkbox" id="c72"><label for="c72">מה המטוס הכי קטן שמצליח להמריא על מאדים?</label></li>
+      <li><input type="checkbox" id="c73"><label for="c73">נסה לנסוק חזק. מתי המטוס מתחיל ליפול, ולמה? (רמז: מנהרת הרוח של המעבדה הקודמת)</label></li>
+    </ul>
+    <button class="done-btn" data-m="7">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<section class="mission" id="final" style="border-style:dashed">
+  <div class="mission-head"><div class="num" style="background:var(--signal);color:var(--signal-ink)">★</div><div><div class="tag">מבחן המהנדס</div><h2>5 שאלות לתעודה</h2></div></div>
+  <div class="quiz" id="quiz"></div>
+  <div class="namebox" style="margin-top:20px"><label for="pilotName"><b>השם שלך לתעודה:</b></label><input id="pilotName" type="text" placeholder="הקלד כאן" maxlength="30"></div>
+  <div class="cert" style="margin-top:16px">
+    <div class="seal" style="background:var(--mars);color:#fff;border-color:#fff">מהנדס<br>טיסה</div>
+    <h3>תעודת מהנדס אווירודינמיקה</h3>
+    <div class="who" id="certName">&nbsp;</div>
+    <p id="certText"></p>
+    <p style="color:var(--ink-soft);font-size:15px" id="certDate"></p>
+  </div>
+</section>
+
+<details class="adult" id="adult">
+  <summary>למבוגר שמלווה</summary>
+  <ul>
+    <li><b>למי זה מתאים:</b> המשך ישיר למעבדת הנייר המעופף. אפשר לחלק לשני מפגשים: משימות 1–3, ואז 4–7.</li>
+    <li><b>הרעיון המרכזי:</b> ½ρv² מופיע גם בברנולי וגם בנוסחת העילוי. מאדים הוא מקרה קיצון של צפיפות נמוכה, לא שיעור על טיסה בחלל. אין כאן רקטות.</li>
+    <li><b>מנהרת הרוח</b> היא חישוב אמיתי (שיטת לטיס בולצמן, דו-ממדי). היא איטית וקטנה ביחס למטוס, לכן המספרים מראים השוואה בין צורות ולא ערכים של מטוס, ולכנף יש פחות סטול מאשר במציאות.</li>
+    <li><b>ברנולי ושובל:</b> ברנולי תקף לאורך זרימה חלקה. בתוך מערבולות ושובל יש איבוד אנרגיה, ולכן הוא לא מסביר את גרר הצורה.</li>
+    <li><b>קירובים במשחקים:</b> ברחפן הדחף הוא kρΩ², מכויל ל-2,400 סל&quot;ד על מאדים. במשחק הטיסה דחף המנוע יורד בעדינות עם הצפיפות, ולא הותאם למטוס מסוים. הירח, טיטאן והאוורסט מבוססים על ערכי צפיפות וכבידה משוערים.</li>
+    <li><b>ניסוי המסוק:</b> המדידה רועשת. שווה לדבר על טעות מדידה ועל מה זה אומר שניבוי &quot;מתאים&quot;.</li>
+  </ul>
+</details>
+
+</main>
+<footer class="wrap">ההתקדמות נשמרת בדפדפן הזה בלבד.</footer>
+
+<script>
+/* Physics core: no DOM here, so it can be tested on its own. */
+const PLANETS={
+  earth:{name:'כדור הארץ',rho:1.225,g:9.81,sound:340,scale:.6,sky:['#7DB9EE','#DDEEFB'],ground:'#5F9E5A'},
+  everest:{name:'פסגת האוורסט',rho:0.47,g:9.79,sound:300,scale:.8,sky:['#2C6FC0','#BFDDF5'],ground:'#E9EEF4'},
+  titan:{name:'טיטאן',rho:5.4,g:1.35,sound:194,scale:.1,sky:['#B9782A','#EBBF72'],ground:'#7A5426'},
+  mars:{name:'מאדים',rho:0.020,g:3.71,sound:240,scale:1.5,sky:['#C98A5A','#EFC9A0'],ground:'#A8522C'},
+  moon:{name:'הירח',rho:0,g:1.62,sound:0,scale:1,sky:['#05070F','#10141F'],ground:'#8C8F96'}
+};
+const PLANET_ORDER=['earth','everest','titan','mars','moon'];
+const clamp=(x,a,b)=>x<a?a:x>b?b:x;
+const lift=(rho,v,S,CL)=>.5*rho*v*v*S*CL;
+function CLof(a){if(a<-8)a=-8;return a<=14?.2+.09*a:Math.max(.7,1.46-.08*(a-14))}
+
+/* Ingenuity: 1.8 kg, calibrated to hover near 2400 rpm on Mars. */
+const HELI={m:1.8,r:.6,k:1.8*3.71/(.020*2400*2400)};
+const hoverRpm=p=>p.rho>0?Math.sqrt(HELI.m*p.g/(HELI.k*p.rho)):Infinity;
+const tipMach=(rpm,p)=>p.sound?rpm*2*Math.PI/60*HELI.r/p.sound:0;
+function heliStep(s,target,p,dt){
+  s.rpm+=(target-s.rpm)*Math.min(1,dt*3);
+  const T=HELI.k*p.rho*s.rpm*s.rpm;
+  let a=T/HELI.m-p.g-(p.rho>0?1.2:0)*s.v;
+  s.v+=a*dt;s.y+=s.v*dt;
+  if(s.y<=0){s.y=0;if(s.v<0)s.v=0}
+  if(s.y>14){s.y=14;if(s.v>0)s.v=0}
+  return s;
+}
+
+/* The glider game: a point mass with pitch, using the real lift and drag equations. */
+const massOf=d=>60+1.5*d.S+.1*d.T;
+const takeoffSpeed=(d,p)=>p.rho>0?Math.sqrt(2*massOf(d)*p.g/(p.rho*d.S*1.4)):Infinity;
+function course(p){const s=p.scale,h=Math.min(1,.35+s*.65);return{runway:p.rho<.1?520:300,rings:[[900*s,40*h],[1450*s,70*h],[2000*s,45*h]],finish:2200*s,r:22*Math.max(.7,h)}}
+/* A propeller pushes less in thin air, so engine thrust falls with density. */
+const thrustOf=(d,p)=>d.T*Math.pow(p.rho/1.225,.2);
+function flightInit(){return{x:0,y:0,vx:0,vy:0,pitch:0,ground:true,stall:false,L:0,D:0,alpha:0,rings:0}}
+function flightStep(s,ctl,dt,p,d){
+  const m=massOf(d),v=Math.hypot(s.vx,s.vy),gam=v>1?Math.atan2(s.vy,s.vx):0,gd=gam*180/Math.PI;
+  s.pitch=clamp(s.pitch+ctl*38*dt,s.ground?0:-30,s.ground?14:40);
+  let alpha=s.pitch-gd;s.stall=alpha>15;
+  if(s.stall&&!s.ground)s.pitch-=26*dt;
+  const CL=CLof(alpha),q=.5*p.rho*v*v,L=q*d.S*CL,D=q*d.S*(.03+.05*CL*CL),th=s.pitch*Math.PI/180,T=thrustOf(d,p);
+  let ax=(T*Math.cos(th)-D*Math.cos(gam)-L*Math.sin(gam))/m;
+  let ay=(T*Math.sin(th)+L*Math.cos(gam)-D*Math.sin(gam))/m-p.g;
+  if(s.ground){if(ay<=0){ay=0;s.vy=0;s.y=0;ax-=.02*p.g}else s.ground=false}
+  s.vx+=ax*dt;s.vy+=ay*dt;s.x+=s.vx*dt;s.y+=s.vy*dt;
+  if(s.vx<0&&s.ground)s.vx=0;
+  s.L=L;s.D=D;s.alpha=alpha;s.v=v;
+  return s;
+}
+
+/* A real fluid simulation: the lattice Boltzmann method on a D2Q9 grid. */
+function LBM(nx,ny){
+  const n=nx*ny,U=.1,nu=.016,om=1/(3*nu+.5);
+  const cx=[0,1,0,-1,0,1,-1,-1,1],cy=[0,0,1,0,-1,1,1,-1,-1],opp=[0,3,4,1,2,7,8,5,6];
+  const w=[4/9,1/9,1/9,1/9,1/9,1/36,1/36,1/36,1/36];
+  let f=[],g=[];for(let i=0;i<9;i++){f.push(new Float32Array(n));g.push(new Float32Array(n))}
+  const solid=new Uint8Array(n),rho=new Float32Array(n),ux=new Float32Array(n),uy=new Float32Array(n);
+  const self={nx,ny,U,solid,rho,ux,uy,t:0,fx:0,fy:0,avgX:0,avgY:0,settled:0};
+  function eqAt(arr,k,r,u,v){const u2=1.5*(u*u+v*v);for(let i=0;i<9;i++){const c=3*(cx[i]*u+cy[i]*v);arr[i][k]=w[i]*r*(1+c+.5*c*c-u2)}}
+  self.reset=function(){for(let k=0;k<n;k++){eqAt(f,k,1,U,0);rho[k]=1;ux[k]=U;uy[k]=0}self.t=0;self.settled=0;self.avgX=self.avgY=0};
+  self.fresh=function(){self.settled=0;self.avgX=self.avgY=0};
+  self.step=function(){
+    const inU=U,inV=self.t<1500?.012*Math.sin(self.t*.02):0;let Fx=0,Fy=0;
+    for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){
+      const k=x+y*nx;if(solid[k])continue;
+      const f0=f[0][k],f1=f[1][k],f2=f[2][k],f3=f[3][k],f4=f[4][k],f5=f[5][k],f6=f[6][k],f7=f[7][k],f8=f[8][k];
+      let r=f0+f1+f2+f3+f4+f5+f6+f7+f8,u=(f1+f5+f8-f3-f6-f7)/r,v=(f2+f5+f6-f4-f7-f8)/r;
+      if(!(r>.4&&r<2)||u*u+v*v>.16){r=1;u=U;v=0;eqAt(f,k,1,U,0)}
+      rho[k]=r;ux[k]=u;uy[k]=v;
+      const u2=1.5*(u*u+v*v);
+      for(let i=0;i<9;i++){const c=3*(cx[i]*u+cy[i]*v),fi=f[i][k],feq=w[i]*r*(1+c+.5*c*c-u2),post=fi+om*(feq-fi);
+        const X=x+cx[i],Y=y+cy[i];
+        if(X<0||X>=nx||Y<0||Y>=ny)continue;
+        const K=X+Y*nx;
+        if(solid[K]){g[opp[i]][k]=post;Fx+=2*post*cx[i];Fy+=2*post*cy[i]}else g[i][K]=post}
+    }
+    for(let y=0;y<ny;y++){eqAt(g,y*nx,1,inU,inV);const a=nx-1+y*nx,b=nx-2+y*nx;for(let i=0;i<9;i++)g[i][a]=g[i][b]}
+    for(let x=0;x<nx;x++){eqAt(g,x,1,U,0);eqAt(g,x+(ny-1)*nx,1,U,0)}
+    const t=f;f=g;g=t;self.t++;self.settled++;
+    self.fx=Fx;self.fy=Fy;const a=1/Math.min(self.settled,900);self.avgX+=(Fx-self.avgX)*a;self.avgY+=(Fy-self.avgY)*a;
+  };
+  self.setSolid=function(k,on){if(on){solid[k]=1;ux[k]=uy[k]=0;rho[k]=1}else if(solid[k]){solid[k]=0;eqAt(f,k,1,U,0)}};
+  self.reset();
+  return self;
+}
+function paintShape(l,kind,angle){
+  const{nx,ny}=l,cx=Math.round(nx*.27),cy=ny/2,H=ny*.24,th=-angle*Math.PI/180,co=Math.cos(th),si=Math.sin(th);
+  const inside=(u,v)=>{
+    if(kind==='circle')return u*u+v*v<H*H/4;
+    if(kind==='plate')return Math.abs(u)<1.6&&Math.abs(v)<H/2;
+    if(kind==='cup'){const r=Math.hypot(u+H*.2,v);return r<H*.6&&r>H*.38&&u>-H*.2+0}
+    if(kind==='drop'){const c=H*3,x=(u+H*.75)/c;if(x<0||x>1)return false;const t=H/c;return Math.abs(v)<c*5*t*(.2969*Math.sqrt(x)-.126*x-.3516*x*x+.2843*x*x*x-.1015*x*x*x*x)}
+    if(kind==='wing'){const c=H*2.3,x=(u+c/2)/c;if(x<0||x>1)return false;const yt=5*.14*(.2969*Math.sqrt(x)-.126*x-.3516*x*x+.2843*x*x*x-.1015*x*x*x*x),yc=x<.4?.05*(.8*x-x*x)/.16:.05*(.2+.8*x-x*x)/.36;const y=-v/c;return y<yc+yt&&y>yc-yt}
+    return false};
+  for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){const dx=x-cx,dy=y-cy,u=dx*co-dy*si,v=dx*si+dy*co;l.setSolid(x+y*nx,inside(u,v))}
+  l.fresh();
+}
+function frontalHeight(l){let c=0;for(let y=0;y<l.ny;y++){for(let x=0;x<l.nx;x++)if(l.solid[x+y*l.nx]){c++;break}}return Math.max(1,c)}
+/* Positive lift means the air pushes the shape up the screen. */
+const dragCoef=l=>l.avgX/(.5*l.U*l.U*frontalHeight(l));
+const liftCoef=l=>-l.avgY/(.5*l.U*l.U*frontalHeight(l));
+
+/* Page behaviour. Each simulator starts inside safe(), so one failure can't stop the others. */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('tal:'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('tal:'+k,JSON.stringify(v))}catch(e){}}};
+const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduce=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+const safe=f=>{try{f()}catch(e){console.error(e)}};
+const fmt=n=>Math.round(n).toLocaleString('he-IL');
+
+function setup(cv,onResize){
+  const ctx=cv.getContext('2d'),s={ctx,W:0,H:0,visible:true};
+  function rs(){const d=window.devicePixelRatio||1;s.W=cv.clientWidth;s.H=cv.clientHeight;cv.width=Math.round(s.W*d);cv.height=Math.round(s.H*d);ctx.setTransform(d,0,0,d,0,0);onResize&&onResize(s)}
+  rs();window.addEventListener('resize',rs);
+  if('IntersectionObserver' in window)new IntersectionObserver(e=>{s.visible=e[0].isIntersecting}).observe(cv);
+  return s;
+}
+function seg(el,items,cur,onPick){
+  el.innerHTML='';items.forEach(([v,t])=>{const b=document.createElement('button');b.textContent=t;b.dataset.v=v;b.setAttribute('aria-pressed',v===cur);b.addEventListener('click',()=>{[...el.children].forEach(x=>x.setAttribute('aria-pressed',x===b));onPick(v)});el.appendChild(b)});
+}
+
+/* progress */
+const titles=['ברנולי עם מספרים','ארבעת הכפתורים','מנהרת הרוח','הכנף המתגלגלת','מסוק ושעון עצר','אינג\'נואיטי','תכנן והטס'];
+let done=new Set(store.get('done',[]));
+const stampsEl=$('#stamps'),mapEl=$('#map');
+titles.forEach((t,i)=>{
+  const a=document.createElement('a');a.className='stamp';a.href='#m'+(i+1);a.textContent=i+1;a.title=t;stampsEl.appendChild(a);
+  const m=document.createElement('a');m.href='#m'+(i+1);m.innerHTML='<i>'+(i+1)+'</i>'+t;mapEl.appendChild(m);
+});
+function renderProgress(){
+  [...stampsEl.children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
+  [...mapEl.children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
+  $$('.mission[data-m]').forEach(m=>{const n=+m.dataset.m;m.classList.toggle('done',done.has(n));const b=m.querySelector('.done-btn');if(b)b.textContent=done.has(n)?'בוצע! (לחץ לביטול)':'סמן משימה כבוצעה'});
+  $('#count').textContent=done.size+' / 7';
+  renderCert();
+}
+function markDone(n){if(!done.has(n)){done.add(n);store.set('done',[...done]);renderProgress()}}
+$$('.done-btn').forEach(b=>b.addEventListener('click',()=>{const n=+b.dataset.m;done.has(n)?done.delete(n):done.add(n);store.set('done',[...done]);renderProgress()}));
+
+/* predictions */
+$$('.predict[data-answer]').forEach(p=>{
+  const ans=p.dataset.answer,rev=p.querySelector('.reveal'),ver=p.querySelector('.verdict');
+  p.querySelectorAll('.opt').forEach(o=>o.addEventListener('click',()=>{
+    p.querySelectorAll('.opt').forEach(x=>x.classList.remove('picked','right'));
+    o.classList.add('picked');p.classList.add('answered');
+    const r=p.querySelector('.opt[data-v="'+ans+'"]');r.classList.add('right');
+    if(o===r){ver.textContent='ניבאת נכון!';ver.className='verdict good'}else{ver.textContent='הפתעה! בוא נבדוק למה.';ver.className='verdict surprise'}
+    rev.hidden=false;
+  }));
+});
+const checks=store.get('checks',{});
+$$('.challenge input').forEach(c=>{c.checked=!!checks[c.id];c.addEventListener('change',()=>{checks[c.id]=c.checked;store.set('checks',checks)})});
+
+/* mission 1: the energy budget */
+safe(()=>{
+  const cv=$('#coins'),vIn=$('#cV'),nIn=$('#cN'),S=setup(cv),ctx=S.ctx,RHO=1.2;
+  const P=[];for(let i=0;i<110;i++)P.push({x:Math.random(),s:Math.random()*1.8-.9});
+  const half=(x,hn)=>{if(x<.28||x>.72)return 1;const k=(1-Math.cos((x-.28)/.44*2*Math.PI))/2;return 1-(1-hn)*k};
+  let last=performance.now();
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000);last=now;
+    if(S.visible){
+      const W=S.W,H=S.H,v1=+vIn.value,n=+nIn.value,hn=1/n,cy=H*.24,hp=Math.min(H*.17,48);
+      const v2=v1*n,q1=.5*RHO*v1*v1,q2=.5*RHO*v2*v2,TOTAL=Math.max(1100,q2*1.08);
+      const hi=tok('--high'),ink=tok('--ink'),sig=tok('--signal'),soft=tok('--ink-soft');
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle=hi;ctx.globalAlpha=.14;ctx.beginPath();
+      for(let px=0;px<=W;px+=3)ctx.lineTo(px,cy-half(px/W,hn)*hp);
+      for(let px=W;px>=0;px-=3)ctx.lineTo(px,cy+half(px/W,hn)*hp);
+      ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+      ctx.strokeStyle=ink;ctx.lineWidth=3;
+      [-1,1].forEach(sg=>{ctx.beginPath();for(let px=0;px<=W;px+=3){const y=cy+sg*half(px/W,hn)*hp;px?ctx.lineTo(px,y):ctx.moveTo(px,y)}ctx.stroke()});
+      ctx.lineWidth=1.6;ctx.globalAlpha=.75;
+      P.forEach(p=>{const h=half(p.x,hn),sp=(.0035*v1+.03)/h;p.x+=sp*dt*(reduce?.4:1);if(p.x>1.02){p.x=-.02;p.s=Math.random()*1.8-.9}
+        const X=p.x*W,Y=cy+p.s*h*hp,L=Math.min(46,sp*W*.09);ctx.beginPath();ctx.moveTo(X-L,Y);ctx.lineTo(X,Y);ctx.stroke()});
+      ctx.globalAlpha=1;
+      const top=cy+hp+34,bh=H-top-26;
+      [[.16,q1],[.5,q2],[.84,q1]].forEach(([x,q])=>{
+        const X=x*W,bw=Math.min(70,W*.16),qh=bh*q/TOTAL;
+        ctx.fillStyle=hi;ctx.fillRect(X-bw/2,top,bw,bh-qh);
+        ctx.fillStyle=sig;ctx.fillRect(X-bw/2,top+bh-qh,bw,qh);
+        ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.strokeRect(X-bw/2,top,bw,bh);
+        ctx.fillStyle=ink;ctx.font='700 14px Assistant, sans-serif';ctx.textAlign='center';ctx.fillText(fmt(q)+' מטבעות מהירות',X,top+bh+18);
+      });
+      ctx.fillStyle=soft;ctx.font='700 13px Assistant, sans-serif';ctx.fillText('סך הכול בכל נקודה: אותו תקציב',W/2,top-8);
+      $('#cVo').textContent=v1+' מ/ש';$('#cNo').textContent='פי '+n;
+      $('#cOut1').textContent='מהירות באמצע: '+v2+' מ/ש';
+      $('#cOut2').textContent='הלחץ באמצע נמוך ב-'+fmt(q2-q1)+' פסקל';
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+});
+
+/* mission 1: the airspeed instrument */
+safe(()=>{
+  const R=[
+    {w:'מטוס קטן, כדור הארץ',rho:1.2,dp:240,v:20,rule:'כאן ½ρ = 0.6, אז: הפרש = 0.6 × v × v'},
+    {w:'מטוס קטן שממהר',rho:1.2,dp:540,v:30,rule:'כאן ½ρ = 0.6, אז: הפרש = 0.6 × v × v'},
+    {w:'מטוס נוסעים בנחיתה',rho:1.2,dp:6000,v:100,rule:'כאן ½ρ = 0.6, אז: הפרש = 0.6 × v × v'},
+    {w:'רחפן באוויר של מאדים',rho:.02,dp:100,v:100,rule:'כאן ½ρ = 0.01, אז: הפרש = 0.01 × v × v'}
+  ];
+  let i=0;const inp=$('#pIn'),msg=$('#pMsg');
+  function show(){const r=R[i];$('#pWhere').textContent='מדידה '+(i+1)+' מתוך 4: '+r.w;$('#pRead').textContent=fmt(r.dp);$('#pRule').textContent=r.rule;
+    const d=Math.min(44,Math.sqrt(r.dp)*.56);$('#uL').setAttribute('y',74+d);$('#uL').setAttribute('height',46-d);$('#uR').setAttribute('y',74-d);$('#uR').setAttribute('height',46+d);inp.value=''}
+  $('#pCheck').addEventListener('click',()=>{
+    const r=R[i],a=parseFloat(inp.value);if(isNaN(a)){msg.textContent='הקלד מספר קודם.';msg.className='msg bad';return}
+    if(Math.abs(a-r.v)<=1){
+      if(i===3){msg.textContent='נכון! אותה מהירות כמו מטוס הנוסעים, אבל המכשיר מראה פי 60 פחות. על מאדים צריך מד רגיש מאוד.';msg.className='msg good';return}
+      msg.textContent='נכון! '+fmt(r.v)+' מ/ש.';msg.className='msg good';i++;show();
+    }else{const g=.5*r.rho*a*a;msg.textContent='עם '+a+' מ/ש ההפרש היה '+fmt(g)+' פסקל. '+(g<r.dp?'נסה מהירות גדולה יותר.':'נסה מהירות קטנה יותר.');msg.className='msg bad'}
+  });
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')$('#pCheck').click()});
+  show();
+});
+
+/* mission 2: the lift puzzles */
+safe(()=>{
+  const M=1100;
+  const LV=[
+    {t:'המראה רגילה',p:'earth',open:['v'],v:10,S:16,a:5,max:{v:90,S:400},text:'כדור הארץ. רק כפתור המהירות פתוח. כמה מהר צריך לרוץ על המסלול?'},
+    {t:'מסלול על האוורסט',p:'everest',open:['v'],v:10,S:16,a:5,max:{v:90,S:400},text:'אותו מטוס, אבל האוויר דליל פי 2.6. כמה מהר עכשיו? שים לב: לא פי 2.6.'},
+    {t:'טיטאן: אוויר סמיך',p:'titan',open:['v'],v:20,S:16,a:5,max:{v:90,S:400},text:'האוויר פי 4.4 מסמיך מבבית, והכבידה נמוכה. מהירות של אופניים אולי מספיקה?'},
+    {t:'מאדים: המהירות לא מספיקה',p:'mars',open:['v'],v:60,S:16,a:5,max:{v:90,S:400},gate:true,text:'אותו מטוס, מהירות מקסימלית 90 מ/ש. נסה. אפשר להצליח? לחץ על ×2 עד הסוף.'},
+    {t:'מאדים: כנף ענקית',p:'mars',open:['v','S','a'],v:60,S:16,a:5,max:{v:90,S:400},text:'עכשיו כל הכפתורים פתוחים. המטרה: לעבור את המשקל עם הכנף הכי קטנה שאתה מצליח.'},
+    {t:'הירח',p:'moon',open:['v','S','a'],v:60,S:16,a:5,max:{v:90,S:400},gate:true,text:'אין אוויר: הצפיפות היא 0. נסה כל מה שאתה רוצה.'}
+  ];
+  const KN=[['v','מהירות v','מ/ש',0,90,1],['S','שטח כנף S','מ²',5,400,1],['a','זווית','°',-4,14,1]];
+  let cur=0,st={},maxOpen=Math.min(store.get('lvl',0),LV.length-1),last=null;
+  const box=$('#knobs');
+  KN.forEach(([k,n,u,a,b,s])=>{const d=document.createElement('div');d.className='knob';d.innerHTML='<label for="k'+k+'">'+n+' <output id="k'+k+'o"></output></label><input type="range" id="k'+k+'" min="'+a+'" max="'+b+'" step="'+s+'">'+(k==='a'?'':'<button class="x2" data-k="'+k+'">×2</button>');box.appendChild(d)});
+  const inputs={v:$('#kv'),S:$('#kS'),a:$('#ka')};
+  function L(){const p=PLANETS[LV[cur].p];return lift(p.rho,st.v,st.S,CLof(st.a))}
+  function W(){return M*PLANETS[LV[cur].p].g}
+  function render(){
+    const lv=LV[cur],p=PLANETS[lv.p],l=L(),w=W(),mx=Math.max(l,w)*1.1,h=140;
+    $('#liftP').style.height=Math.max(1,l/mx*h)+'px';$('#weightP').style.height=(w/mx*h)+'px';
+    $('#liftTxt').textContent=fmt(l)+' ניוטון';$('#weightTxt').textContent=fmt(w)+' ניוטון';
+    $('#kvo').textContent=st.v+' מ/ש';$('#kSo').textContent=st.S+' מ²';$('#kao').textContent=st.a+'° (C='+CLof(st.a).toFixed(2)+')';
+    const m=$('#lvMsg'),next=$('#lvNext');
+    if(p.rho===0){m.textContent='עילוי 0, בכל מהירות ובכל כנף. בלי אוויר אין מה לסובב ואין כנף.';m.className='msg bad';next.hidden=cur>=LV.length-1;win()}
+    else if(l>=w){m.textContent=lv.t==='מאדים: כנף ענקית'?'המראה! כנף של '+st.S+' מ². המטוס של הבית עם 16 מ² לא היה עובר כאן.':'המראה! צריך '+st.v+' מ/ש ב'+p.name+'.';m.className='msg good';next.hidden=cur>=LV.length-1;win()}
+    else if(lv.gate&&st.v>=lv.max.v){m.textContent='גם ב-90 מ/ש העילוי רק '+Math.round(l/w*100)+'% מהמשקל. הכפתור הזה לא יספיק.';m.className='msg bad';next.hidden=false;win()}
+    else{m.textContent='עדיין לא: העילוי הוא '+Math.round(l/w*100)+'% מהמשקל.';m.className='msg';next.hidden=cur>maxOpen-1}
+  }
+  function win(){if(cur+1>maxOpen){maxOpen=Math.min(cur+1,LV.length-1);store.set('lvl',maxOpen);locks()}if(cur===LV.length-1)markDone(2)}
+  function load(i){cur=i;const lv=LV[i];st={v:lv.v,S:lv.S,a:lv.a};$('#lvTitle').textContent=(i+1)+'. '+lv.t;$('#lvText').textContent=lv.text;$('#lvDelta').hidden=true;
+    KN.forEach(([k])=>{const open=lv.open.includes(k),e=inputs[k];e.value=st[k];e.disabled=!open;e.closest('.knob').classList.toggle('locked',!open);const b=e.closest('.knob').querySelector('.x2');if(b)b.disabled=!open});
+    locks();render()}
+  function locks(){const el=$('#locks');el.innerHTML='';LV.forEach((l,i)=>{const b=document.createElement('button');b.className='lock'+(i<maxOpen?' open':'')+(i===cur?' cur':'');b.textContent=i+1;b.disabled=i>maxOpen;b.setAttribute('aria-label','חידה '+(i+1));b.addEventListener('click',()=>load(i));el.appendChild(b)})}
+  Object.entries(inputs).forEach(([k,e])=>e.addEventListener('input',()=>{st[k]=+e.value;$('#lvDelta').hidden=true;render()}));
+  $$('.x2').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.k,before=L(),max=+inputs[k].max,nv=Math.min(max,st[k]*2);if(nv===st[k])return;st[k]=nv;inputs[k].value=nv;render();const d=$('#lvDelta');if(before>0){d.hidden=false;d.textContent='העילוי גדל פי '+(L()/before).toFixed(1)}}));
+  $('#lvNext').addEventListener('click',()=>load(Math.min(cur+1,LV.length-1)));
+  load(maxOpen);
+});
+
+/* mission 3: the real wind tunnel */
+safe(()=>{
+  const cv=$('#tunnel'),small=Math.min(window.innerWidth,screen.width||9999)<640;
+  const nx=small?160:220,ny=small?72:90,l=LBM(nx,ny);
+  cv.style.height='auto';cv.style.aspectRatio=nx+'/'+ny;
+  const S=setup(cv),ctx=S.ctx,buf=document.createElement('canvas');buf.width=nx;buf.height=ny;
+  const bctx=buf.getContext('2d'),img=bctx.createImageData(nx,ny),px=new Uint32Array(img.data.buffer);
+  const rgba=(r,g,b)=>(255<<24)|(b<<16)|(g<<8)|r,mix=(a,b,t)=>Math.round(a+(b-a)*t);
+  const ramp=(stops)=>{const o=new Uint32Array(256);for(let i=0;i<256;i++){const t=i/255*(stops.length-1),j=Math.min(stops.length-2,Math.floor(t)),f=t-j,a=stops[j],b=stops[j+1];o[i]=rgba(mix(a[0],b[0],f),mix(a[1],b[1],f),mix(a[2],b[2],f))}return o};
+  const LUT={speed:ramp([[10,20,48],[24,74,150],[46,170,210],[230,245,250]]),press:ramp([[227,72,78],[80,26,50],[12,22,48],[20,60,130],[94,163,255]]),vort:ramp([[255,190,46],[120,74,30],[12,22,48],[30,70,130],[94,163,255]])};
+  const SOLID=rgba(232,239,250);
+  let view='speed',shape='wing',tool='move',ang=8,drawing=false,lastCell=null;
+  const res=store.get('tunnel',{}),names={circle:'עיגול',plate:'לוח',drop:'טיפה',wing:'כנף',cup:'קערה'};
+  const T=[];for(let i=0;i<150;i++)T.push({x:Math.random()*nx,y:Math.random()*ny});
+  function apply(){paintShape(l,shape,(shape==='wing'||shape==='plate')?ang:0)}
+  seg($('#tShape'),[['wing','כנף'],['circle','עיגול'],['plate','לוח'],['drop','טיפה'],['cup','קערה'],['none','ריק: אצייר בעצמי']],shape,v=>{shape=v;apply();if(v==='none')pickTool('draw')});
+  seg($('#tView'),[['speed','מהירות'],['press','לחץ'],['vort','מערבולות']],view,v=>view=v);
+  function pickTool(v){tool=v;[...$('#tTool').children].forEach(x=>x.setAttribute('aria-pressed',x.dataset.v===v))}
+  seg($('#tTool'),[['move','רק להסתכל'],['draw','צייר'],['erase','מחק']],tool,v=>tool=v);
+  $('#tAng').addEventListener('input',e=>{ang=+e.target.value;$('#tAngO').textContent=ang+'°';if(shape==='wing'||shape==='plate')apply()});
+  function brush(e){const r=cv.getBoundingClientRect(),x=Math.round((e.clientX-r.left)/r.width*nx),y=Math.round((e.clientY-r.top)/r.height*ny);
+    const paint=(cx,cy)=>{for(let j=-2;j<=2;j++)for(let i=-2;i<=2;i++){if(i*i+j*j>5)continue;const X=cx+i,Y=cy+j;if(X>2&&X<nx-3&&Y>1&&Y<ny-2)l.setSolid(X+Y*nx,tool==='draw')}};
+    if(lastCell){const n=Math.max(Math.abs(x-lastCell[0]),Math.abs(y-lastCell[1]),1);for(let t=0;t<=n;t++)paint(Math.round(lastCell[0]+(x-lastCell[0])*t/n),Math.round(lastCell[1]+(y-lastCell[1])*t/n))}else paint(x,y);
+    lastCell=[x,y];l.fresh()}
+  cv.addEventListener('pointerdown',e=>{if(tool==='move')return;drawing=true;lastCell=null;cv.setPointerCapture(e.pointerId);cv.style.touchAction='none';brush(e);e.preventDefault()});
+  cv.addEventListener('pointermove',e=>{if(drawing)brush(e)});
+  ['pointerup','pointercancel'].forEach(n=>cv.addEventListener(n,()=>{drawing=false;lastCell=null}));
+  function rank(){const el=$('#tRank'),keys=Object.keys(names).filter(k=>res[k]!=null).sort((a,b)=>res[b]-res[a]);if(!keys.length){el.innerHTML='<p class="empty">טבלת הגרר תתמלא כשכל צורה תרוץ כמה שניות.</p>';return}
+    const mx=Math.max(...keys.map(k=>res[k]));el.innerHTML='<b>טבלת הגרר שמדדת</b>'+keys.map(k=>'<div class="rankrow"><span>'+names[k]+'</span><div class="track"><div class="fill" style="width:'+(res[k]/mx*100)+'%"></div></div><output>'+res[k].toFixed(1)+'</output></div>').join('')}
+  rank();apply();
+  let lastRank=0,budget=small?5:8;
+  function frame(now){
+    if(S.visible){
+      const t0=performance.now();for(let i=0;i<budget;i++)l.step();
+      const c=performance.now()-t0;if(c>13&&budget>2)budget--;else if(c<7&&budget<12)budget++;
+      for(let y=1;y<ny-1;y++)for(let x=1;x<nx-1;x++){const k=x+y*nx;
+        if(l.solid[k]){px[k]=SOLID;continue}
+        let v;
+        if(view==='speed')v=Math.hypot(l.ux[k],l.uy[k])/.19;
+        else if(view==='press')v=.5+(l.rho[k]-1)*6.5;
+        else v=.5+((l.uy[k+1]-l.uy[k-1])-(l.ux[k+nx]-l.ux[k-nx]))*5;
+        px[k]=LUT[view][clamp(Math.round(v*255),0,255)]}
+      for(let k=0;k<nx;k++){px[k]=px[k+nx];px[k+(ny-1)*nx]=px[k+(ny-2)*nx]}for(let y=0;y<ny;y++){px[y*nx]=px[1+y*nx];px[nx-1+y*nx]=px[nx-2+y*nx]}
+      bctx.putImageData(img,0,0);ctx.imageSmoothingEnabled=true;ctx.drawImage(buf,0,0,S.W,S.H);
+      const sx=S.W/nx,sy=S.H/ny;ctx.fillStyle='rgba(255,255,255,.75)';
+      T.forEach(p=>{const k=Math.floor(p.x)+Math.floor(p.y)*nx;
+        if(p.x>=nx-1||p.x<1||p.y<1||p.y>=ny-1||l.solid[k]){p.x=1+Math.random()*4;p.y=2+Math.random()*(ny-4);return}
+        p.x+=l.ux[k]*budget*1.6;p.y+=l.uy[k]*budget*1.6;ctx.fillRect(p.x*sx,p.y*sy,2,2)});
+      const has=l.solid.some(x=>x),ready=l.settled>1100;
+      if(has){const D=dragCoef(l),Lf=liftCoef(l);
+        $('#tD').textContent=D.toFixed(1);$('#tL').textContent=Lf.toFixed(1);
+        $('#tDb').style.width=clamp(D/4*100,0,100)+'%';$('#tLb').style.width=clamp(Math.abs(Lf)/4*100,0,100)+'%';
+        const st=$('#tState');
+        if(!ready){st.textContent='מודד...';st.className='chip'}
+        else{st.textContent=Lf<-.3?'עילוי שלילי: הצורה נדחפת למטה':'מדידה יציבה';st.className='chip good';
+          if(names[shape]&&now-lastRank>1500&&(shape!=='wing'&&shape!=='plate'||Math.abs(ang)<=(shape==='plate'?0:8))){res[shape]=D;store.set('tunnel',res);rank();lastRank=now}}
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+});
+
+/* mission 5: stopwatch and log */
+safe(()=>{
+  const rows=[['l7','7 ס"מ',1],['l5','5 ס"מ',.84],['l35','3.5 ס"מ',.71]],log=store.get('heli',{}),body=$('#hBody');
+  rows.forEach(([k,n])=>{const tr=document.createElement('tr');tr.innerHTML='<td>'+n+'</td>'+[0,1,2].map(i=>'<td><input type="number" min="0" step="0.01" inputmode="decimal" id="h-'+k+'-'+i+'" aria-label="'+n+' נפילה '+(i+1)+'"></td>').join('')+'<td class="avg" id="ha-'+k+'">–</td><td id="hp-'+k+'">–</td>';body.appendChild(tr)});
+  const cells=rows.flatMap(([k])=>[0,1,2].map(i=>$('#h-'+k+'-'+i)));
+  function render(){
+    const av={};rows.forEach(([k])=>{const v=[0,1,2].map(i=>parseFloat($('#h-'+k+'-'+i).value)).filter(x=>!isNaN(x));av[k]=v.length?v.reduce((a,b)=>a+b,0)/v.length:null;$('#ha-'+k).textContent=av[k]==null?'–':av[k].toFixed(2)});
+    rows.forEach(([k,,r])=>{$('#hp-'+k).textContent=av.l7==null?'–':(av.l7*r).toFixed(2)});
+    const m=$('#hMsg');
+    if(av.l7!=null&&av.l35!=null){const pct=Math.round(av.l35/av.l7*100);m.textContent='להבים של 3.5 ס"מ נפלו ב-'+pct+'% מהזמן של 7 ס"מ. הנוסחה ניבאה 71%.'}else m.textContent='מלא את השורה הראשונה, והנוסחה תנבא את השאר.';
+    const nx=cells.find(c=>c.value==='');$('#wNext').textContent=nx?'המדידה הבאה נרשמת ל: '+nx.getAttribute('aria-label'):'כל המדידות נרשמו';
+  }
+  cells.forEach(c=>{if(log[c.id]!=null)c.value=log[c.id];c.addEventListener('input',()=>{log[c.id]=c.value;store.set('heli',log);render()})});
+  let t0=0,run=false,raf=0;const out=$('#wTime'),btn=$('#wBtn');
+  const tick=()=>{out.textContent=((performance.now()-t0)/1000).toFixed(2);raf=requestAnimationFrame(tick)};
+  btn.addEventListener('click',()=>{
+    if(!run){run=true;t0=performance.now();btn.textContent='נגע ברצפה: עצור';btn.classList.add('run');tick()}
+    else{run=false;cancelAnimationFrame(raf);const v=((performance.now()-t0)/1000).toFixed(2);out.textContent=v;btn.textContent='שחרר: התחל';btn.classList.remove('run');const nx=cells.find(c=>c.value==='');if(nx){nx.value=v;log[nx.id]=v;store.set('heli',log);render()}}
+  });
+  $('#hClear').addEventListener('click',()=>{cells.forEach(c=>{c.value='';delete log[c.id]});store.set('heli',log);render()});
+  render();
+});
+
+/* mission 6: hover Ingenuity */
+safe(()=>{
+  const cv=$('#hover'),rIn=$('#hRpm'),S=setup(cv),ctx=S.ctx;
+  let pk='mars',s={y:0,v:0,rpm:0},inBand=0,won=false,spin=0,flown=false;
+  const found=store.get('hover',{}),BAND=[4,6.5];
+  function table(){$('#hTable').innerHTML=PLANET_ORDER.map(k=>{const p=PLANETS[k];return'<tr><td>'+p.name+'</td><td>'+p.rho+'</td><td>'+p.g+'</td><td>'+(found[k]?fmt(found[k]):k==='moon'?'אי אפשר':'–')+'</td></tr>'}).join('')}
+  function reset(){s={y:0,v:0,rpm:0};inBand=0;won=false;flown=false;rIn.value=0;const h=hoverRpm(PLANETS[pk]);rIn.max=isFinite(h)?Math.min(3600,Math.round(h*2.2)):3600;rIn.step=rIn.max>1500?4:1}
+  seg($('#hPlanet'),PLANET_ORDER.map(k=>[k,PLANETS[k].name]),pk,v=>{pk=v;reset()});
+  $('#hReset').addEventListener('click',reset);
+  let last=performance.now();
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000);last=now;
+    if(S.visible){
+      const p=PLANETS[pk],W=S.W,H=S.H,tgt=+rIn.value;
+      heliStep(s,tgt,p,dt);spin+=s.rpm/60*dt*2*Math.PI*.18;if(s.y>.1)flown=true;
+      const gy=H-34,scale=(gy-30)/14,mach=tipMach(s.rpm,p);
+      const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,p.sky[0]);g.addColorStop(1,p.sky[1]);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+      const b0=gy-BAND[1]*scale,b1=gy-BAND[0]*scale;ctx.fillStyle='rgba(23,143,98,.28)';ctx.fillRect(0,b0,W,b1-b0);ctx.strokeStyle='#178F62';ctx.setLineDash([8,6]);ctx.lineWidth=2;ctx.strokeRect(-4,b0,W+8,b1-b0);ctx.setLineDash([]);
+      ctx.fillStyle=p.ground;ctx.fillRect(0,gy,W,H-gy);
+      const x=W/2,y=gy-s.y*scale;
+      ctx.strokeStyle='#13274A';ctx.lineWidth=3;ctx.lineCap='round';
+      ctx.fillStyle='#fff';ctx.fillRect(x-18,y-26,36,22);ctx.strokeRect(x-18,y-26,36,22);
+      ctx.beginPath();ctx.moveTo(x-14,y-4);ctx.lineTo(x-24,y);ctx.moveTo(x+14,y-4);ctx.lineTo(x+24,y);ctx.moveTo(x,y-26);ctx.lineTo(x,y-54);ctx.stroke();
+      [[-40,'#FFBE2E'],[-52,'#DCE7F3']].forEach(([o,c],i)=>{const r=Math.abs(Math.cos(spin*(i?1:-1)))*58+8;ctx.fillStyle=c;ctx.strokeStyle='#13274A';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,y+o,r,4,0,0,Math.PI*2);ctx.fill();ctx.stroke()});
+      ctx.fillStyle='#fff';ctx.font='700 15px Assistant, sans-serif';ctx.textAlign='right';ctx.fillText('גובה: '+s.y.toFixed(1)+' מ׳',W-12,24);ctx.textAlign='left';ctx.fillText(p.name,12,24);
+      $('#hRpmO').textContent=fmt(tgt)+' סל"ד';
+      const hm=$('#hMach');hm.textContent='קצה הלהב: '+Math.round(mach*100)+'% ממהירות הקול';hm.className='chip'+(mach>.8?' warn':'');
+      const st=$('#hState');
+      if(p.rho===0){st.textContent=s.rpm>300?'הרוטור מסתובב בריק: אין אוויר, אין עילוי':'אין כאן אוויר';st.className='chip warn'}
+      else{const inn=s.y>=BAND[0]&&s.y<=BAND[1]&&Math.abs(s.v)<1.5;inBand=inn?inBand+dt:0;
+        if(won){st.textContent='ריחוף מוצלח! '+fmt(found[pk])+' סל"ד';st.className='chip good'}
+        else if(inn){st.textContent='מחזיק... '+Math.max(0,3-inBand).toFixed(1);st.className='chip good';if(inBand>=3){won=true;found[pk]=Math.round(s.rpm);store.set('hover',found);table();if(found.mars&&found.earth)markDone(6)}}
+        else if(mach>.85){st.textContent='זהירות: קצה הלהב מתקרב למהירות הקול';st.className='chip warn'}
+        else{st.textContent=s.y>BAND[1]?'גבוה מדי: הורד סל"ד':flown?'עלה לאזור הירוק':'הגדל סל"ד עד שתתרומם';st.className='chip'}}
+    }
+    requestAnimationFrame(frame);
+  }
+  reset();table();requestAnimationFrame(frame);
+});
+
+/* mission 7: design and fly */
+safe(()=>{
+  const cv=$('#fly'),sIn=$('#fS'),tIn=$('#fT'),S=setup(cv),ctx=S.ctx,msg=$('#fMsg');
+  let pk='earth',st=flightInit(),phase='ready',ctl=0,keys={},ring=0,air=false,wins=store.get('wins',{});
+  const design=()=>({S:+sIn.value,T:+tIn.value});
+  function say(t,c){msg.textContent=t;msg.className='msg'+(c?' '+c:'')}
+  function info(){const d=design(),p=PLANETS[pk];$('#fSo').textContent=d.S+' מ²';$('#fTo').textContent=d.T+' ניוטון';$('#fMass').textContent='מסה: '+fmt(massOf(d))+' ק"ג';
+    const v=takeoffSpeed(d,p);$('#fLO').textContent=isFinite(v)?'מהירות המראה: '+v.toFixed(0)+' מ/ש':'אין עילוי כאן';
+    $('#fThr').textContent='דחף כאן: '+fmt(thrustOf(d,p))+' ניוטון'}
+  function pl(){$('#fPlanet').querySelectorAll('button').forEach(b=>b.classList.toggle('won',!!wins[b.dataset.v]))}
+  function reset(){st=flightInit();ring=0;air=false;phase='ready';$('#fGo').textContent='המרא!';say('תכנן, ולחץ המרא. כשתגיע למהירות ההמראה, הרם את האף.')}
+  seg($('#fPlanet'),PLANET_ORDER.map(k=>[k,PLANETS[k].name]),pk,v=>{pk=v;reset();info()});
+  [sIn,tIn].forEach(e=>e.addEventListener('input',()=>{info();if(phase!=='fly')reset()}));
+  $('#fGo').addEventListener('click',()=>{
+    if(phase==='fly'||phase==='end'){reset();if(phase==='ready'&&false)return}
+    const p=PLANETS[pk];
+    if(p.rho===0){say('בלי אוויר הכנף לא נותנת עילוי, והמדחף לא דוחף דבר. כאן צריך רקטה, וזה כבר סיפור אחר.','bad');phase='end';$('#fGo').textContent='נסה שוב';return}
+    phase='fly';$('#fGo').textContent='התחל מחדש';say('מאיץ על המסלול...');cv.focus({preventScroll:true})
+  });
+  const hold=(el,v)=>{const on=e=>{e.preventDefault();ctl=v},off=()=>{ctl=0};el.addEventListener('pointerdown',on);['pointerup','pointerleave','pointercancel'].forEach(n=>el.addEventListener(n,off))};
+  hold($('#fUp'),1);hold($('#fDown'),-1);
+  cv.addEventListener('keydown',e=>{if(e.key==='ArrowUp'||e.key==='ArrowDown'){keys[e.key]=1;e.preventDefault()}});
+  cv.addEventListener('keyup',e=>{keys[e.key]=0});
+  function end(text,win){phase='end';$('#fGo').textContent='נסה שוב';say(text,win?'good':'bad');
+    if(win){wins[pk]=1;store.set('wins',wins);pl();if(wins.mars&&wins.earth)markDone(7)}}
+  function update(dt){
+    const p=PLANETS[pk],c=course(p),d=design(),inp=ctl||(keys.ArrowUp?1:keys.ArrowDown?-1:0);
+    flightStep(st,inp,dt,p,d);
+    if(!st.ground&&!air){air=true;say('באוויר! כוון לטבעת הראשונה.','good')}
+    if(st.ground&&st.x>c.runway)return end('המסלול נגמר ב-'+st.vx.toFixed(0)+' מ/ש, וצריך '+takeoffSpeed(d,p).toFixed(0)+' מ/ש. '+(pk==='mars'?'נסה כנף גדולה יותר, היא מורידה את מהירות ההמראה.':'נסה יותר מנוע, או הרם את האף מוקדם יותר.'));
+    if(!st.ground&&st.y<=0)return end('התרסקת. '+(st.stall?'המטוס נכנס לסטול: הזווית הייתה גדולה מדי והעילוי נפל.':'ירדת מהר מדי. הרם את האף בעדינות.'));
+    if(ring<3&&st.x>=c.rings[ring][0]){if(Math.abs(st.y-c.rings[ring][1])<=c.r){ring++;say('טבעת '+ring+' מתוך 3!','good')}else return end('פספסת טבעת '+(ring+1)+'. עברת בגובה '+st.y.toFixed(0)+' מ׳, והיא בגובה '+c.rings[ring][1].toFixed(0)+' מ׳.')}
+    if(st.x>=c.finish)end('הצלחת לטוס ב'+p.name+' עם כנף של '+d.S+' מ²! מהירות ההמראה הייתה '+takeoffSpeed(d,p).toFixed(0)+' מ/ש.',true);
+  }
+  function draw(){
+    const p=PLANETS[pk],c=course(p),W=S.W,H=S.H,gy=H-30,top=Math.max(c.rings[1][1]*1.8,70),sc=(gy-30)/top,mx=Math.min(sc*1.1,W/ (c.finish/ 5));
+    const camX=st.x-W*.3/mx,toX=x=>(x-camX)*mx,toY=y=>gy-y*sc;
+    const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,p.sky[0]);g.addColorStop(1,p.sky[1]);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=p.ground;ctx.fillRect(0,gy,W,H-gy);
+    const r0=Math.max(0,toX(0)),r1=Math.min(W,toX(c.runway));if(r1>0){ctx.fillStyle='#3a3f4a';ctx.fillRect(r0,gy,r1-r0,8);ctx.fillStyle='#fff';for(let x=0;x<c.runway;x+=30){const X=toX(x);if(X>-20&&X<W)ctx.fillRect(X,gy+3,14,2)}}
+    for(let x=Math.floor(camX/50)*50;x<camX+W/mx;x+=50){ctx.fillStyle='rgba(19,39,74,.28)';ctx.fillRect(toX(x),gy+10,2,10)}
+    c.rings.forEach((r,i)=>{const X=toX(r[0]),Y=toY(r[1]),rad=c.r*sc;ctx.lineWidth=5;ctx.strokeStyle=i<ring?'#178F62':'#FFBE2E';ctx.beginPath();ctx.ellipse(X,Y,rad*.3,rad,0,0,Math.PI*2);ctx.stroke()});
+    const fx=toX(c.finish);ctx.fillStyle='#13274A';ctx.fillRect(fx,gy-60,3,60);ctx.fillStyle='#E3484E';ctx.fillRect(fx+3,gy-60,24,14);
+    const X=toX(st.x),Y=toY(st.y)-6,ws=Math.min(1.6,.7+design().S/60);
+    ctx.save();ctx.translate(X,Y);ctx.rotate(-st.pitch*Math.PI/180);ctx.fillStyle='#fff';ctx.strokeStyle='#13274A';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(30,0);ctx.lineTo(-24,-5);ctx.lineTo(-30,-14);ctx.lineTo(-34,-14);ctx.lineTo(-30,4);ctx.lineTo(-10,6);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#FFBE2E';ctx.beginPath();ctx.ellipse(0,-1,22*ws,4,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
+    if(st.ground&&phase==='fly'&&st.vx>=takeoffSpeed(design(),p)*.95){ctx.fillStyle='#fff';ctx.font='800 20px Assistant, sans-serif';ctx.textAlign='center';ctx.fillText('הרם את האף!',W/2,50)}
+    ctx.fillStyle='rgba(13,26,49,.62)';ctx.fillRect(8,8,158,92);ctx.fillStyle='#fff';ctx.font='700 13px Assistant, sans-serif';ctx.textAlign='right';
+    const mg=massOf(design())*p.g,ratio=mg?st.L/mg:0;
+    ctx.fillText('מהירות: '+(st.v||0).toFixed(0)+' מ/ש',158,26);ctx.fillText('גובה: '+st.y.toFixed(0)+' מ׳',158,44);ctx.fillText('עילוי/משקל: '+Math.round(ratio*100)+'%',158,62);
+    if(ring<3)ctx.fillText('טבעת הבאה: גובה '+c.rings[ring][1].toFixed(0)+' מ׳',158,80);
+    if(st.stall){ctx.fillStyle='#E3484E';ctx.fillRect(W-82,10,72,26);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText('סטול!',W-46,28)}
+  }
+  let last=performance.now();
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000);last=now;
+    if(S.visible){if(phase==='fly'){const sub=pk==='mars'?2:1;for(let i=0;i<sub&&phase==='fly';i++)update(dt)}draw()}
+    requestAnimationFrame(frame);
+  }
+  reset();info();pl();requestAnimationFrame(frame);
+});
+
+/* quiz and certificate */
+const Q=[
+  ['מכפילים את מהירות האוויר. מה קורה ל-½ρv²?',['גדל פי 2','גדל פי 4','לא משתנה'],1],
+  ['על מאדים האוויר דליל פי 60. איך אפשר בכל זאת לקבל את אותו עילוי?',['רק מנוע גדול יותר','מהירות גבוהה פי 8 בערך, או כנף גדולה פי 60','אי אפשר בשום אופן'],1],
+  ['למה ללוח שטוח יש יותר גרר מלטיפה באותו גובה?',['הוא כבד יותר','מאחוריו נפתח בור של לחץ נמוך','האוויר חם מלפניו'],1],
+  ['איך צינור פיטו יודע מה המהירות?',['סופר חלקיקי אוויר','מודד את הלחץ שנוסף כשעוצרים את הזרימה','מקבל אות מלוויין'],1],
+  ['למה רוטור צריך להסתובב הכי מהר דווקא במקום עם אוויר דליל?',['כי העילוי תלוי בצפיפות, וצריך לפצות במהירות','כי קר שם','כי הכבידה שם גבוהה'],0]
+];
+const qa=store.get('quiz',{}),quizEl=$('#quiz');
+Q.forEach(([q,opts,ans],qi)=>{
+  const d=document.createElement('div');d.className='predict quizq';d.innerHTML='<p class="q">'+(qi+1)+'. '+q+'</p><div class="opts">'+opts.map((o,i)=>'<button class="opt" data-i="'+i+'">'+o+'</button>').join('')+'</div>';
+  quizEl.appendChild(d);
+  const btns=[...d.querySelectorAll('.opt')];
+  function show(i){btns.forEach(b=>b.classList.remove('picked','right'));btns[i].classList.add('picked');if(i===ans)btns[i].classList.add('right');else btns[ans].classList.add('right');d.classList.add('answered')}
+  btns.forEach((b,i)=>b.addEventListener('click',()=>{qa[qi]=i;store.set('quiz',qa);show(i);renderCert()}));
+  if(qa[qi]!=null)show(qa[qi]);
+});
+const nameEl=$('#pilotName');nameEl.value=store.get('name','');
+nameEl.addEventListener('input',()=>{store.set('name',nameEl.value);renderCert()});
+function renderCert(){
+  const right=Q.filter((q,i)=>qa[i]===q[2]).length;
+  $('#certName').textContent=nameEl.value.trim()||' ';
+  $('#certText').textContent='השלים '+done.size+' מתוך 7 משימות ו-'+right+' מתוך 5 שאלות במעבדת האוויר הדק, ויודע לחשב למה כנף מרימה גם באוויר דליל.';
+}
+$('#certDate').textContent=new Date().toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
+renderProgress();
+</script>
+</body>
+</html>
