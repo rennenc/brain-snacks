@@ -1,2 +1,4 @@
 # the game's first address keeps working after games moved under /games/
 /rotem-sky/*  /games/rotem-sky/:splat  301
+# the Newton Lab became three lessons
+/lessons/newton-lab/*  /lessons/newton-motion/  301

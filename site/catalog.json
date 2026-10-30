@@ -112,20 +112,18 @@
       "skills": [
         "Bernoulli's equation with numbers",
         "the lift equation",
-        "how air density changes flight",
-        "drag, wakes and vortices",
-        "testing a formula's prediction"
+        "drag, wakes and vortices"
       ],
       "uses_microphone": false,
       "docs": "docs/lessons/thin-air-lab.md",
-      "summary": "Part 2 of aerodynamics: Bernoulli with numbers, a pitot-tube speed puzzle, lift-equation locks, a real fluid simulation you can draw in, paper experiments timed with a stopwatch, and hovering a helicopter and flying a plane of your own design in the thin air of Mars."
+      "summary": "Flight, lesson 2: Bernoulli with numbers, a pitot-tube puzzle, lift-equation puzzles, a real fluid simulation you can draw in, and a tumbling paper wing."
     },
     {
-      "id": "newton-lab",
+      "id": "mars-flight",
       "kind": "lesson",
-      "title": "מעבדת ניוטון",
-      "title_en": "The Newton Lab",
-      "path": "lessons/newton-lab/",
+      "title": "טיסה במאדים",
+      "title_en": "Flying on Mars",
+      "path": "lessons/mars-flight/",
       "ages": [
         12,
         15
@@ -134,15 +132,78 @@
         "he"
       ],
       "skills": [
-        "Newton's three laws",
+        "how air density changes flight",
+        "testing a formula's prediction",
+        "designing for a goal"
+      ],
+      "uses_microphone": false,
+      "docs": "docs/lessons/thin-air-lab.md",
+      "summary": "Flight, lesson 3: test the lift equation with a timed paper helicopter, hover Ingenuity, and design and fly a plane in the thin air of Mars."
+    },
+    {
+      "id": "newton-motion",
+      "kind": "lesson",
+      "title": "ניוטון: דברים רוצים להמשיך",
+      "title_en": "Newton: Things Keep Going",
+      "path": "lessons/newton-motion/",
+      "ages": [
+        12,
+        15
+      ],
+      "languages": [
+        "he"
+      ],
+      "skills": [
+        "Newton's first law",
         "F = ma",
-        "action and reaction, momentum",
-        "why rockets use stages",
+        "free fall"
+      ],
+      "uses_microphone": false,
+      "docs": "docs/lessons/newton-lab.md",
+      "summary": "Newton, lesson 1 of 3: inertia with a coin and a frictionless puck, F = ma cart races, and the hammer and feather."
+    },
+    {
+      "id": "newton-astronaut",
+      "kind": "lesson",
+      "title": "ניוטון: הצל את האסטרונאוט",
+      "title_en": "Newton: Save the Astronaut",
+      "path": "lessons/newton-astronaut/",
+      "ages": [
+        12,
+        15
+      ],
+      "languages": [
+        "he"
+      ],
+      "skills": [
+        "Newton's third law",
+        "momentum",
         "orbits and free fall"
       ],
       "uses_microphone": false,
       "docs": "docs/lessons/newton-lab.md",
-      "summary": "Part 3: how a rocket moves with nothing to push against. Newton's three laws through a frictionless puck, docking, cart races, hammer and feather, a paper rocket, rescuing a drifting astronaut, building a staged rocket, Newton's cannon and a transfer orbit to Mars."
+      "summary": "Newton, lesson 2 of 3: docking with no brakes, skaters and momentum, a paper rocket, rescuing a drifting astronaut, and Newton's cannon."
+    },
+    {
+      "id": "newton-mars",
+      "kind": "lesson",
+      "title": "ניוטון: קלע למאדים",
+      "title_en": "Newton: Hit Mars",
+      "path": "lessons/newton-mars/",
+      "ages": [
+        12,
+        15
+      ],
+      "languages": [
+        "he"
+      ],
+      "skills": [
+        "why rockets use stages",
+        "launch windows"
+      ],
+      "uses_microphone": false,
+      "docs": "docs/lessons/newton-lab.md",
+      "summary": "Newton, lesson 3 of 3: build a staged rocket, then hit Mars in a real launch window."
     },
     {
       "id": "sound-lab",

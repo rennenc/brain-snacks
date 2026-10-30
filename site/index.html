@@ -67,6 +67,7 @@ a.card:hover{transform:translateY(-4px) rotate(.4deg)}
 .body p{margin:0;font-size:17px;line-height:1.55;font-weight:500}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
 .tags .age{background:#FFF1C7}
+.tags .age span{all:unset}
 .tags span{background:var(--mist);border-radius:999px;padding:4px 12px;font:600 14px var(--font-display)}
 .play-btn{margin-top:auto;align-self:flex-start;background:var(--coral);color:#fff;border-radius:999px;padding:10px 28px;font:700 22px var(--font-display);box-shadow:0 5px 0 #C9363B}
 
@@ -189,9 +190,22 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
       </div>
     </a>
     <a class="card" href="lessons/thin-air-lab/" data-kind="lesson" data-age-min="12" data-age-max="15">
-      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="רחפן קטן מרחף מעל קרקע חלודה, ומאדים ברקע על נייר משבצות">
-        <defs><pattern id="gridm" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#DCE7F3" stroke-width="1"/></pattern></defs>
-        <rect width="320" height="180" fill="#F4F8FC"/><rect width="320" height="180" fill="url(#gridm)"/>
+      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="כנף בזרימת אוויר ומתחתיה נוסחת העילוי">
+        <defs><pattern id="gridt1" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#DCE7F3" stroke-width="1"/></pattern></defs>
+        <rect width="320" height="180" fill="#F4F8FC"/><rect width="320" height="180" fill="url(#gridt1)"/>
+        <path d="M50 104 C 110 58, 200 66, 270 112 C 200 104, 110 112, 50 104 Z" fill="#fff" stroke="#13274A" stroke-width="3" stroke-linejoin="round"/><g fill="none" stroke="#2B78DD" stroke-width="2.5" stroke-linecap="round"><path d="M20 62 C 90 34, 190 40, 300 88"/><path d="M20 130 C 100 126, 200 128, 300 146"/></g><text x="160" y="164" text-anchor="middle" direction="ltr" style="unicode-bidi:bidi-override" font-family="Secular One, Rubik, sans-serif" font-size="22" fill="#BF4F22">L = ½ρv²SC</text>
+      </svg>
+      <div class="body">
+        <h2>מעבדת האוויר הדק</h2>
+        <p>שיעור 2 בטיסה: ברנולי עם מספרים, נוסחת העילוי צעד אחר צעד, ומנהרת רוח אמיתית שאפשר לצייר בה.</p>
+        <div class="tags"><span>🧪 ברנולי ועילוי</span><span>3 סימולטורים</span><span>ניסוי בבית</span><span class="age">גילאי <span dir="ltr">12–15</span></span></div>
+        <span class="play-btn lesson">להתחיל ←</span>
+      </div>
+    </a>
+    <a class="card" href="lessons/mars-flight/" data-kind="lesson" data-age-min="12" data-age-max="15">
+      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="רחפן קטן מרחף מעל קרקע חלודה, ומאדים ברקע">
+        <defs><pattern id="gridt2" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#DCE7F3" stroke-width="1"/></pattern></defs>
+        <rect width="320" height="180" fill="#F4F8FC"/><rect width="320" height="180" fill="url(#gridt2)"/>
         <circle cx="250" cy="58" r="38" fill="#BF4F22" stroke="#13274A" stroke-width="3"/>
         <path d="M216 52 C 236 42, 258 66, 286 50" fill="none" stroke="#fff" stroke-width="3" opacity=".7"/>
         <path d="M0 160 C 80 146, 170 172, 320 150 V180 H0 Z" fill="#BF4F22"/>
@@ -204,16 +218,42 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
         <text x="60" y="34" text-anchor="middle" direction="ltr" style="unicode-bidi:bidi-override" font-family="Secular One, Rubik, sans-serif" font-size="20" fill="#2B78DD">½ρv²</text>
       </svg>
       <div class="body">
-        <h2>מעבדת האוויר הדק</h2>
-        <p>חלק 2 של האווירודינמיקה: ברנולי עם מספרים, נוסחת העילוי, מנהרת רוח שאפשר לצייר בה, והטסת רחפן ומטוס באוויר הדליל של מאדים.</p>
-        <div class="tags"><span>🧪 ברנולי ועילוי</span><span>4 סימולטורים</span><span>משחק טיסה</span><span class="age">גילאי <span dir="ltr">12–15</span></span></div>
+        <h2>טיסה במאדים</h2>
+        <p>שיעור 3 בטיסה: בודקים את הנוסחה עם מסוק נייר, מטיסים את אינג'נואיטי, ומתכננים מטוס לאוויר הדליל של מאדים.</p>
+        <div class="tags"><span>🪐 אוויר דליל</span><span>2 משחקים</span><span>ניסוי בבית</span><span class="age">גילאי <span dir="ltr">12–15</span></span></div>
         <span class="play-btn lesson">להתחיל ←</span>
       </div>
     </a>
-    <a class="card" href="lessons/newton-lab/" data-kind="lesson" data-age-min="12" data-age-max="15">
-      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="רקטה טסה בקו מקווקו מכדור הארץ אל מאדים על נייר משבצות">
-        <defs><pattern id="gridn" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#DCE7F3" stroke-width="1"/></pattern></defs>
-        <rect width="320" height="180" fill="#F4F8FC"/><rect width="320" height="180" fill="url(#gridn)"/>
+    <a class="card" href="lessons/newton-motion/" data-kind="lesson" data-age-min="12" data-age-max="15">
+      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="עגלה נדחפת בחץ, ומעליה הנוסחה F שווה ma">
+        <defs><pattern id="gridn1" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#DCE7F3" stroke-width="1"/></pattern></defs>
+        <rect width="320" height="180" fill="#F4F8FC"/><rect width="320" height="180" fill="url(#gridn1)"/>
+        <rect x="30" y="128" width="260" height="10" rx="4" fill="#DCE7F3" stroke="#13274A" stroke-width="3"/><rect x="80" y="80" width="96" height="48" rx="9" fill="#FFBE2E" stroke="#13274A" stroke-width="3"/><circle cx="104" cy="130" r="11" fill="#13274A"/><circle cx="152" cy="130" r="11" fill="#13274A"/><path d="M196 104 H250" stroke="#2B78DD" stroke-width="7" stroke-linecap="round"/><path d="M242 92 L262 104 L242 116 Z" fill="#2B78DD"/><text x="160" y="50" text-anchor="middle" direction="ltr" style="unicode-bidi:bidi-override" font-family="Secular One, Rubik, sans-serif" font-size="26" fill="#5A46C8">F = ma</text>
+      </svg>
+      <div class="body">
+        <h2>ניוטון: דברים רוצים להמשיך</h2>
+        <p>שיעור 1 מתוך 3: למה קשה להתחיל ולמה קשה לעצור? ניסוי המטבע, דסקה בחלל, מרוצי עגלות, ופטיש ונוצה.</p>
+        <div class="tags"><span>🚀 חוקי ניוטון</span><span>3 סימולטורים</span><span>2 ניסויים בבית</span><span class="age">גילאי <span dir="ltr">12–15</span></span></div>
+        <span class="play-btn lesson">להתחיל ←</span>
+      </div>
+    </a>
+    <a class="card" href="lessons/newton-astronaut/" data-kind="lesson" data-age-min="12" data-age-max="15">
+      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="אסטרונאוט מרחף בחלל וזורק ארגז כלים">
+        <defs><pattern id="gridn2" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#DCE7F3" stroke-width="1"/></pattern></defs>
+        <rect width="320" height="180" fill="#F4F8FC"/><rect width="320" height="180" fill="url(#gridn2)"/>
+        <circle cx="270" cy="44" r="22" fill="#2B78DD" stroke="#13274A" stroke-width="3"/><g transform="translate(70 -2) scale(.72)"><path d="M90 58 C 120 58, 134 84, 126 110 L126 168 L106 168 L100 136 L80 136 L74 168 L54 168 L54 110 C 46 84, 60 58, 90 58 Z" fill="#fff" stroke="#13274A" stroke-width="4" stroke-linejoin="round"/><circle cx="90" cy="84" r="27" fill="#fff" stroke="#13274A" stroke-width="4"/><path d="M70 80 C 76 70, 104 70, 110 80 L110 92 C 104 100, 76 100, 70 92 Z" fill="#2B78DD" stroke="#13274A" stroke-width="4"/><path d="M54 116 L22 140 M126 116 L162 96" stroke="#13274A" stroke-width="12" stroke-linecap="round"/><rect x="162" y="82" width="26" height="18" rx="3" fill="#FFBE2E" stroke="#13274A" stroke-width="3"/></g><path d="M250 100 C 262 120, 262 140, 248 156" fill="none" stroke="#4C6185" stroke-width="2" stroke-dasharray="5 6"/>
+      </svg>
+      <div class="body">
+        <h2>ניוטון: הצל את האסטרונאוט</h2>
+        <p>שיעור 2 מתוך 3: איך זזים בחלל? עגינה בלי בלמים, החוק השלישי, הצלת אסטרונאוט שנסחף, והתותח של ניוטון.</p>
+        <div class="tags"><span>👩‍🚀 פעולה ותגובה</span><span>4 משחקים</span><span>ניסוי בבית</span><span class="age">גילאי <span dir="ltr">12–15</span></span></div>
+        <span class="play-btn lesson">להתחיל ←</span>
+      </div>
+    </a>
+    <a class="card" href="lessons/newton-mars/" data-kind="lesson" data-age-min="12" data-age-max="15">
+      <svg class="art" viewBox="0 0 320 180" role="img" aria-label="רקטה טסה בקו מקווקו מכדור הארץ אל מאדים">
+        <defs><pattern id="gridn3" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#DCE7F3" stroke-width="1"/></pattern></defs>
+        <rect width="320" height="180" fill="#F4F8FC"/><rect width="320" height="180" fill="url(#gridn3)"/>
         <circle cx="46" cy="140" r="24" fill="#2B78DD" stroke="#13274A" stroke-width="3"/>
         <circle cx="276" cy="44" r="20" fill="#BF4F22" stroke="#13274A" stroke-width="3"/>
         <path d="M66 124 C 120 70, 190 54, 252 46" fill="none" stroke="#4C6185" stroke-width="2" stroke-dasharray="6 7"/>
@@ -222,12 +262,11 @@ footer{max-width:960px;margin:0 auto;padding-block:0 32px;text-align:center;font
           <circle cx="0" cy="-10" r="5" fill="#2B78DD" stroke="#13274A" stroke-width="2"/>
           <path d="M-6 18 L0 38 L6 18 Z" fill="#FFBE2E" stroke="#13274A" stroke-width="2" stroke-linejoin="round"/>
         </g>
-        <text x="66" y="40" text-anchor="middle" direction="ltr" style="unicode-bidi:bidi-override" font-family="Secular One, Rubik, sans-serif" font-size="22" fill="#5A46C8">F = ma</text>
       </svg>
       <div class="body">
-        <h2>מעבדת ניוטון</h2>
-        <p>חלק 3: איך רקטה נוסעת כשאין מה לדחוף? שלושת החוקים של ניוטון, הצלת אסטרונאוט, בניית רקטה, התותח של ניוטון וקליעה למאדים.</p>
-        <div class="tags"><span>🚀 חוקי ניוטון</span><span>7 סימולטורים ומשחקים</span><span>3 ניסויים בבית</span><span class="age">גילאי <span dir="ltr">12–15</span></span></div>
+        <h2>ניוטון: קלע למאדים</h2>
+        <p>שיעור 3 מתוך 3: בונים רקטה בשלבים, ואז קולעים למטרה שנעה בחלון שיגור אמיתי.</p>
+        <div class="tags"><span>🚀 רקטות</span><span>סימולטור</span><span>משחק</span><span class="age">גילאי <span dir="ltr">12–15</span></span></div>
         <span class="play-btn lesson">להתחיל ←</span>
       </div>
     </a>

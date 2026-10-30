@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>מעבדת ניוטון</title>
+<title>ניוטון: דברים רוצים להמשיך</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../favicon-32.png" sizes="32x32" type="image/png">
@@ -268,6 +268,10 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 .hint{background:var(--card);border-inline-start:4px solid var(--signal);padding:6px 10px;border-radius:0 6px 6px 0;font-size:16px}
 .btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink);padding:6px 14px}
 
+.nextlab{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--signal);color:var(--signal-ink);border-radius:14px;padding:16px 20px;text-decoration:none;font-weight:800;margin-bottom:24px}
+.nextlab small{display:block;font-weight:600;font-size:15px}
+.nextlab span{font-family:var(--display);font-weight:400;font-size:22px;white-space:nowrap}
+.recap{background:var(--card);border:2px dashed var(--ink-soft);border-radius:12px;padding:12px 16px;margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -276,10 +280,10 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
     <a class="home" href="../../">→ כל המשחקים והשיעורים</a>
     <div class="brand">
       <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 C 23 8, 24 18, 21 25 H11 C 8 18, 9 8, 16 2 Z" fill="var(--signal)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M13 25 L16 31 L19 25" fill="var(--low)" stroke="var(--ink)" stroke-width="2"/></svg>
-      <span>מעבדת ניוטון</span>
+      <span>ניוטון: דברים רוצים להמשיך</span>
     </div>
     <div class="stamps" id="stamps" aria-label="משימות שהושלמו"></div>
-    <div class="count" id="count">0 / 8</div>
+    <div class="count" id="count">0 / 2</div>
   </div>
 </header>
 
@@ -287,39 +291,14 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 
 <section class="hero">
   <div>
-    <div class="series">חלק 3, אחרי מעבדת האוויר הדק · לגילאי 12 ומעלה</div>
-    <div class="eyebrow">8 משימות · 7 סימולטורים ומשחקים · 3 ניסויים בבית</div>
-    <h1>איך רקטה נוסעת כשאין מה <mark>לדחוף</mark>?</h1>
-    <p class="lead">מכונית דוחפת את הכביש. מטוס דוחף את האוויר. בחלל אין כביש ואין אוויר, ובכל זאת רקטות מגיעות למאדים. את הסוד הזה גילה אייזק ניוטון לפני יותר מ-300 שנה, בשלושה חוקים קצרים. עכשיו תשתמש בהם כדי להציל אסטרונאוט, לבנות רקטה ולקלוע למאדים.</p>
-    <div class="kit"><b>מה צריך:</b><span>דפי נייר, מטבע, ספר, קשית ומעט נייר דבק.</span></div>
+    <div class="series">ניוטון, שיעור 1 מתוך 3 · לגילאי 12 ומעלה</div>
+    <div class="eyebrow">2 משימות · 3 סימולטורים · 2 ניסויים בבית · כ-40 דקות</div>
+    <h1>למה קשה <mark>להתחיל</mark> ולמה קשה <mark>לעצור</mark>?</h1>
+    <p class="lead">לפני יותר מ-300 שנה אייזק ניוטון כתב שלושה חוקים שמסבירים כל תנועה. בשיעור הזה נפגוש את השניים הראשונים: למה דברים ממשיכים במה שהם עושים, וכמה כוח צריך כדי לשנות את זה.</p>
+    <div class="kit"><b>מה צריך:</b><span>דף נייר, מטבע וספר.</span></div>
   </div>
-  <div class="hero-art">
-    <svg viewBox="0 0 320 240" aria-hidden="true">
-      <circle cx="60" cy="60" r="28" fill="var(--mars-like)" stroke="var(--ink)" stroke-width="3"/>
-      <path d="M20 210 C 90 150, 170 130, 300 40" fill="none" stroke="var(--ink-soft)" stroke-width="2" stroke-dasharray="6 8"/>
-      <g class="float"><g transform="translate(176 96) rotate(40)">
-        <path d="M0 -58 C 20 -36, 22 8, 16 30 H-16 C -22 8, -20 -36, 0 -58 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
-        <circle cx="0" cy="-16" r="9" fill="var(--high)" stroke="var(--ink)" stroke-width="3"/>
-        <path d="M-16 8 L-32 34 L-14 28 Z M16 8 L32 34 L14 28 Z" fill="var(--low)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
-        <path d="M-10 32 L0 62 L10 32 Z" fill="var(--signal)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
-      </g></g>
-      <text x="96" y="218" text-anchor="middle" font-family="Amatic SC, cursive" font-size="30" fill="var(--high)">פעולה = תגובה</text>
-    </svg>
-  </div>
+  <div class="hero-art"><svg viewBox="0 0 320 240" aria-hidden="true"><rect x="20" y="150" width="280" height="14" rx="4" fill="var(--grid)" stroke="var(--ink)" stroke-width="3"/><g class="float"><rect x="70" y="92" width="120" height="58" rx="10" fill="var(--signal)" stroke="var(--ink)" stroke-width="3"/><circle cx="100" cy="150" r="13" fill="var(--ink)"/><circle cx="160" cy="150" r="13" fill="var(--ink)"/></g><path d="M226 120 H286" stroke="var(--high)" stroke-width="7" stroke-linecap="round"/><path d="M276 106 L296 120 L276 134 Z" fill="var(--high)"/><text x="160" y="52" text-anchor="middle" direction="ltr" style="unicode-bidi:bidi-override" font-family="Amatic SC, cursive" font-size="44" fill="var(--high)">F = m · a</text></svg></div>
 </section>
-
-<div class="predict" data-answer="throw" style="margin-bottom:12px">
-  <p class="q">מה דוחף רקטה קדימה בחלל הריק?</p>
-  <div class="opts">
-    <button class="opt" data-v="push">הגזים דוחפים את החלל</button>
-    <button class="opt" data-v="throw">היא זורקת גז לאחור, והגז דוחף אותה קדימה</button>
-    <button class="opt" data-v="pull">כוח המשיכה של הכוכב שאליו היא טסה</button>
-  </div>
-  <div class="reveal" hidden>
-    <span class="verdict"></span>
-    <p>רקטה לא צריכה שום דבר שתידחף נגדו. היא נושאת את החומר שלה וזורקת אותו לאחור במהירות אדירה. היא דוחפת את הגז, והגז דוחף אותה. זה החוק השלישי, ובסוף הדף תשתמש בו כדי לטוס למאדים.</p>
-  </div>
-</div>
 
 <nav class="map" id="map" aria-label="מפת המשימות"></nav>
 
@@ -352,24 +331,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 </article>
 
 <article class="mission" id="m2" data-m="2">
-  <div class="mission-head"><div class="num">2</div><div><div class="tag">משחק · 10 דקות</div><h2>עגינה בלי בלמים</h2></div></div>
-  <div class="stack">
-    <p>כאן החוק הראשון הופך לבעיה. כל לחיצה על מנוע משנה את המהירות, ואז החללית ממשיכה כך לנצח. כדי לעצור, צריך <b>לדחוף לצד ההפוך</b>. הבא את החללית אל נמל העגינה הצהוב במהירות קטנה מ-1.5.</p>
-    <div class="sim">
-      <canvas id="dock" class="game" aria-label="חללית שצריכה להגיע לנמל עגינה" tabindex="0"></canvas>
-      <div class="readouts" style="padding-top:12px"><span class="chip" id="dSpeed"></span><span class="chip" id="dFuel"></span></div>
-      <div class="panel" style="border-top:0">
-        <div class="pad"><button id="dU" aria-label="דחיפה למעלה">↑</button><button id="dL" aria-label="דחיפה שמאלה">←</button><button id="dR" aria-label="דחיפה ימינה">→</button><button id="dD" aria-label="דחיפה למטה">↓</button></div>
-        <div class="row"><button class="btn" id="dReset">התחל מחדש</button><span class="tag">במקלדת: חצים (לחץ קודם על המשחק)</span></div>
-        <div class="msg" id="dMsg"></div>
-      </div>
-    </div>
-    <button class="done-btn" data-m="2">סמן משימה כבוצעה</button>
-  </div>
-</article>
-
-<article class="mission" id="m3" data-m="3">
-  <div class="mission-head"><div class="num">3</div><div><div class="tag">החוק השני · חידות וניסוי · 15 דקות</div><h2>כמה קשה להזיז?</h2></div></div>
+  <div class="mission-head"><div class="num">2</div><div><div class="tag">החוק השני · חידות וניסוי · 15 דקות</div><h2>כמה קשה להזיז?</h2></div></div>
   <div class="stack">
     <div class="formula">F = m · a<small>כוח = מסה × תאוצה. אותו כוח על מסה כפולה נותן חצי תאוצה.</small></div>
     <div class="walk" data-walk><div class="walk-head"><b>מה זה F = m · a? נלך לאט</b><span class="walk-count"></span></div><div class="wstep"><p><b>שלוש מילים לפני הכול.</b> הנוסחה בעצם משפט קצר. כל אות היא מילה:</p><div class="words"><div><b>F</b><span>כוח</span><small>כמה חזק דוחפים. נמדד בניוטון. ניוטון אחד הוא בערך המשקל של תפוח קטן ביד.</small></div><div><b>m</b><span>מסה</span><small>כמה חומר יש בדבר שדוחפים. נמדדת בקילוגרמים.</small></div><div><b>a</b><span>תאוצה</span><small>בכמה המהירות עולה בכל שנייה.</small></div></div></div><div class="wstep"><p><b>המילה הכי מבלבלת: תאוצה.</b> היא לא המהירות עצמה, אלא כמה מהר המהירות משתנה. עגלה עם תאוצה 5 מתחילה מ-0 ומרוויחה 5 מ/ש בכל שנייה:</p><div class="tick"><div><small>התחלה</small><b>0</b></div><div><small>אחרי שנייה</small><b>5</b></div><div><small>אחרי 2 שניות</small><b>10</b></div><div><small>אחרי 3 שניות</small><b>15</b></div></div><p class="tag">המספרים הם מהירות, במטר לשנייה.</p></div><div class="wstep"><p><b>איך הכוח מתחלק.</b> דמיין שהכוח הוא 12 סוכריות, והמסה היא 3 ילדים. כל ילד מקבל 12 ÷ 3 = 4. ככה גם כאן: הכוח מתחלק על כל קילוגרם. לכן כשרוצים למצוא תאוצה, <b>מחלקים</b>:</p><div class="formula">a = F ÷ m<small>תאוצה = כוח ÷ מסה. זאת אותה נוסחה, רק כתובה כדי למצוא את a.</small></div></div><div class="wstep"><p><b>דוגמה פתורה.</b> דוחפים עגלה של 2 ק&quot;ג בכוח של 10 ניוטון. מה התאוצה?</p><ol class="steps"><li>מה ידוע? F = 10, m = 2.</li><li>מה מחפשים? את a, אז מחלקים: a = F ÷ m.</li><li>מציבים מספרים: a = 10 ÷ 2.</li><li>מחשבים: a = 5. כלומר המהירות עולה ב-5 מ/ש בכל שנייה.</li></ol></div><div class="wstep"><p><b>עכשיו אתה.</b> תמיד אותם ארבעה צעדים: מה ידוע, מה מחפשים, מציבים, מחשבים.</p><div class="try" data-ans="3"><p><b>תורך:</b> דוחפים ארגז של 4 ק"ג בכוח של 12 ניוטון. מה התאוצה?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>מ/ש²</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>מחלקים כוח במסה: a = F ÷ m.</div><div class="hint" hidden>a = 12 ÷ 4</div><div class="msg"></div></div><div class="try" data-ans="4"><p><b>תורך:</b> דוחפים אופניים של 5 ק"ג בכוח של 20 ניוטון. מה התאוצה?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>מ/ש²</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>a = F ÷ m</div><div class="hint" hidden>a = 20 ÷ 5</div><div class="msg"></div></div></div><div class="wstep"><p><b>הפוך: כמה כוח צריך?</b> לפעמים יודעים איזו תאוצה רוצים, ומחפשים כוח. אז כופלים, כמו בנוסחה המקורית: F = m × a.</p><p>דוגמה: עגלה של 3 ק&quot;ג, ורוצים תאוצה 5. אז F = 3 × 5 = 15 ניוטון.</p><div class="try" data-ans="30"><p><b>תורך:</b> עגלה של 6 ק"ג, ורוצים תאוצה 5. כמה כוח צריך?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>ניוטון</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>עכשיו מחפשים את F, אז כופלים: F = m × a.</div><div class="hint" hidden>F = 6 × 5</div><div class="msg"></div></div></div><button class="btn walk-next">הבנתי, הלאה</button></div><p><b>החידות:</b> העגלה האפורה נוסעת תמיד עם 10 ניוטון על 2 ק&quot;ג, כלומר תאוצה 5. כדי להגיע איתה, גם לכחולה צריכה להיות תאוצה 5 לפחות. חשב קודם על דף, ואז כוון את המחוונים ולחץ מרוץ. נתקעת? לחץ &quot;הראה לי איך&quot;.</p>
@@ -399,149 +361,30 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
       <div class="toolbar"><div><span class="seglabel">איפה</span><div class="seg" id="fWorld"></div></div></div>
       <div class="readouts" style="padding-top:12px"><button class="btn alt" id="fGo">שחרר</button><span class="chip" id="fOut">גובה 2 מטר</span></div>
     </div>
-    <button class="done-btn" data-m="3">סמן משימה כבוצעה</button>
-  </div>
-</article>
-
-<article class="mission" id="m4" data-m="4">
-  <div class="mission-head"><div class="num">4</div><div><div class="tag">החוק השלישי · סימולטור וניסוי בבית · 20 דקות</div><h2>כל דחיפה דוחפת בחזרה</h2></div></div>
-  <div class="stack">
-    <div class="rule">החוק השלישי: כשאתה דוחף משהו, הוא דוחף אותך באותו כוח, בכיוון ההפוך.<small>זה גם מה שמרים כנף: היא דוחפת אוויר למטה, והאוויר דוחף אותה למעלה. במעבדה הראשונה ראית את זה כחץ אוויר שיורד מאחורי הכנף.</small></div>
-    <div class="walk" data-walk><div class="walk-head"><b>מה זה תנע? נלך לאט</b><span class="walk-count"></span></div><div class="wstep"><p><b>תנע אומר כמה קשה לעצור משהו.</b> כדור טניס שזורקים אליך קל לעצור. משאית באותה מהירות, הרבה פחות. גם מהירות קובעת: משאית שזזה ממש לאט אפשר לעצור בקלות יחסית.</p><div class="formula">תנע = מסה × מהירות<small>אין כאן אותיות: פשוט כופלים ק&quot;ג במטר לשנייה.</small></div></div><div class="wstep"><p><b>דוגמה פתורה.</b> מחליק של 30 ק&quot;ג נע ב-6 מ/ש. התנע שלו: 30 × 6 = 180.</p><p>מחליק של 90 ק&quot;ג נע ב-2 מ/ש. התנע שלו: 90 × 2 = 180. אותו תנע, כי הכבד איטי יותר.</p></div><div class="wstep"><p><b>החוק.</b> כששניים דוחפים זה את זה, כל אחד מקבל <b>אותו תנע</b>, לכיוונים הפוכים. אם יודעים את התנע, מוצאים מהירות בחילוק: מהירות = תנע ÷ מסה.</p><div class="try" data-ans="3"><p><b>תורך:</b> דחיפה נותנת לכל אחד תנע 120. מחליק של 40 ק"ג: באיזו מהירות יזוז?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>מ/ש</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>מהירות = תנע ÷ מסה</div><div class="hint" hidden>120 ÷ 40</div><div class="msg"></div></div><div class="try" data-ans="2"><p><b>תורך:</b> אותה דחיפה (תנע 120). מחליק של 60 ק"ג: באיזו מהירות יזוז?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>מ/ש</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>מהירות = תנע ÷ מסה</div><div class="hint" hidden>120 ÷ 60</div><div class="msg"></div></div></div><button class="btn walk-next">הבנתי, הלאה</button></div><div class="predict" data-answer="heavyless">
-      <p class="q">מחליק של 30 ק&quot;ג ומחליק של 90 ק&quot;ג עומדים על קרח ודוחפים זה את זה. מה יקרה?</p>
-      <div class="opts">
-        <button class="opt" data-v="onlylight">רק הקל יזוז</button>
-        <button class="opt" data-v="equal">שניהם יזוזו באותה מהירות</button>
-        <button class="opt" data-v="heavyless">שניהם יזוזו, הקל מהר פי 3</button>
-      </div>
-      <div class="reveal" hidden><span class="verdict"></span><p>שניהם מקבלים אותו כוח בדיוק, גם אם רק אחד מהם &quot;דחף&quot;. לפי F = m · a, למי שקל פי 3 יש תאוצה גדולה פי 3. מסה × מהירות יוצאת שווה בשני הצדדים. לזה קוראים תנע.</p></div>
-    </div>
-    <div class="sim">
-      <canvas id="skate" aria-label="שני מחליקים דוחפים זה את זה"></canvas>
-      <div class="controls">
-        <div class="ctl"><label for="sA">מסה ימין <output id="sAo"></output></label><input type="range" id="sA" min="20" max="120" step="5" value="30"></div>
-        <div class="ctl"><label for="sB">מסה שמאל <output id="sBo"></output></label><input type="range" id="sB" min="20" max="120" step="5" value="90"></div>
-      </div>
-      <div class="readouts"><button class="btn alt" id="sGo">דחיפה!</button><span class="chip" id="sOut">התנע של כל צד יופיע כאן</span></div>
-    </div>
-    <h3 style="font-size:24px">רקטת נייר</h3>
-    <ol class="steps">
-      <li>גזור או קרע רצועה של כ-5 על 12 ס&quot;מ, וגלגל אותה סביב קשית. הדבק בנייר דבק, כך שהצינור מחליק בקלות על הקשית.</li>
-      <li>קפל את הקצה העליון והדבק אותו, כדי שהאוויר לא יברח. זאת הרקטה.</li>
-      <li>נשוף חזק בקשית, מאותו מקום ובאותו גובה, ורשום כמה צעדים הרקטה טסה.</li>
-      <li>הוסף רצועת נייר מקופלת לאף בנייר דבק, ומדוד שוב. אחר כך הוסף עוד אחת.</li>
-    </ol>
-    <div class="log-wrap"><table class="log"><thead><tr><th>רקטה</th><th>1</th><th>2</th><th>3</th><th>ממוצע (צעדים)</th></tr></thead><tbody id="logBody"></tbody></table></div>
-    <div class="bars" id="bars"></div>
-    <p class="empty" id="logMsg">מלא את המדידות, והגרף יראה מה קרה.</p>
-    <details><summary>מה אמור לקרות? (לפתוח אחרי הניסוי)</summary><p>הנשיפה נותנת כוח דומה, אז רקטה כבדה יותר מקבלת תאוצה קטנה יותר. אבל רקטה קלה מדי נעצרת מהר בגלל האוויר, אז לפעמים רקטה עם קצת משקל באף טסה רחוק יותר. אם קיבלת תוצאה כזאת, גילית משהו אמיתי: גם כאן הגרר ממשיך לשחק.</p></details>
-    <button class="done-btn" data-m="4">סמן משימה כבוצעה</button>
-  </div>
-</article>
-
-<article class="mission" id="m5" data-m="5">
-  <div class="mission-head"><div class="num">5</div><div><div class="tag">משחק · 10 דקות</div><h2>הצל את האסטרונאוט</h2></div></div>
-  <div class="stack">
-    <p>הכבל נקרע. האסטרונאוט נסחף לאט מהחללית, יש לו 70 שניות של חמצן, ומה שיש לו ביד זה ציוד. הדרך היחידה לזוז: <b>לזרוק דברים</b>.</p><div class="walk" data-walk><div class="walk-head"><b>איך עובד המשחק</b><span class="walk-count"></span></div><div class="wstep"><p><b>זה אותו חוק של המחליקים.</b> כשאתה זורק חפץ, הוא מקבל תנע לצד אחד ואתה מקבל את אותו תנע לצד השני. כל חפץ נזרק במהירות 12 מ/ש.</p><p>דוגמה: זורקים ארגז של 12 ק&quot;ג. התנע שלו 12 × 12 = 144. האסטרונאוט שוקל עכשיו כ-127 ק&quot;ג, אז הוא מקבל 144 ÷ 127, בערך 1.1 מ/ש.</p></div><div class="wstep"><ol class="steps"><li>כדי לנוע אל החללית, זרוק חפץ <b>מהחללית</b> והלאה.</li><li>אם אתה נע מהר מ-0.8 מ/ש, תתרסק. כדי לבלום, זרוק משהו קטן <b>אל החללית</b>.</li><li>שים לב: חפץ קטן לא יספיק כדי להגיע בזמן, וחפץ גדול מדי ידרוש בלימה חזקה.</li></ol></div><button class="btn walk-next">הבנתי, הלאה</button></div>
-    <div class="sim">
-      <canvas id="astro" aria-label="אסטרונאוט ציף ליד חללית"></canvas>
-      <div class="toolbar"><div><span class="seglabel">לזרוק לכיוון</span><div class="seg" id="aDir"></div></div></div>
-      <div class="panel" style="border-top:0"><div class="seg" id="aItems"></div><div class="row"><button class="btn" id="aReset">התחל מחדש</button><span class="chip" id="aOut"></span></div><div class="msg" id="aMsg"></div></div>
-    </div>
-    <button class="done-btn" data-m="5">סמן משימה כבוצעה</button>
-  </div>
-</article>
-
-<article class="mission" id="m6" data-m="6">
-  <div class="mission-head"><div class="num">6</div><div><div class="tag">סימולטור · 15 דקות</div><h2>בנה רקטה</h2></div></div>
-  <div class="stack">
-    <p>רקטה היא בעיקר דלק שסוחב דלק. כל טון דלק שמוסיפים צריך גם להרים את עצמו.</p><div class="walk" data-walk><div class="walk-head"><b>למה זה כל כך קשה? נלך לאט</b><span class="walk-count"></span></div><div class="wstep"><p><b>מה המטרה?</b> להגיע למהירות עצומה. כדי להישאר במסלול צריך 9.4 ק&quot;מ <b>בשנייה</b>. במהירות כזאת מגיעים מתל אביב לירושלים בפחות מ-7 שניות.</p></div><div class="wstep"><p><b>היחס הוא הכול.</b> מחלקים את מסת הרקטה בהתחלה במסה בסוף, אחרי שהדלק נגמר.</p><p>דוגמה: רקטה של 100 טון שנשארת עם 20 טון. היחס הוא 100 ÷ 20 = 5.</p><div class="try" data-ans="6"><p><b>תורך:</b> רקטה של 300 טון נשארת עם 50 טון. מה היחס?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>מחלקים התחלה בסוף.</div><div class="hint" hidden>300 ÷ 50</div><div class="msg"></div></div></div><div class="wstep"><p><b>החלק המפתיע.</b> בכל פעם שהיחס מוכפל, מקבלים רק את אותה <b>תוספת</b> קבועה, ולא פי 2:</p><div class="tick"><div><small>יחס 2</small><b>2.4</b></div><div><small>יחס 4</small><b>4.7</b></div><div><small>יחס 8</small><b>7.1</b></div><div><small>יחס 16</small><b>9.4</b></div></div><p class="tag">המספרים הם ק&quot;מ/ש. בכל הכפלה נוספים בערך 2.4.</p></div><div class="wstep"><p><b>למה צריך שלבים.</b> המיכל שוקל משהו גם כשהוא ריק, ולכן אי אפשר להגיע ליחס 16 בשלב אחד. הפתרון: לזרוק מיכל ריק באמצע. זה כמו טיול עם בקבוקי מים: כל בקבוק ריק שזורקים (לפח!) מקל על ההמשך.</p></div><div class="wstep"><ol class="steps"><li>בחר יעד.</li><li>התחל מ-300 טון בשלב 1 ו-60 טון בשלב 2, ולחץ שיגור. זה אמור להספיק למסלול.</li><li>בשביל הירח ומאדים הוסף גם שלב 3. שלב עליון קטן שווה הרבה, כי הוא לא צריך להרים כלום מעליו.</li></ol></div><button class="btn walk-next">הבנתי, הלאה</button></div>
-    <div class="predict" data-answer="no">
-      <p class="q">רקטה אחת עם פי 20 דלק תגיע למהירות גדולה פי 20?</p>
-      <div class="opts">
-        <button class="opt" data-v="yes">כן</button>
-        <button class="opt" data-v="half">פי 10</button>
-        <button class="opt" data-v="no">בקושי תשתנה</button>
-      </div>
-      <div class="reveal" hidden><span class="verdict"></span><p>בקושי. 100 טון דלק נותנים כאן 6.2 ק&quot;מ/ש, ו-2,000 טון נותנים רק 8.0. הפתרון הוא <b>שלבים</b>: לזרוק מיכלים ריקים בדרך. אחרי שמיכל התרוקן, הוא רק משקל. לכן לרקטות ענק כמו סטורן 5 היו שלושה שלבים.</p></div>
-    </div>
-    <div class="sim">
-      <canvas id="rocket" class="tall" aria-label="רקטה בשלבים ומד מהירות"></canvas>
-      <div class="toolbar"><div><span class="seglabel">היעד</span><div class="seg" id="kGoal"></div></div></div>
-      <div class="controls">
-        <div class="ctl"><label for="k1">דלק שלב 1 <output id="k1o"></output></label><input type="range" id="k1" min="0" max="2000" step="50" value="500"></div>
-        <div class="ctl"><label for="k2">דלק שלב 2 <output id="k2o"></output></label><input type="range" id="k2" min="0" max="400" step="10" value="0"></div>
-        <div class="ctl"><label for="k3">דלק שלב 3 <output id="k3o"></output></label><input type="range" id="k3" min="0" max="80" step="5" value="0"></div>
-      </div>
-      <div class="readouts"><span class="chip" id="kMass"></span><span class="chip" id="kDv"></span><button class="btn alt" id="kGo">שיגור!</button></div>
-      <div class="panel"><div class="msg" id="kMsg"></div></div>
-    </div>
-    <p class="note">אתגר: הגע למאדים עם הרקטה הכי קלה שאתה מצליח.</p>
-    <button class="done-btn" data-m="6">סמן משימה כבוצעה</button>
-  </div>
-</article>
-
-<article class="mission" id="m7" data-m="7">
-  <div class="mission-head"><div class="num">7</div><div><div class="tag">סימולטור · 10 דקות</div><h2>התותח של ניוטון</h2></div></div>
-  <div class="stack">
-    <p>ב-1687 ניוטון דמיין תותח על הר גבוה מאוד. כדור שנורה נופל לקרקע. מהר יותר, הוא נופל רחוק יותר. ואם הוא מהיר מספיק? הקרקע מתעקמת מתחתיו בדיוק באותו קצב שהוא נופל.</p><p><b>איך משתמשים:</b> קבע מהירות ולחץ אש. כאן אין מה לחשב. נסה 6, אחר כך 7.5, ואז חפש מעל 7.75. המטרה היא לסמן את שלושת הריבועים.</p>
-    <div class="sim">
-      <canvas id="cannon" class="tall" aria-label="כדור הארץ, תותח ומסלול הכדור"></canvas>
-      <div class="controls"><div class="ctl"><label for="cV">מהירות יציאה <output id="cVo"></output></label><input type="range" id="cV" min="4" max="11.6" step=".01" value="6"></div></div>
-      <div class="readouts"><button class="btn alt" id="cGo">אש!</button><span class="chip" id="c1">☐ נפל לקרקע</span><span class="chip" id="c2">☐ הקיף את כדור הארץ</span><span class="chip" id="c3">☐ ברח מכדור הארץ</span></div>
-      <div class="panel"><div class="msg" id="cMsg"></div></div>
-    </div>
-    <div class="rule">למה אסטרונאוטים מרחפים?<small>לא כי אין שם כוח משיכה. בתחנת החלל, בגובה 400 ק&quot;מ, הוא חזק כמעט כמו על הקרקע. הם נופלים כל הזמן, כמו הכדור של ניוטון, ופשוט מחמיצים את כדור הארץ.</small></div>
-    <button class="done-btn" data-m="7">סמן משימה כבוצעה</button>
-  </div>
-</article>
-
-<article class="mission" id="m8" data-m="8">
-  <div class="mission-head"><div class="num">8</div><div><div class="tag">המשחק הגדול · 15 דקות</div><h2>קלע למאדים</h2></div></div>
-  <div class="stack">
-    <p>מאדים זז, וגם כדור הארץ. אסור לכוון לאן שהוא נמצא עכשיו, אלא לאן שהוא <b>יהיה</b> בעוד 6 עד 8 חודשים. המנוע עובד רק דקות בודדות בהתחלה, ואחר כך החללית נופלת סביב השמש בדיוק לפי חוקי ניוטון.</p><ol class="steps"><li>השאר את המהירות על 2.95.</li><li>הסתכל על המספר &quot;מאדים לפנינו&quot;. הוא יורד לאט.</li><li>כשהוא נהיה ירוק, בערך 44 מעלות, לחץ שיגור.</li></ol>
-    <div class="predict" data-answer="ahead">
-      <p class="q">איפה צריך להיות מאדים ברגע השיגור?</p>
-      <div class="opts">
-        <button class="opt" data-v="same">בדיוק מולנו</button>
-        <button class="opt" data-v="ahead">קצת לפנינו במסלול</button>
-        <button class="opt" data-v="behind">מאחורינו</button>
-      </div>
-      <div class="reveal" hidden><span class="verdict"></span><p>בערך 44 מעלות לפנינו. הזווית הזאת חוזרת רק פעם ב-26 חודשים בערך, ולכן משימות למאדים יוצאות בחלונות שיגור קבועים. בדוק במשחק.</p></div>
-    </div>
-    <div class="sim">
-      <canvas id="mars" class="tall" aria-label="מערכת השמש: כדור הארץ, מאדים ומסלול החללית"></canvas>
-      <div class="controls"><div class="ctl"><label for="mV">תוספת מהירות מהמנוע <output id="mVo"></output></label><input type="range" id="mV" min="2" max="6" step=".05" value="2.95"></div></div>
-      <div class="readouts"><span class="chip" id="mLead"></span><button class="btn alt" id="mGo">שיגור!</button><button class="btn" id="mReset">התחל מחדש</button></div>
-      <div class="panel"><div class="msg" id="mMsg"></div></div>
-    </div>
-    <p class="note">אתגר: פגע במאדים עם הכי פחות דלק. מתחת ל-2.9 ק&quot;מ/ש זה כבר מאוד קשה.</p>
-    <button class="done-btn" data-m="8">סמן משימה כבוצעה</button>
+    <button class="done-btn" data-m="2">סמן משימה כבוצעה</button>
   </div>
 </article>
 
 <section class="mission" id="final" style="border-style:dashed">
-  <div class="mission-head"><div class="num" style="background:var(--signal);color:var(--signal-ink)">★</div><div><div class="tag">מבחן הנווט</div><h2>5 שאלות לתעודה</h2></div></div>
+  <div class="mission-head"><div class="num" style="background:var(--signal);color:var(--signal-ink)">★</div><div><div class="tag">מבחן הנווט</div><h2>4 שאלות לתעודה</h2></div></div>
   <div class="quiz" id="quiz"></div>
   <div class="namebox" style="margin-top:20px"><label for="pilotName"><b>השם שלך לתעודה:</b></label><input id="pilotName" type="text" placeholder="הקלד כאן" maxlength="30"></div>
   <div class="cert" style="margin-top:16px">
-    <div class="seal" style="background:var(--space);color:#fff;border-color:#fff">נווט<br>חלל</div>
-    <h3>תעודת נווט חלל</h3>
+    <div class="seal" style="background:var(--space);color:#fff;border-color:#fff">חוק<br>1+2</div>
+    <h3>תעודת חוקר תנועה</h3>
     <div class="who" id="certName">&nbsp;</div>
     <p id="certText"></p>
     <p style="color:var(--ink-soft);font-size:15px" id="certDate"></p>
   </div>
 </section>
 
+<a class="nextlab" href="../newton-astronaut/"><div>השיעור הבא<small>החוק השלישי: איך זזים כשאין על מה לדרוך</small></div><span>הצל את האסטרונאוט ←</span></a>
 <details class="adult" id="adult">
   <summary>למבוגר שמלווה</summary>
   <ul>
-    <li><b>גיל:</b> מתאים מגיל 12. ילדים צעירים יותר ייהנו מהמשחקים, אבל הם יצטרכו מבוגר לידם בחלקים של החישובים.</li><li><b>זמן:</b> כשעתיים, עדיף בשניים או שלושה מפגשים: משימות 1–3, 4–5, 6–8. כדאי לעבור על ההסברים צעד אחר צעד לפני החידות.</li>
-    <li><b>ציוד:</b> דפים, מטבע, ספר, קשית ונייר דבק. קריעה של רצועה לרקטה מתאימה, אין צורך במספריים.</li>
-    <li><b>שפה:</b> בחוק השלישי כדאי להדגיש שהכוחות פועלים על גופים שונים, ולכן הם לא מבטלים זה את זה.</li>
-    <li><b>החישובים:</b> הנפילה, הזריקות, התותח והטיסה למאדים מחושבים לפי חוקי ניוטון, והכבידה מחושבת ביחס הפוך לריבוע המרחק.</li>
-    <li><b>קירובים:</b> ברקטה השתמשנו במשוואת הרקטה עם מהירות פליטה קבועה של 3.4 ק&quot;מ/ש, והיעד כולל הפסדי גרר וכבידה בצורה מקורבת. במאדים המסלולים הם עיגולים באותו מישור, ואין כניסה לאטמוספרה.</li>
-    <li><b>רקטת הנייר:</b> תוצאות שסותרות את הניבוי הן הזדמנות טובה לדבר על גרר, ועל למה משנים רק דבר אחד.</li>
+    <li><b>גיל:</b> מתאים מגיל 12. כדאי לעבור על ההסברים צעד אחר צעד לפני החידות.</li>
+    <li><b>ציוד:</b> דף, מטבע וספר.</li>
+    <li><b>החישובים:</b> הנפילה וההתמדה מחושבות לפי חוקי ניוטון. הפטיש והנוצה משתמשים בגרר משוער.</li>
   </ul>
 </details>
 
@@ -630,7 +473,7 @@ function marsShipStep(s,dt){
 
 /* Page behaviour. Each simulator starts inside safe(), so one failure can't stop the others. */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const store={get(k,d){try{const v=localStorage.getItem('ntl:'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('ntl:'+k,JSON.stringify(v))}catch(e){}}};
+const store={get(k,d){try{const v=localStorage.getItem('nm:'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('nm:'+k,JSON.stringify(v))}catch(e){}}};
 const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const reduce=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
 const safe=f=>{try{f()}catch(e){console.error(e)}};
@@ -648,7 +491,7 @@ function seg(el,items,cur,onPick){
 }
 
 /* progress */
-const titles=['התמדה','עגינה','F = ma','פעולה ותגובה','האסטרונאוט','בנה רקטה','התותח','קלע למאדים'];
+const titles=["התמדה", "כוח ותאוצה"];
 let done=new Set(store.get('done',[]));
 const stampsEl=$('#stamps'),mapEl=$('#map');
 titles.forEach((t,i)=>{
@@ -659,7 +502,7 @@ function renderProgress(){
   [...stampsEl.children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
   [...mapEl.children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
   $$('.mission[data-m]').forEach(m=>{const n=+m.dataset.m;m.classList.toggle('done',done.has(n));const b=m.querySelector('.done-btn');if(b)b.textContent=done.has(n)?'בוצע! (לחץ לביטול)':'סמן משימה כבוצעה'});
-  $('#count').textContent=done.size+' / 8';
+  $('#count').textContent=done.size+' / 2';
   renderCert();
 }
 function markDone(n){if(!done.has(n)){done.add(n);store.set('done',[...done]);renderProgress()}}
@@ -727,35 +570,6 @@ safe(()=>{
   requestAnimationFrame(frame);
 });
 
-/* mission 2: docking */
-safe(()=>{
-  const cv=$('#dock'),S=setup(cv),ctx=S.ctx,msg=$('#dMsg'),W0=100,H0=60,dock={x:92,y:44};
-  let s,over;
-  function reset(){s={x:10,y:12,vx:0,vy:0,fuel:14};over=false;msg.textContent='כל לחיצה מוסיפה 1 מ/ש בכיוון החץ.';msg.className='msg'}
-  function push(dx,dy){if(over)return;if(s.fuel<=0){msg.textContent='אין דלק! החללית תמשיך כך לנצח. התחל מחדש.';msg.className='msg bad';return}s.vx+=dx;s.vy+=dy;s.fuel--}
-  [['#dU',0,-1],['#dD',0,1],['#dL',-1,0],['#dR',1,0]].forEach(([id,x,y])=>$(id).addEventListener('click',()=>{push(x,y);cv.focus({preventScroll:true})}));
-  cv.addEventListener('keydown',e=>{const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(m){push(...m);e.preventDefault()}});
-  $('#dReset').addEventListener('click',reset);reset();
-  let last=performance.now();
-  function frame(now){
-    const dt=Math.min(.05,(now-last)/1000);last=now;
-    if(S.visible){
-      const W=S.W,H=S.H,kx=W/W0,ky=H/H0;
-      if(!over){s.x+=s.vx*dt;s.y+=s.vy*dt;
-        const sp=Math.hypot(s.vx,s.vy);
-        if(Math.hypot(s.x-dock.x,s.y-dock.y)<4){over=true;if(sp<1.5){msg.textContent='עגינה מושלמת, במהירות '+sp.toFixed(1)+' מ/ש!';msg.className='msg good';markDone(2)}else{msg.textContent='פגעת בתחנה במהירות '+sp.toFixed(1)+' מ/ש. היה צריך לבלום: לדחוף לצד ההפוך לפני שמגיעים.';msg.className='msg bad'}}
-        else if(s.x<0||s.x>W0||s.y<0||s.y>H0){over=true;msg.textContent='יצאת מהאזור. בלי חיכוך שום דבר לא יעצור אותך. התחל מחדש.';msg.className='msg bad'}}
-      ctx.fillStyle='#0A1226';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';for(let i=0;i<60;i++)ctx.fillRect((i*137)%W,(i*71)%H,1.5,1.5);
-      ctx.fillStyle='#8FA3C4';ctx.fillRect(dock.x*kx+10,0,W,H);ctx.fillStyle='#FFBE2E';ctx.fillRect(dock.x*kx-14,dock.y*ky-22,26,44);
-      const X=s.x*kx,Y=s.y*ky;ctx.fillStyle='#fff';ctx.strokeStyle='#13274A';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X+16,Y);ctx.lineTo(X-12,Y-11);ctx.lineTo(X-12,Y+11);ctx.closePath();ctx.fill();ctx.stroke();
-      ctx.strokeStyle='#5EA3FF';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X,Y);ctx.lineTo(X+s.vx*kx*2,Y+s.vy*ky*2);ctx.stroke();
-      $('#dSpeed').textContent='מהירות: '+Math.hypot(s.vx,s.vy).toFixed(1)+' מ/ש';$('#dFuel').textContent='דלק: '+s.fuel+' דחיפות';
-    }
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-});
-
 /* mission 3: F = ma race */
 safe(()=>{
   const cv=$('#race'),S=setup(cv),ctx=S.ctx,F=$('#rF'),M=$('#rM'),TRACK=20,msg=$('#rMsg'),next=$('#rNext');
@@ -787,7 +601,7 @@ safe(()=>{
       ctx.fillStyle=tok('--low');ctx.fillRect(Rr,0,4,H);
       if(run&&dA>=TRACK&&dB>=TRACK||run&&run.t>Math.sqrt(2*TRACK/5)*3){
         const a=run.a;
-        if(a>=4.99){msg.textContent=Math.abs(a-5)<.01?'תיקו מושלם! אותה תאוצה: F חלקי m שווה 5.':'ניצחת! התאוצה '+a.toFixed(1)+' גדולה מ-5.';msg.className='msg good';next.hidden=cur>=LV.length-1;if(cur+1>open){open=Math.min(cur+1,LV.length-1);store.set('race',open);locks()}if(cur===LV.length-1)markDone(3)}
+        if(a>=4.99){msg.textContent=Math.abs(a-5)<.01?'תיקו מושלם! אותה תאוצה: F חלקי m שווה 5.':'ניצחת! התאוצה '+a.toFixed(1)+' גדולה מ-5.';msg.className='msg good';next.hidden=cur>=LV.length-1;if(cur+1>open){open=Math.min(cur+1,LV.length-1);store.set('race',open);locks()}if(cur===LV.length-1)markDone(2)}
         else{msg.textContent='הכחולה הפסידה: תאוצה '+a.toFixed(1)+' במקום 5. נסה שוב.';msg.className='msg bad'}
         run=null;
       }
@@ -820,171 +634,8 @@ safe(()=>{
   requestAnimationFrame(frame);
 });
 
-/* mission 4: the skaters */
-safe(()=>{
-  const cv=$('#skate'),S=setup(cv),ctx=S.ctx,A=$('#sA'),B=$('#sB');let run=null;
-  const info=()=>{$('#sAo').textContent=A.value+' ק"ג';$('#sBo').textContent=B.value+' ק"ג'};
-  [A,B].forEach(e=>e.addEventListener('input',()=>{run=null;info();$('#sOut').textContent='התנע של כל צד יופיע כאן'}));
-  $('#sGo').addEventListener('click',()=>{const J=180,va=J/+A.value,vb=J/+B.value;run={t:0,va,vb};$('#sOut').textContent='ימין: '+A.value+' × '+va.toFixed(1)+' = 180 · שמאל: '+B.value+' × '+vb.toFixed(1)+' = 180'});
-  let last=performance.now();
-  function frame(now){
-    const dt=Math.min(.05,(now-last)/1000);last=now;
-    if(S.visible){
-      const W=S.W,H=S.H,c=W/2,gy=H-40;if(run)run.t=Math.min(run.t+dt,6);
-      const k=Math.min(W/20,30),xa=c+22+(run?Math.min(run.t*run.va*k,W/2-30):0),xb=c-22-(run?Math.min(run.t*run.vb*k,W/2-30):0);
-      ctx.fillStyle='#D7EEF8';ctx.fillRect(0,0,W,H);ctx.fillStyle='#BCDDEE';ctx.fillRect(0,gy,W,40);
-      [[xa,+A.value,'#2B78DD'],[xb,+B.value,'#E3484E']].forEach(([x,m,col])=>{const r=9+m*.14,ty=gy-r*2-40;ctx.fillStyle=col;ctx.strokeStyle='#13274A';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,ty,r,0,7);ctx.fill();ctx.stroke();ctx.fillRect(x-r*.7,ty+r,r*1.4,gy-ty-r);ctx.strokeRect(x-r*.7,ty+r,r*1.4,gy-ty-r)});
-    }
-    requestAnimationFrame(frame);
-  }
-  info();requestAnimationFrame(frame);
-});
-
-/* mission 4: the rocket log */
-safe(()=>{
-  const cfg=[['a','רקטה קלה'],['b','עם רצועה אחת'],['c','עם שתי רצועות']],log=store.get('log',{}),body=$('#logBody'),bars=$('#bars');
-  cfg.forEach(([k,n])=>{const tr=document.createElement('tr');tr.innerHTML='<td>'+n+'</td>'+[0,1,2].map(i=>'<td><input type="number" min="0" step="0.5" inputmode="decimal" id="t-'+k+'-'+i+'" aria-label="'+n+' זריקה '+(i+1)+'"></td>').join('')+'<td class="avg" id="avg-'+k+'">–</td>';body.appendChild(tr);
-    const b=document.createElement('div');b.className='barrow';b.id='bar-'+k;b.innerHTML='<span>'+n+'</span><div class="track"><div class="fill"></div></div><output>–</output>';bars.appendChild(b)});
-  function render(){const av={};cfg.forEach(([k])=>{const v=[0,1,2].map(i=>parseFloat($('#t-'+k+'-'+i).value)).filter(x=>!isNaN(x));av[k]=v.length?v.reduce((a,b)=>a+b,0)/v.length:null;$('#avg-'+k).textContent=av[k]==null?'–':av[k].toFixed(1)});
-    const vals=Object.values(av).filter(x=>x!=null),mx=Math.max(1,...vals);let best=null;cfg.forEach(([k])=>{if(av[k]!=null&&(best==null||av[k]>av[best]))best=k});
-    cfg.forEach(([k])=>{const r=$('#bar-'+k);r.querySelector('.fill').style.width=av[k]==null?0:(av[k]/mx*100)+'%';r.querySelector('output').textContent=av[k]==null?'–':av[k].toFixed(1);r.classList.toggle('win',k===best&&vals.length>1)});
-    $('#logMsg').textContent=vals.length<2?'מלא את המדידות, והגרף יראה מה קרה.':'הכי רחוק: '+cfg.find(c=>c[0]===best)[1]+', '+av[best].toFixed(1)+' צעדים בממוצע.'}
-  cfg.forEach(([k])=>[0,1,2].forEach(i=>{const e=$('#t-'+k+'-'+i);if(log[e.id]!=null)e.value=log[e.id];e.addEventListener('input',()=>{log[e.id]=e.value;store.set('log',log);render()})}));
-  render();
-});
-
-/* mission 5: the lost astronaut */
-safe(()=>{
-  const cv=$('#astro'),S=setup(cv),ctx=S.ctx,msg=$('#aMsg'),box=$('#aItems');let s,dir=-1,over,last0=0;
-  seg($('#aDir'),[['-1','מהחללית (לנוע אליה)'],['1','אל החללית (לבלום)']],'-1',v=>{dir=+v});
-  function items(){box.innerHTML='';ITEMS.forEach(([k,n,m])=>{const b=document.createElement('button');b.textContent=n+' ('+m+' ק"ג)';b.disabled=!s.left.includes(k)||over;b.addEventListener('click',()=>{if(over)return;astroThrow(s,m,dir);s.left=s.left.filter(x=>x!==k);s.th={t:0,dir,n};items()});box.appendChild(b)})}
-  function reset(){s=astroInit();over=false;msg.textContent='השעון רץ. מה תזרוק קודם?';msg.className='msg';items()}
-  function end(t,w){over=true;msg.textContent=t;msg.className='msg '+(w?'good':'bad');items();if(w)markDone(5)}
-  $('#aReset').addEventListener('click',reset);reset();
-  let last=performance.now();
-  function frame(now){
-    const dt=Math.min(.05,(now-last)/1000);last=now;
-    if(S.visible){
-      const W=S.W,H=S.H,cy=H*.5,D=ASTRO.distance,L=40,Rr=W-90;
-      if(!over){s.t+=dt;s.x+=s.v*dt;
-        if(s.x>=D){if(Math.abs(s.v)<=ASTRO.safe)end('הצלת אותו! הגעת ב-'+s.v.toFixed(2)+' מ/ש, עם '+Math.round(ASTRO.oxygen-s.t)+' שניות חמצן.',true);else end('התנגשת בחללית במהירות '+s.v.toFixed(2)+' מ/ש. היה צריך לבלום: לזרוק משהו אל החללית.')}
-        else if(s.t>=ASTRO.oxygen)end('החמצן נגמר. המהירות הייתה '+s.v.toFixed(2)+' מ/ש. אולי צריך לזרוק משהו כבד יותר?');
-        else if(s.x<-14)end('נסחפת רחוק מדי.')}
-      if(s.th)s.th.t+=dt;
-      ctx.fillStyle='#0A1226';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';for(let i=0;i<50;i++)ctx.fillRect((i*131)%W,(i*67)%H,1.5,1.5);
-      ctx.fillStyle='#E8EFFA';ctx.strokeStyle='#13274A';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(W-70,cy-36);ctx.lineTo(W-10,cy-20);ctx.lineTo(W-10,cy+20);ctx.lineTo(W-70,cy+36);ctx.closePath();ctx.fill();ctx.stroke();
-      const X=L+(s.x+14)/(D+14)*(Rr-L);
-      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(X,cy-14,11,0,7);ctx.fill();ctx.stroke();ctx.fillRect(X-10,cy-3,20,26);ctx.strokeRect(X-10,cy-3,20,26);ctx.fillStyle='#5EA3FF';ctx.fillRect(X-6,cy-18,12,7);
-      if(s.th&&s.th.t<4){ctx.fillStyle='#FFBE2E';ctx.beginPath();ctx.arc(X+s.th.dir*(20+s.th.t*80),cy,6,0,7);ctx.fill()}
-      const ox=clamp(1-s.t/ASTRO.oxygen,0,1);ctx.fillStyle='rgba(255,255,255,.2)';ctx.fillRect(12,12,130,12);ctx.fillStyle=ox<.25?'#E3484E':'#3ECB91';ctx.fillRect(12,12,130*ox,12);
-      $('#aOut').textContent='מהירות: '+s.v.toFixed(2)+' מ/ש · נשארו '+Math.max(0,D-s.x).toFixed(0)+' מ׳';
-    }
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-});
-
-/* mission 6: build a rocket */
-safe(()=>{
-  const cv=$('#rocket'),S=setup(cv),ctx=S.ctx,inp=[$('#k1'),$('#k2'),$('#k3')],msg=$('#kMsg');
-  let goal='orbit',fly=null,wins=store.get('rockets',{});
-  const fuels=()=>inp.map(e=>+e.value),G=()=>GOALS.find(g=>g[0]===goal);
-  seg($('#kGoal'),GOALS.map(g=>[g[0],g[1]]),goal,v=>{goal=v;fly=null;msg.textContent='';marks()});
-  function marks(){$('#kGoal').querySelectorAll('button').forEach(b=>b.classList.toggle('won',!!wins[b.dataset.v]))}
-  function info(){const f=fuels();inp.forEach((e,i)=>$('#k'+(i+1)+'o').textContent=f[i]+' טון');$('#kMass').textContent='מסה בשיגור: '+fmt(rocketMass(f))+' טון';$('#kDv').textContent='מהירות שתושג: '+rocketDv(f).toFixed(1)+' ק"מ/ש (צריך '+G()[2]+')'}
-  inp.forEach(e=>e.addEventListener('input',()=>{fly=null;msg.textContent='';info()}));
-  $('#kGo').addEventListener('click',()=>{const st=rocketStages(fuels());if(!st.length){msg.textContent='אין דלק ברקטה.';msg.className='msg bad';return}fly={t:0,st};msg.textContent='';info()});
-  let last=performance.now();
-  function frame(now){
-    const dt=Math.min(.05,(now-last)/1000);last=now;
-    if(S.visible){
-      const W=S.W,H=S.H,bx=W*.52,bTop=30,bBot=H-30,max=15,yOf=v=>bBot-(v/max)*(bBot-bTop);
-      const st=rocketStages(fuels()),tot=st.reduce((a,s)=>a+s.dv,0);
-      ctx.fillStyle='#0A1226';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';for(let i=0;i<40;i++)ctx.fillRect((i*113)%W,(i*59)%H,1.5,1.5);
-      ctx.fillStyle='rgba(255,255,255,.14)';ctx.fillRect(bx,bTop,26,bBot-bTop);
-      GOALS.forEach(([k,n,v])=>{const y=yOf(v),lab={orbit:'מסלול',moon:'הירח',mars:'מאדים'}[k];ctx.strokeStyle=k===goal?'#FFBE2E':'#8FA3C4';ctx.lineWidth=k===goal?3:1.5;ctx.beginPath();ctx.moveTo(bx-6,y);ctx.lineTo(bx+34,y);ctx.stroke();ctx.fillStyle=k===goal?'#FFBE2E':'#CBD9EA';ctx.font='700 12px Assistant, sans-serif';ctx.textAlign='left';ctx.fillText(lab+' '+v,bx+40,y+4)});
-      let drawV=0,alive=st.length;
-      if(fly&&fly.st){fly.t+=dt*1.6;let c=fly.t;alive=0;for(const g of fly.st){if(c>=g.dv/3){drawV+=g.dv;c-=g.dv/3}else{drawV+=c*3;alive=fly.st.length-fly.st.indexOf(g);break}}
-        if(alive===0){const ok=tot>=G()[2];msg.textContent=ok?'הגעת ל'+G()[1]+'! עם '+fmt(rocketMass(fuels()))+' טון ו-'+st.length+' שלבים.':'נגמר הדלק ב-'+tot.toFixed(1)+' ק"מ/ש. צריך '+G()[2]+'. '+(st.length<2?'נסה להוסיף שלב.':'שנה את החלוקה בין השלבים.');msg.className='msg '+(ok?'good':'bad');if(ok){wins[goal]=1;store.set('rockets',wins);marks();if(goal==='mars')markDone(6)}fly={t:fly.t,st:null,v:drawV}}
-      }
-      if(fly&&!fly.st){drawV=fly.v;alive=0}
-      ctx.fillStyle='#FFBE2E';const yy=yOf(fly?drawV:tot);ctx.globalAlpha=fly?1:.5;ctx.fillRect(bx+2,yy,22,bBot-yy);ctx.globalAlpha=1;
-      const cx=W*.22,base=bBot-(fly?clamp(drawV/max,0,1)*(H*.45):0);let y=base;const total=st.length,cols=['#E3484E','#5EA3FF','#FFBE2E'];
-      st.forEach((g,i)=>{if(fly&&i<total-alive)return;const h=16+Math.pow(g.f,.5)*1.9,wd=Math.max(16,10+Math.pow(g.f,.33)*3.2);ctx.fillStyle=cols[i];ctx.strokeStyle='#E8EFFA';ctx.lineWidth=2;ctx.fillRect(cx-wd/2,y-h,wd,h);ctx.strokeRect(cx-wd/2,y-h,wd,h);y-=h});
-      ctx.fillStyle='#E8EFFA';ctx.beginPath();ctx.moveTo(cx-9,y);ctx.lineTo(cx,y-20);ctx.lineTo(cx+9,y);ctx.closePath();ctx.fill();
-      if(fly&&fly.st&&alive){ctx.fillStyle='#FFBE2E';ctx.beginPath();ctx.moveTo(cx-10,base);ctx.lineTo(cx,base+24+Math.random()*14);ctx.lineTo(cx+10,base);ctx.closePath();ctx.fill()}
-    }
-    requestAnimationFrame(frame);
-  }
-  marks();info();requestAnimationFrame(frame);
-});
-
-/* mission 7: Newton's cannon */
-safe(()=>{
-  const cv=$('#cannon'),S=setup(cv),ctx=S.ctx,V=$('#cV'),msg=$('#cMsg');
-  let s=null,trail=[],got=store.get('cannon',{});
-  const info=()=>{$('#cVo').textContent=(+V.value).toFixed(2)+' ק"מ/ש'};
-  function chips(){[['c1','ground','נפל לקרקע'],['c2','orbit','הקיף את כדור הארץ'],['c3','escape','ברח מכדור הארץ']].forEach(([id,k,n])=>{const e=$('#'+id);e.textContent=(got[k]?'☑ ':'☐ ')+n;e.className='chip'+(got[k]?' good':'')})}
-  V.addEventListener('input',info);
-  $('#cGo').addEventListener('click',()=>{s=cannonInit(+V.value);trail=[];msg.textContent='';msg.className='msg'});
-  function frame(){
-    if(S.visible){
-      const W=S.W,H=S.H,cx=W/2,cy=H/2,base=Math.min(W,H)*.2,sc=base/EARTH.R;
-      if(s&&s.state==='fly'){const r=Math.hypot(s.x,s.y),n=Math.ceil(5*Math.pow(r/EARTH.R,1.5));for(let i=0;i<n&&s.state==='fly';i++)cannonStep(s,6);trail.push([s.x,s.y]);if(trail.length>1600)trail.shift();
-        if(s.state!=='fly'){got[s.state]=1;store.set('cannon',got);chips();if(got.orbit&&got.ground)markDone(7);
-          const v=(+V.value).toFixed(2),t={ground:'הכדור נפל אחרי '+Math.round(s.t/60)+' דקות. נסה מהר יותר.',orbit:'מסלול! סיבוב מלא ב-'+Math.round(s.t/60)+' דקות, בגובה עד '+fmt(s.maxR-EARTH.R)+' ק"מ.',escape:'ב-'+v+' ק"מ/ש הכדור בורח ולא חוזר. זאת מהירות המילוט: בערך 11 ק"מ/ש.'}[s.state];msg.textContent=t;msg.className='msg '+(s.state==='ground'?'':'good')}}
-      ctx.fillStyle='#0A1226';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';for(let i=0;i<70;i++)ctx.fillRect((i*131)%W,(i*79)%H,1.5,1.5);
-      ctx.fillStyle='#2B78DD';ctx.strokeStyle='#E8EFFA';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,base,0,7);ctx.fill();ctx.stroke();
-      ctx.fillStyle='#5F9E5A';ctx.beginPath();ctx.ellipse(cx-base*.3,cy+base*.25,base*.35,base*.22,.5,0,7);ctx.ellipse(cx+base*.4,cy-base*.3,base*.3,base*.2,-.4,0,7);ctx.fill();
-      ctx.fillStyle='#FFBE2E';ctx.beginPath();ctx.moveTo(cx-10,cy-base);ctx.lineTo(cx,cy-base-16);ctx.lineTo(cx+10,cy-base);ctx.closePath();ctx.fill();
-      ctx.strokeStyle='#FFBE2E';ctx.lineWidth=2;ctx.beginPath();trail.forEach(([x,y],i)=>{const X=cx+x*sc,Y=cy-y*sc;i?ctx.lineTo(X,Y):ctx.moveTo(X,Y)});ctx.stroke();
-      if(s){ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx+s.x*sc,cy-s.y*sc,4,0,7);ctx.fill()}
-    }
-    requestAnimationFrame(frame);
-  }
-  info();chips();requestAnimationFrame(frame);
-});
-
-/* mission 8: hit Mars */
-safe(()=>{
-  const cv=$('#mars'),S=setup(cv),ctx=S.ctx,V=$('#mV'),msg=$('#mMsg');
-  let s=marsInit(),trail=[],best=store.get('marsBest',null);
-  const info=()=>{$('#mVo').textContent=(+V.value).toFixed(2)+' ק"מ/ש'};
-  function reset(){s=marsInit();trail=[];msg.textContent='מאדים מתקרב לזווית. שים לב למספר: כמה מעלות הוא לפנינו?';msg.className='msg';$('#mGo').disabled=false}
-  V.addEventListener('input',info);
-  $('#mReset').addEventListener('click',reset);
-  $('#mGo').addEventListener('click',()=>{if(s.state!=='wait')return;marsLaunch(s,+V.value);$('#mGo').disabled=true;msg.textContent='המנוע כבוי. עכשיו רק ניוטון עובד.';msg.className='msg'});
-  let last=performance.now();
-  function frame(now){
-    const dt=Math.min(.05,(now-last)/1000);last=now;
-    if(S.visible){
-      const W=S.W,H=S.H,cx=W/2,cy=H/2,sc=Math.min(W,H)*.46/SOLAR.rm;
-      if(s.state==='wait')marsTick(s,dt*.055);
-      else if(s.state==='fly'){for(let i=0;i<6&&s.state==='fly';i++){marsTick(s,dt*.28/6);marsShipStep(s,dt*.28/6)}trail.push([s.ship.x,s.ship.y]);if(trail.length>900)trail.shift();
-        if(s.state==='hit'){const u=+V.value;msg.textContent='פגיעה במאדים! טיסה של '+Math.round((s.t-s.ship.t0)*12)+' חודשים, עם תוספת מהירות של '+u.toFixed(2)+' ק"מ/ש.';msg.className='msg good';if(best==null||u<best){best=u;store.set('marsBest',u)}markDone(8)}
-        else if(s.state==='miss'){msg.textContent='פספסת. מאדים לא היה שם. '+(marsLead(s)>0?'שים לב לזווית ברגע השיגור: כוון בערך ל-44 מעלות.':'');msg.className='msg bad'}}
-      ctx.fillStyle='#0A1226';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';for(let i=0;i<70;i++)ctx.fillRect((i*131)%W,(i*79)%H,1.5,1.5);
-      ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1;[SOLAR.re,SOLAR.rm].forEach(r=>{ctx.beginPath();ctx.arc(cx,cy,r*sc,0,7);ctx.stroke()});
-      ctx.fillStyle='#FFBE2E';ctx.beginPath();ctx.arc(cx,cy,12,0,7);ctx.fill();
-      const P=(r,a,c,rr)=>{ctx.fillStyle=c;ctx.beginPath();ctx.arc(cx+Math.cos(a)*r*sc,cy-Math.sin(a)*r*sc,rr,0,7);ctx.fill()};
-      P(SOLAR.re,s.ea,'#5EA3FF',7);P(SOLAR.rm,s.ma,'#E0713F',6);
-      ctx.strokeStyle='#FFBE2E';ctx.lineWidth=2;ctx.beginPath();trail.forEach(([x,y],i)=>{const X=cx+x*sc,Y=cy-y*sc;i?ctx.lineTo(X,Y):ctx.moveTo(X,Y)});ctx.stroke();
-      if(s.ship){ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx+s.ship.x*sc,cy-s.ship.y*sc,3,0,7);ctx.fill()}
-      const l=Math.round(marsLead(s));$('#mLead').textContent='מאדים לפנינו ב-'+l+' מעלות';$('#mLead').className='chip'+(s.state==='wait'&&l>=38&&l<=48?' good':'');
-    }
-    requestAnimationFrame(frame);
-  }
-  info();reset();requestAnimationFrame(frame);
-});
-
 /* quiz and certificate */
-const Q=[
-  ['כשמכבים מנוע של חללית בחלל, מה קורה?',['היא עוצרת לאט','היא ממשיכה באותה מהירות','היא נופלת'],1],
-  ['אותו כוח פועל על מסה גדולה פי 3. מה קורה לתאוצה?',['גדלה פי 3','לא משתנה','קטנה פי 3'],2],
-  ['למה רקטה נעה בחלל?',['היא דוחפת את החלל','היא זורקת גז לאחור, והגז דוחף אותה קדימה','כוכבים מושכים אותה'],1],
-  ['למה רקטות בנויות משלבים?',['כי יפה יותר','כדי לזרוק משקל מת של מיכלים ריקים','כדי שיהיה מקום לאסטרונאוטים'],1],
-  ['למה אסטרונאוט מרחף בתחנת החלל?',['אין שם כבידה','הוא נופל כל הזמן סביב כדור הארץ','התחנה מגנטית'],1]
-];
+const Q=[ [ "כדור מתגלגל נעצר על הדשא. למה?", [ "הוא התעייף", "כוח החיכוך עצר אותו", "כדורים תמיד עוצרים לבד" ], 1 ], [ "אותו כוח פועל על מסה גדולה פי 3. מה קורה לתאוצה?", [ "גדלה פי 3", "לא משתנה", "קטנה פי 3" ], 2 ], [ "מה אומר המספר תאוצה 4?", [ "המהירות היא 4", "המהירות עולה ב-4 מ/ש בכל שנייה", "הכוח הוא 4" ], 1 ], [ "למה בלי אוויר פטיש ונוצה נופלים יחד?", [ "הם שוקלים אותו דבר", "הכבידה מושכת חזק יותר את הכבד, באותו יחס", "אין שם כבידה" ], 1 ] ];
 const qa=store.get('quiz',{}),quizEl=$('#quiz');
 Q.forEach(([q,opts,ans],qi)=>{
   const d=document.createElement('div');d.className='predict quizq';d.innerHTML='<p class="q">'+(qi+1)+'. '+q+'</p><div class="opts">'+opts.map((o,i)=>'<button class="opt" data-i="'+i+'">'+o+'</button>').join('')+'</div>';
@@ -999,7 +650,7 @@ nameEl.addEventListener('input',()=>{store.set('name',nameEl.value);renderCert()
 function renderCert(){
   const right=Q.filter((q,i)=>qa[i]===q[2]).length;
   $('#certName').textContent=nameEl.value.trim()||' ';
-  $('#certText').textContent='השלים '+done.size+' מתוך 8 משימות ו-'+right+' מתוך 5 שאלות במעבדת ניוטון, ויודע להסביר איך רקטה נעה בחלל.';
+  $('#certText').textContent='השלים '+done.size+' מתוך 2 משימות ו-'+right+' מתוך 4 שאלות בניוטון: דברים רוצים להמשיך, ויודע להסביר מה קובע את התאוצה.';
 }
 $('#certDate').textContent=new Date().toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
 renderProgress();

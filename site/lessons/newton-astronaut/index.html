@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ניוטון: הצל את האסטרונאוט</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Assistant:wght@400;600;700;800&family=Secular+One&display=swap">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<style>
+/* Layout: the lab notebook from parts 1 and 2, on the same graph paper. Mission cards in one column, simulators as wide instruments. */
+:root{
+  --paper:#F4F8FC; --grid:#DCE7F3; --ink:#13274A; --ink-soft:#4C6185; --card:#FFFFFF; --line:#CBD9EA;
+  --signal:#FFBE2E; --signal-ink:#3B2900; --low:#E3484E; --high:#2B78DD; --ok:#178F62; --sim:#EAF2FB; --space:#5A46C8; --spacebg:#D3CCF8; --mars-like:#BF4F22;
+  --display:"Secular One","Assistant",system-ui,sans-serif;
+  --body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --hand:"Amatic SC","Assistant",cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0D1A31; --grid:#182A4A; --ink:#E8EFFA; --ink-soft:#A3B5D2; --card:#132442; --line:#29406A;
+  --signal:#FFC447; --signal-ink:#2A1D00; --low:#FF6B70; --high:#5EA3FF; --ok:#3ECB91; --sim:#0F203D; --space:#A99CFF; --spacebg:#3F3385; --mars-like:#E0713F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0D1A31; --grid:#182A4A; --ink:#E8EFFA; --ink-soft:#A3B5D2; --card:#132442; --line:#29406A;
+  --signal:#FFC447; --signal-ink:#2A1D00; --low:#FF6B70; --high:#5EA3FF; --ok:#3ECB91; --sim:#0F203D; --space:#A99CFF; --spacebg:#3F3385; --mars-like:#E0713F; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{
+  direction:rtl; font-family:var(--body); font-size:18px; line-height:1.6; color:var(--ink);
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--card)}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px;border-radius:6px}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.home{font-size:14px;font-weight:700;color:var(--ink-soft);text-decoration:none;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.home:hover{border-color:var(--ink);color:var(--ink)}
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--card);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px}
+.brand{font-family:var(--display);font-size:20px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.stamps{display:flex;align-items:center;gap:6px}
+.stamp{width:22px;height:22px;border-radius:50%;border:2px dashed var(--ink-soft);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--ink-soft);text-decoration:none;transition:transform .2s}
+.stamp.on{background:var(--signal);border:2px solid var(--signal);color:var(--signal-ink);transform:rotate(-12deg)}
+.count{font-size:14px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:520px){.brand span{display:none}.stamp{width:18px;height:18px;font-size:10px}}
+
+/* hero */
+.hero{padding-block:48px 24px;display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:center}
+.eyebrow{font-size:14px;font-weight:700;letter-spacing:.06em;color:var(--ink-soft)}
+.hero h1{font-size:clamp(34px,6vw,56px);margin-block:8px 14px}
+.hero h1 mark{background:linear-gradient(transparent 55%,var(--signal) 55%);color:inherit;padding-inline:4px}
+.lead{font-size:20px;color:var(--ink-soft);max-width:34em}
+.hero-art{position:relative;min-width:0}
+.hero-art svg{width:100%;height:auto;display:block}
+.float{animation:float 4s ease-in-out infinite;transform-origin:center}
+@keyframes float{0%,100%{transform:translate(0,0) rotate(-4deg)}50%{transform:translate(-10px,-12px) rotate(2deg)}}
+@media (max-width:700px){.hero{grid-template-columns:1fr}.hero-art{max-width:320px;justify-self:center;order:-1}}
+.kit{display:flex;gap:10px;align-items:center;margin-top:18px;padding:12px 14px;border:2px solid var(--ink);border-radius:10px;background:var(--card);max-width:34em}
+.kit b{font-family:var(--display);font-weight:400;font-size:18px;white-space:nowrap}
+
+/* mission map */
+.map{display:flex;flex-wrap:wrap;gap:8px;padding-block:8px 32px}
+.map a{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);text-decoration:none;font-size:15px;font-weight:600}
+.map a:hover{border-color:var(--ink)}
+.map a i{font-style:normal;font-family:var(--display);color:var(--ink-soft)}
+.map a.on{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+.map a.on i{color:var(--signal-ink)}
+
+/* mission cards */
+.mission{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:28px clamp(18px,4vw,36px);margin-bottom:36px;position:relative;scroll-margin-top:80px}
+.mission-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
+.num{flex:none;width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--card);display:grid;place-items:center;font-family:var(--display);font-size:28px;line-height:1}
+.mission.done .num{background:var(--signal);color:var(--signal-ink)}
+.mission h2{font-size:clamp(26px,4vw,34px)}
+.tag{font-size:14px;font-weight:700;letter-spacing:.05em;color:var(--ink-soft)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.note{font-family:var(--hand);font-size:28px;line-height:1.1;color:var(--high);transform:rotate(-1deg)}
+.fact{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:14px 16px;background:var(--sim);border-radius:10px}
+.fact .big{font-family:var(--display);font-size:clamp(36px,7vw,52px);line-height:1;color:var(--high);font-variant-numeric:tabular-nums}
+.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:start}
+.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:15px;margin-top:2px}
+.rule{border-inline-start:6px solid var(--signal);padding:10px 14px;background:var(--sim);border-radius:0 8px 8px 0;font-weight:700}
+.rule small{display:block;font-weight:400;color:var(--ink-soft);font-size:15px}
+
+/* predictions */
+.predict{border:2px dashed var(--ink-soft);border-radius:12px;padding:16px}
+.predict .q{font-weight:800;margin-bottom:10px}
+.predict .q::before{content:"ניבוי: ";color:var(--high)}
+.quizq .q::before{content:none}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:2px solid var(--ink);background:var(--card);border-radius:999px;padding:6px 16px;cursor:pointer;font-weight:700;font-size:16px}
+.opt:hover{background:var(--sim)}
+.opt.picked{background:var(--ink);color:var(--card)}
+.opt.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.predict.answered .opt:not(.picked):not(.right){opacity:.45}
+.reveal{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.verdict{font-family:var(--display);font-size:22px;display:block;margin-bottom:6px}
+.verdict.good{color:var(--ok)}.verdict.surprise{color:var(--low)}
+
+.done-btn{align-self:flex-start;border:2px solid var(--ink);background:transparent;border-radius:10px;padding:8px 18px;font-weight:800;cursor:pointer}
+.done-btn:hover{background:var(--sim)}
+.mission.done .done-btn{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+
+/* simulators */
+.sim{background:var(--sim);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sim canvas{display:block;width:100%;height:300px;touch-action:pan-y}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 22px;padding:14px 16px;border-top:1px solid var(--line);background:var(--card)}
+.ctl label{display:flex;justify-content:space-between;font-weight:700;font-size:15px}
+.ctl output{font-variant-numeric:tabular-nums;color:var(--high)}
+.ctl input[type=range]{width:100%;accent-color:var(--high)}
+.readouts{display:flex;flex-wrap:wrap;gap:10px;padding:0 16px 14px;background:var(--card)}
+.chip{padding:4px 12px;border-radius:999px;font-size:14px;font-weight:700;background:var(--sim);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.chip.warn{background:var(--low);border-color:var(--low);color:#fff}
+.chip.good{background:var(--ok);border-color:var(--ok);color:#fff}
+.meter{display:grid;grid-template-columns:52px 1fr 48px;gap:8px;align-items:center;font-size:14px;font-weight:700}
+.meter .track{height:12px;border-radius:6px;background:var(--sim);overflow:hidden;border:1px solid var(--line)}
+.meter .fill{height:100%;width:0;border-radius:6px;transition:width .15s}
+.meter output{font-variant-numeric:tabular-nums;text-align:end}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--ink-soft)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-inline-end:6px;vertical-align:-1px}
+.btn{border:none;background:var(--ink);color:var(--card);border-radius:10px;padding:8px 16px;font-weight:800;cursor:pointer}
+.btn:hover{opacity:.9}
+.btn.alt{background:var(--signal);color:var(--signal-ink)}
+.challenge{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.challenge li{display:flex;gap:10px;align-items:flex-start}
+.challenge input{width:20px;height:20px;margin-top:4px;accent-color:var(--ok);flex:none}
+
+.myth{border:2px solid var(--low);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.myth .stampx{align-self:flex-start;font-family:var(--display);color:var(--low);border:3px solid var(--low);padding:0 10px;border-radius:6px;transform:rotate(-4deg);font-size:20px}
+
+/* forces */
+.forces{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:center}
+.forces svg{width:100%;height:auto}
+.force-list{display:flex;flex-direction:column;gap:8px}
+.force{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--card);text-align:start;cursor:pointer}
+.force b{font-family:var(--display);font-weight:400;font-size:19px}
+.force span{display:block;font-size:15px;color:var(--ink-soft)}
+.force.on{border-color:var(--ink);border-width:2px;padding:7px 11px}
+@media (max-width:640px){.forces{grid-template-columns:1fr}}
+
+/* folding */
+.folds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.fold{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card);display:flex;flex-direction:column;gap:6px}
+.fold svg{width:100%;height:auto;max-height:150px}
+.fold p{font-size:15px;line-height:1.4}
+.fold b{font-family:var(--display);font-weight:400;color:var(--high)}
+@media (max-width:620px){.folds{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* flight log */
+.log-wrap{overflow-x:auto}
+table.log{border-collapse:collapse;width:100%;min-width:480px;font-variant-numeric:tabular-nums}
+.log th,.log td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+.log th{font-size:14px;background:var(--sim)}
+.log td:first-child{text-align:start;font-weight:700;white-space:nowrap}
+.log input{width:64px;padding:4px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);text-align:center;font:inherit}
+.log .avg{font-weight:800;color:var(--high)}
+.bars{display:flex;flex-direction:column;gap:8px}
+.barrow{display:grid;grid-template-columns:120px 1fr 56px;gap:10px;align-items:center;font-size:15px;font-weight:700}
+.barrow .track{height:22px;background:var(--sim);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.barrow .fill{height:100%;width:0;background:var(--high);transition:width .3s}
+.barrow.win .fill{background:var(--signal)}
+.barrow output{text-align:end}
+.empty{color:var(--ink-soft);font-size:15px}
+select{font:inherit;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--card)}
+details summary{cursor:pointer;font-weight:800}
+details[open] summary{margin-bottom:8px}
+
+/* quiz + certificate */
+.quiz{display:flex;flex-direction:column;gap:14px}
+.cert{border:3px double var(--ink);border-radius:12px;padding:28px 20px;text-align:center;background:var(--card);display:flex;flex-direction:column;gap:10px;align-items:center;position:relative;overflow:hidden}
+.cert h3{font-size:32px}
+.cert .who{font-family:var(--hand);font-size:52px;line-height:1;color:var(--high);min-height:52px}
+.cert .seal{width:86px;height:86px;border-radius:50%;background:var(--signal);color:var(--signal-ink);display:grid;place-items:center;font-family:var(--display);font-size:15px;line-height:1.1;transform:rotate(-10deg);border:3px dashed var(--signal-ink)}
+.namebox{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.namebox input{font:inherit;padding:6px 10px;border:2px solid var(--ink);border-radius:8px;background:var(--card);color:var(--ink);min-width:0;width:220px;max-width:100%}
+
+.adult{margin-block:8px 64px}
+.adult ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px}
+footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
+
+@media (prefers-reduced-motion:reduce){.float{animation:none}.stamp,.barrow .fill,.meter .fill{transition:none}}
+
+/* Same notebook as parts 1 and 2, with one new ink: deep-space violet. */
+.hero h1 mark{background:linear-gradient(transparent 55%,var(--spacebg) 55%)}
+.series{font-family:var(--hand);font-size:26px;color:var(--space);line-height:1}
+.sim canvas.tall{height:340px}
+.sim canvas.game{height:360px;touch-action:none;user-select:none;-webkit-user-select:none}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:2px solid var(--ink);background:var(--card);border-radius:999px;padding:4px 12px;font-weight:700;font-size:15px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+.seg button.won::after{content:" ★";color:var(--signal)}
+.seglabel{font-size:14px;font-weight:700;color:var(--ink-soft)}
+.panel{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-top:1px solid var(--line);background:var(--card)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.msg{font-weight:700;min-height:1.6em}
+.msg.good{color:var(--ok)}.msg.bad{color:var(--low)}
+.formula{direction:ltr;text-align:center;font-family:var(--display);font-size:clamp(20px,4vw,28px);padding:12px;background:var(--sim);border-radius:10px;font-variant-numeric:tabular-nums;overflow-x:auto}
+.formula small{display:block;direction:rtl;font-family:var(--body);font-size:15px;color:var(--ink-soft)}
+.knob{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+.knob label{display:flex;justify-content:space-between;font-weight:700;font-size:15px;gap:8px}
+.knob output{color:var(--high);font-variant-numeric:tabular-nums}
+.knob input{grid-column:1;width:100%;accent-color:var(--high)}
+.knob .x2{grid-row:1/3;grid-column:2;border:2px solid var(--ink);background:var(--card);border-radius:8px;padding:4px 8px;font-weight:800;cursor:pointer;font-size:14px}
+.knob.locked{opacity:.4}
+.scalebox{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end;height:190px;padding:14px 16px 0;position:relative}
+.col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;min-width:0}
+.col .pillar{width:min(120px,70%);border-radius:8px 8px 0 0;transition:height .15s}
+.col b{font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.locks{display:flex;gap:6px;flex-wrap:wrap}
+.lock{width:32px;height:32px;border-radius:8px;border:2px solid var(--ink-soft);display:grid;place-items:center;font-weight:800;color:var(--ink-soft);cursor:pointer;background:var(--card)}
+.lock.open{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+.lock.cur{border-color:var(--ink);color:var(--ink)}
+.pitot{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center}
+.pitot svg{width:100%;height:auto}
+@media (max-width:520px){.pitot{grid-template-columns:90px 1fr}}
+.numin{width:96px;font:inherit;padding:4px 8px;border:2px solid var(--ink);border-radius:8px;background:var(--card);color:var(--ink);text-align:center}
+.watch{font-family:var(--display);font-size:clamp(38px,9vw,60px);text-align:center;font-variant-numeric:tabular-nums;line-height:1}
+.watchbtn{width:100%;padding:16px;border:none;border-radius:12px;background:var(--ink);color:var(--card);font-family:var(--display);font-size:22px;cursor:pointer}
+.watchbtn.run{background:var(--low);color:#fff}
+.fly-ctl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fly-ctl button{padding:14px;border:2px solid var(--ink);border-radius:12px;background:var(--card);font-weight:800;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none}
+.fly-ctl button:active{background:var(--signal);color:var(--signal-ink)}
+.toolbar{display:flex;flex-wrap:wrap;gap:12px 20px;padding:12px 16px;background:var(--card);border-top:1px solid var(--line)}
+.toolbar>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rank{display:flex;flex-direction:column;gap:6px}
+.rankrow{display:grid;grid-template-columns:96px 1fr 44px;gap:8px;align-items:center;font-size:15px;font-weight:700}
+.rankrow .track{height:14px;background:var(--sim);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.rankrow .fill{height:100%;background:var(--low);width:0;transition:width .3s}
+.rankrow output{text-align:end;font-variant-numeric:tabular-nums}
+.planet-table{width:100%;min-width:380px;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.planet-table th,.planet-table td{border:1px solid var(--line);padding:6px 8px;text-align:center;font-size:15px}
+.planet-table th{background:var(--sim)}
+@media (max-width:520px){.bar .brand,.count{display:none}.stamps{gap:3px}.home{font-size:13px;padding:4px 8px}}
+.pad{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,52px);gap:6px;justify-content:center;direction:ltr}
+.pad button{border:2px solid var(--ink);border-radius:10px;background:var(--card);font-size:22px;font-weight:800;cursor:pointer;touch-action:manipulation}
+.pad button:active{background:var(--signal);color:var(--signal-ink)}
+#dU{grid-column:2;grid-row:1}#dL{grid-column:1;grid-row:2}#dD{grid-column:2;grid-row:2}#dR{grid-column:3;grid-row:2}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
+.walk{border:2px solid var(--space);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--card)}
+.walk-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.walk-head b{font-family:var(--display);font-weight:400;font-size:20px;color:var(--space)}
+.walk-count{font-size:14px;color:var(--ink-soft);white-space:nowrap}
+.wstep{display:flex;flex-direction:column;gap:10px}
+.walk .walk-next{align-self:flex-start}
+.words{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.words div{background:var(--sim);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.words b{font-family:var(--display);font-weight:400;font-size:28px;color:var(--space);line-height:1}
+.words span{font-weight:800}.words small{font-size:14px;color:var(--ink-soft);line-height:1.35}
+@media (max-width:560px){.words{grid-template-columns:1fr}}
+.tick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.tick div{background:var(--sim);border-radius:10px;padding:8px 4px;text-align:center;display:flex;flex-direction:column}
+.tick small{font-size:12px;color:var(--ink-soft)}.tick b{font-family:var(--display);font-weight:400;font-size:24px;color:var(--high)}
+.try{background:var(--sim);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.hint{background:var(--card);border-inline-start:4px solid var(--signal);padding:6px 10px;border-radius:0 6px 6px 0;font-size:16px}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink);padding:6px 14px}
+
+.nextlab{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--signal);color:var(--signal-ink);border-radius:14px;padding:16px 20px;text-decoration:none;font-weight:800;margin-bottom:24px}
+.nextlab small{display:block;font-weight:600;font-size:15px}
+.nextlab span{font-family:var(--display);font-weight:400;font-size:22px;white-space:nowrap}
+.recap{background:var(--card);border:2px dashed var(--ink-soft);border-radius:12px;padding:12px 16px;margin-bottom:12px}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="../../">→ כל המשחקים והשיעורים</a>
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 C 23 8, 24 18, 21 25 H11 C 8 18, 9 8, 16 2 Z" fill="var(--signal)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M13 25 L16 31 L19 25" fill="var(--low)" stroke="var(--ink)" stroke-width="2"/></svg>
+      <span>ניוטון: הצל את האסטרונאוט</span>
+    </div>
+    <div class="stamps" id="stamps" aria-label="משימות שהושלמו"></div>
+    <div class="count" id="count">0 / 4</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="hero">
+  <div>
+    <div class="series">ניוטון, שיעור 2 מתוך 3 · לגילאי 12 ומעלה</div>
+    <div class="eyebrow">4 משימות · 4 משחקים וסימולטורים · ניסוי בבית · כ-50 דקות</div>
+    <h1>איך זזים בחלל כשאין על מה <mark>לדרוך</mark>?</h1>
+    <p class="lead">בחלל אי אפשר ללכת, ואין מעקה להיאחז בו. בשיעור הזה תעגון חללית בלי בלמים, תגלה את החוק השלישי של ניוטון, תציל אסטרונאוט שנסחף, ותבין למה אסטרונאוטים מרחפים.</p>
+    <div class="kit"><b>מה צריך:</b><span>דף נייר, קשית ומעט נייר דבק.</span></div>
+  </div>
+  <div class="hero-art"><svg viewBox="0 0 320 240" aria-hidden="true"><circle cx="262" cy="52" r="26" fill="var(--high)" stroke="var(--ink)" stroke-width="3"/><path d="M30 40 L52 34 M286 170 L304 176" stroke="var(--ink-soft)" stroke-width="2"/><g class="float"><path d="M160 58 C 190 58, 204 84, 196 110 L196 168 L176 168 L170 136 L150 136 L144 168 L124 168 L124 110 C 116 84, 130 58, 160 58 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/><circle cx="160" cy="84" r="27" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/><path d="M140 80 C 146 70, 174 70, 180 80 L180 92 C 174 100, 146 100, 140 92 Z" fill="var(--high)" stroke="var(--ink)" stroke-width="3"/><path d="M124 116 L92 140 M196 116 L232 96" stroke="var(--ink)" stroke-width="10" stroke-linecap="round"/><rect x="232" y="82" width="24" height="16" rx="3" fill="var(--signal)" stroke="var(--ink)" stroke-width="3"/></g><path d="M36 214 C 90 196, 170 232, 296 200" fill="none" stroke="var(--ink-soft)" stroke-width="2" stroke-dasharray="6 8"/></svg></div>
+</section>
+
+<div class="recap"><b>תזכורת מהשיעור הקודם:</b> דבר ממשיך במה שהוא עושה עד שכוח משנה את זה. בחלל אין חיכוך, אז חללית שנדחפה לא נעצרת לבד.</div>
+<nav class="map" id="map" aria-label="מפת המשימות"></nav>
+
+<article class="mission" id="m1" data-m="1">
+  <div class="mission-head"><div class="num">1</div><div><div class="tag">משחק · 10 דקות</div><h2>עגינה בלי בלמים</h2></div></div>
+  <div class="stack">
+    <p>כאן החוק הראשון הופך לבעיה. כל לחיצה על מנוע משנה את המהירות, ואז החללית ממשיכה כך לנצח. כדי לעצור, צריך <b>לדחוף לצד ההפוך</b>. הבא את החללית אל נמל העגינה הצהוב במהירות קטנה מ-1.5.</p>
+    <div class="sim">
+      <canvas id="dock" class="game" aria-label="חללית שצריכה להגיע לנמל עגינה" tabindex="0"></canvas>
+      <div class="readouts" style="padding-top:12px"><span class="chip" id="dSpeed"></span><span class="chip" id="dFuel"></span></div>
+      <div class="panel" style="border-top:0">
+        <div class="pad"><button id="dU" aria-label="דחיפה למעלה">↑</button><button id="dL" aria-label="דחיפה שמאלה">←</button><button id="dR" aria-label="דחיפה ימינה">→</button><button id="dD" aria-label="דחיפה למטה">↓</button></div>
+        <div class="row"><button class="btn" id="dReset">התחל מחדש</button><span class="tag">במקלדת: חצים (לחץ קודם על המשחק)</span></div>
+        <div class="msg" id="dMsg"></div>
+      </div>
+    </div>
+    <button class="done-btn" data-m="1">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<article class="mission" id="m2" data-m="2">
+  <div class="mission-head"><div class="num">2</div><div><div class="tag">החוק השלישי · סימולטור וניסוי בבית · 20 דקות</div><h2>כל דחיפה דוחפת בחזרה</h2></div></div>
+  <div class="stack">
+    <div class="rule">החוק השלישי: כשאתה דוחף משהו, הוא דוחף אותך באותו כוח, בכיוון ההפוך.<small>זה גם מה שמרים כנף: היא דוחפת אוויר למטה, והאוויר דוחף אותה למעלה. במעבדה הראשונה ראית את זה כחץ אוויר שיורד מאחורי הכנף.</small></div>
+    <div class="walk" data-walk><div class="walk-head"><b>מה זה תנע? נלך לאט</b><span class="walk-count"></span></div><div class="wstep"><p><b>תנע אומר כמה קשה לעצור משהו.</b> כדור טניס שזורקים אליך קל לעצור. משאית באותה מהירות, הרבה פחות. גם מהירות קובעת: משאית שזזה ממש לאט אפשר לעצור בקלות יחסית.</p><div class="formula">תנע = מסה × מהירות<small>אין כאן אותיות: פשוט כופלים ק&quot;ג במטר לשנייה.</small></div></div><div class="wstep"><p><b>דוגמה פתורה.</b> מחליק של 30 ק&quot;ג נע ב-6 מ/ש. התנע שלו: 30 × 6 = 180.</p><p>מחליק של 90 ק&quot;ג נע ב-2 מ/ש. התנע שלו: 90 × 2 = 180. אותו תנע, כי הכבד איטי יותר.</p></div><div class="wstep"><p><b>החוק.</b> כששניים דוחפים זה את זה, כל אחד מקבל <b>אותו תנע</b>, לכיוונים הפוכים. אם יודעים את התנע, מוצאים מהירות בחילוק: מהירות = תנע ÷ מסה.</p><div class="try" data-ans="3"><p><b>תורך:</b> דחיפה נותנת לכל אחד תנע 120. מחליק של 40 ק"ג: באיזו מהירות יזוז?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>מ/ש</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>מהירות = תנע ÷ מסה</div><div class="hint" hidden>120 ÷ 40</div><div class="msg"></div></div><div class="try" data-ans="2"><p><b>תורך:</b> אותה דחיפה (תנע 120). מחליק של 60 ק"ג: באיזו מהירות יזוז?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>מ/ש</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>מהירות = תנע ÷ מסה</div><div class="hint" hidden>120 ÷ 60</div><div class="msg"></div></div></div><button class="btn walk-next">הבנתי, הלאה</button></div><div class="predict" data-answer="heavyless">
+      <p class="q">מחליק של 30 ק&quot;ג ומחליק של 90 ק&quot;ג עומדים על קרח ודוחפים זה את זה. מה יקרה?</p>
+      <div class="opts">
+        <button class="opt" data-v="onlylight">רק הקל יזוז</button>
+        <button class="opt" data-v="equal">שניהם יזוזו באותה מהירות</button>
+        <button class="opt" data-v="heavyless">שניהם יזוזו, הקל מהר פי 3</button>
+      </div>
+      <div class="reveal" hidden><span class="verdict"></span><p>שניהם מקבלים אותו כוח בדיוק, גם אם רק אחד מהם &quot;דחף&quot;. לפי F = m · a, למי שקל פי 3 יש תאוצה גדולה פי 3. מסה × מהירות יוצאת שווה בשני הצדדים. לזה קוראים תנע.</p></div>
+    </div>
+    <div class="sim">
+      <canvas id="skate" aria-label="שני מחליקים דוחפים זה את זה"></canvas>
+      <div class="controls">
+        <div class="ctl"><label for="sA">מסה ימין <output id="sAo"></output></label><input type="range" id="sA" min="20" max="120" step="5" value="30"></div>
+        <div class="ctl"><label for="sB">מסה שמאל <output id="sBo"></output></label><input type="range" id="sB" min="20" max="120" step="5" value="90"></div>
+      </div>
+      <div class="readouts"><button class="btn alt" id="sGo">דחיפה!</button><span class="chip" id="sOut">התנע של כל צד יופיע כאן</span></div>
+    </div>
+    <h3 style="font-size:24px">רקטת נייר</h3>
+    <ol class="steps">
+      <li>גזור או קרע רצועה של כ-5 על 12 ס&quot;מ, וגלגל אותה סביב קשית. הדבק בנייר דבק, כך שהצינור מחליק בקלות על הקשית.</li>
+      <li>קפל את הקצה העליון והדבק אותו, כדי שהאוויר לא יברח. זאת הרקטה.</li>
+      <li>נשוף חזק בקשית, מאותו מקום ובאותו גובה, ורשום כמה צעדים הרקטה טסה.</li>
+      <li>הוסף רצועת נייר מקופלת לאף בנייר דבק, ומדוד שוב. אחר כך הוסף עוד אחת.</li>
+    </ol>
+    <div class="log-wrap"><table class="log"><thead><tr><th>רקטה</th><th>1</th><th>2</th><th>3</th><th>ממוצע (צעדים)</th></tr></thead><tbody id="logBody"></tbody></table></div>
+    <div class="bars" id="bars"></div>
+    <p class="empty" id="logMsg">מלא את המדידות, והגרף יראה מה קרה.</p>
+    <details><summary>מה אמור לקרות? (לפתוח אחרי הניסוי)</summary><p>הנשיפה נותנת כוח דומה, אז רקטה כבדה יותר מקבלת תאוצה קטנה יותר. אבל רקטה קלה מדי נעצרת מהר בגלל האוויר, אז לפעמים רקטה עם קצת משקל באף טסה רחוק יותר. אם קיבלת תוצאה כזאת, גילית משהו אמיתי: גם כאן הגרר ממשיך לשחק.</p></details>
+    <button class="done-btn" data-m="2">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<article class="mission" id="m3" data-m="3">
+  <div class="mission-head"><div class="num">3</div><div><div class="tag">משחק · 10 דקות</div><h2>הצל את האסטרונאוט</h2></div></div>
+  <div class="stack">
+    <p>הכבל נקרע. האסטרונאוט נסחף לאט מהחללית, יש לו 70 שניות של חמצן, ומה שיש לו ביד זה ציוד. הדרך היחידה לזוז: <b>לזרוק דברים</b>.</p><div class="walk" data-walk><div class="walk-head"><b>איך עובד המשחק</b><span class="walk-count"></span></div><div class="wstep"><p><b>זה אותו חוק של המחליקים.</b> כשאתה זורק חפץ, הוא מקבל תנע לצד אחד ואתה מקבל את אותו תנע לצד השני. כל חפץ נזרק במהירות 12 מ/ש.</p><p>דוגמה: זורקים ארגז של 12 ק&quot;ג. התנע שלו 12 × 12 = 144. האסטרונאוט שוקל עכשיו כ-127 ק&quot;ג, אז הוא מקבל 144 ÷ 127, בערך 1.1 מ/ש.</p></div><div class="wstep"><ol class="steps"><li>כדי לנוע אל החללית, זרוק חפץ <b>מהחללית</b> והלאה.</li><li>אם אתה נע מהר מ-0.8 מ/ש, תתרסק. כדי לבלום, זרוק משהו קטן <b>אל החללית</b>.</li><li>שים לב: חפץ קטן לא יספיק כדי להגיע בזמן, וחפץ גדול מדי ידרוש בלימה חזקה.</li></ol></div><button class="btn walk-next">הבנתי, הלאה</button></div>
+    <div class="sim">
+      <canvas id="astro" aria-label="אסטרונאוט ציף ליד חללית"></canvas>
+      <div class="toolbar"><div><span class="seglabel">לזרוק לכיוון</span><div class="seg" id="aDir"></div></div></div>
+      <div class="panel" style="border-top:0"><div class="seg" id="aItems"></div><div class="row"><button class="btn" id="aReset">התחל מחדש</button><span class="chip" id="aOut"></span></div><div class="msg" id="aMsg"></div></div>
+    </div>
+    <button class="done-btn" data-m="3">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<article class="mission" id="m4" data-m="4">
+  <div class="mission-head"><div class="num">4</div><div><div class="tag">סימולטור · 10 דקות</div><h2>התותח של ניוטון</h2></div></div>
+  <div class="stack">
+    <p>ב-1687 ניוטון דמיין תותח על הר גבוה מאוד. כדור שנורה נופל לקרקע. מהר יותר, הוא נופל רחוק יותר. ואם הוא מהיר מספיק? הקרקע מתעקמת מתחתיו בדיוק באותו קצב שהוא נופל.</p><p><b>איך משתמשים:</b> קבע מהירות ולחץ אש. כאן אין מה לחשב. נסה 6, אחר כך 7.5, ואז חפש מעל 7.75. המטרה היא לסמן את שלושת הריבועים.</p>
+    <div class="sim">
+      <canvas id="cannon" class="tall" aria-label="כדור הארץ, תותח ומסלול הכדור"></canvas>
+      <div class="controls"><div class="ctl"><label for="cV">מהירות יציאה <output id="cVo"></output></label><input type="range" id="cV" min="4" max="11.6" step=".01" value="6"></div></div>
+      <div class="readouts"><button class="btn alt" id="cGo">אש!</button><span class="chip" id="c1">☐ נפל לקרקע</span><span class="chip" id="c2">☐ הקיף את כדור הארץ</span><span class="chip" id="c3">☐ ברח מכדור הארץ</span></div>
+      <div class="panel"><div class="msg" id="cMsg"></div></div>
+    </div>
+    <div class="rule">למה אסטרונאוטים מרחפים?<small>לא כי אין שם כוח משיכה. בתחנת החלל, בגובה 400 ק&quot;מ, הוא חזק כמעט כמו על הקרקע. הם נופלים כל הזמן, כמו הכדור של ניוטון, ופשוט מחמיצים את כדור הארץ.</small></div>
+    <button class="done-btn" data-m="4">סמן משימה כבוצעה</button>
+  </div>
+</article>
+
+<section class="mission" id="final" style="border-style:dashed">
+  <div class="mission-head"><div class="num" style="background:var(--signal);color:var(--signal-ink)">★</div><div><div class="tag">מבחן הנווט</div><h2>4 שאלות לתעודה</h2></div></div>
+  <div class="quiz" id="quiz"></div>
+  <div class="namebox" style="margin-top:20px"><label for="pilotName"><b>השם שלך לתעודה:</b></label><input id="pilotName" type="text" placeholder="הקלד כאן" maxlength="30"></div>
+  <div class="cert" style="margin-top:16px">
+    <div class="seal" style="background:var(--space);color:#fff;border-color:#fff">צוות<br>חלל</div>
+    <h3>תעודת צוות חלל</h3>
+    <div class="who" id="certName">&nbsp;</div>
+    <p id="certText"></p>
+    <p style="color:var(--ink-soft);font-size:15px" id="certDate"></p>
+  </div>
+</section>
+
+<a class="nextlab" href="../newton-mars/"><div>השיעור הבא<small>בונים רקטה ומכוונים למאדים</small></div><span>קלע למאדים ←</span></a>
+<details class="adult" id="adult">
+  <summary>למבוגר שמלווה</summary>
+  <ul>
+    <li><b>גיל:</b> מתאים מגיל 12. כדאי לעבור על ההסברים צעד אחר צעד לפני החידות.</li>
+    <li><b>ציוד:</b> דף, קשית ונייר דבק לרקטת הנייר.</li>
+    <li><b>שפה:</b> בחוק השלישי כדאי להדגיש שהכוחות פועלים על גופים שונים, ולכן הם לא מבטלים זה את זה.</li>
+    <li><b>התותח:</b> מחושב עם כבידה אמיתית, ביחס הפוך לריבוע המרחק.</li>
+  </ul>
+</details>
+
+</main>
+<footer class="wrap">ההתקדמות נשמרת בדפדפן הזה בלבד.</footer>
+
+<script>
+/* Physics core: no DOM here, so it can be tested on its own. */
+const clamp=(x,a,b)=>x<a?a:x>b?b:x;
+
+/* Newton 2: a = F / m. Distance from rest is ½at². */
+const raceTime=(F,m,d)=>Math.sqrt(2*d*m/F);
+
+/* Hammer and feather: gravity pulls in proportion to mass, drag does not. */
+const DROP_WORLDS={
+  earth:{name:'כדור הארץ',g:9.81,rho:1.225},
+  vacuum:{name:'כדור הארץ בלי אוויר',g:9.81,rho:0},
+  moon:{name:'הירח',g:1.62,rho:0}
+};
+const DROP_THINGS={hammer:{name:'פטיש',m:1.32,cda:.012},feather:{name:'נוצה',m:.03,cda:.02}};
+function dropStep(o,t,w,dt){
+  const a=w.g-.5*w.rho*t.cda*o.v*o.v/t.m;
+  o.v+=a*dt;o.y+=o.v*dt;return o;
+}
+
+/* The lost astronaut: throw things, and you move the other way. */
+const ASTRO={base:100,throwSpeed:12,distance:50,oxygen:70,drift:-.15,safe:.8};
+const ITEMS=[['wrench','מפתח ברגים',2],['camera','מצלמה',5],['box','ארגז כלים',12],['panel','לוח סולארי',20]];
+/* Throwing mass mt at speed u from total mass M changes the astronaut's speed by mt·u/(M-mt). */
+function astroThrow(s,mt,dir){
+  const M=s.m,rest=M-mt;s.v+=-dir*mt*ASTRO.throwSpeed/rest;s.m=rest;return s;
+}
+function astroInit(){return{x:0,v:ASTRO.drift,m:ASTRO.base+ITEMS.reduce((a,i)=>a+i[2],0),t:0,left:ITEMS.map(i=>i[0])}}
+
+/* The rocket equation. Each stage: fuel in tonnes, tank and engine are 10% of the fuel plus 4 t. */
+const ROCKET={ve:3.4,payload:5,dryFrac:.1,dryFixed:4};
+const GOALS=[['orbit','מסלול סביב כדור הארץ',9.4],['moon','הירח',12.6],['mars','מאדים',13.4]];
+const dryOf=f=>f>0?ROCKET.dryFrac*f+ROCKET.dryFixed:0;
+function rocketStages(fuels){
+  let above=ROCKET.payload,out=[];
+  for(let i=fuels.length-1;i>=0;i--){
+    const f=fuels[i];if(!f)continue;
+    const dry=dryOf(f),m0=above+dry+f,m1=above+dry;
+    out.unshift({f,dry,m0,m1,dv:ROCKET.ve*Math.log(m0/m1)});above=m0;
+  }
+  return out;
+}
+const rocketDv=fuels=>rocketStages(fuels).reduce((a,s)=>a+s.dv,0);
+const rocketMass=fuels=>{const s=rocketStages(fuels);return s.length?s[0].m0:ROCKET.payload};
+
+/* Newton's cannon: real inverse-square gravity, in kilometres and seconds. */
+const EARTH={GM:398600,R:6371,top:200};
+function cannonInit(v){return{x:0,y:EARTH.R+EARTH.top,vx:v,vy:0,t:0,state:'fly',turn:0,last:Math.PI/2,minR:EARTH.R+EARTH.top,maxR:EARTH.R+EARTH.top}}
+function cannonStep(s,dt){
+  const acc=(x,y)=>{const r2=x*x+y*y,r=Math.sqrt(r2),k=-EARTH.GM/(r2*r);return[k*x,k*y]};
+  let[ax,ay]=acc(s.x,s.y);
+  s.vx+=.5*ax*dt;s.vy+=.5*ay*dt;s.x+=s.vx*dt;s.y+=s.vy*dt;
+  [ax,ay]=acc(s.x,s.y);s.vx+=.5*ax*dt;s.vy+=.5*ay*dt;s.t+=dt;
+  const r=Math.hypot(s.x,s.y);s.minR=Math.min(s.minR,r);s.maxR=Math.max(s.maxR,r);
+  const th=Math.atan2(s.y,s.x);let d=th-s.last;if(d>Math.PI)d-=2*Math.PI;if(d<-Math.PI)d+=2*Math.PI;s.turn+=Math.abs(d);s.last=th;
+  if(r<=EARTH.R)s.state='ground';
+  else if(s.turn>=2*Math.PI)s.state='orbit';
+  else if(r>EARTH.R*14)s.state='escape';
+  return s;
+}
+
+/* The trip to Mars, in astronomical units and years: GM of the Sun is 4π². */
+const SOLAR={GM:4*Math.PI*Math.PI,re:1,rm:1.524,km:4.74,hit:.09};
+const omegaOf=r=>2*Math.PI/Math.pow(r,1.5);
+const MARS0=1.7;
+function marsInit(){return{t:0,ea:0,ma:MARS0,ship:null,state:'wait'}}
+function marsTick(s,dt){s.t+=dt;s.ea=omegaOf(SOLAR.re)*s.t;s.ma=MARS0+omegaOf(SOLAR.rm)*s.t;return s}
+const marsLead=s=>{let d=(s.ma-s.ea)%(2*Math.PI);if(d<0)d+=2*Math.PI;return d*180/Math.PI};
+function marsLaunch(s,kms){
+  const v=2*Math.PI+kms/SOLAR.km,e=s.ea;
+  s.ship={x:Math.cos(e),y:Math.sin(e),vx:-Math.sin(e)*v,vy:Math.cos(e)*v,t0:s.t};s.state='fly';return s;
+}
+function marsShipStep(s,dt){
+  const p=s.ship,acc=(x,y)=>{const r2=x*x+y*y,r=Math.sqrt(r2),k=-SOLAR.GM/(r2*r);return[k*x,k*y]};
+  let[ax,ay]=acc(p.x,p.y);p.vx+=.5*ax*dt;p.vy+=.5*ay*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;[ax,ay]=acc(p.x,p.y);p.vx+=.5*ax*dt;p.vy+=.5*ay*dt;
+  const mx=SOLAR.rm*Math.cos(s.ma),my=SOLAR.rm*Math.sin(s.ma);
+  if(Math.hypot(p.x-mx,p.y-my)<SOLAR.hit)s.state='hit';
+  else if(s.t-p.t0>1.6||Math.hypot(p.x,p.y)>3)s.state='miss';
+  return s;
+}
+
+/* Page behaviour. Each simulator starts inside safe(), so one failure can't stop the others. */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('na:'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('na:'+k,JSON.stringify(v))}catch(e){}}};
+const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduce=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+const safe=f=>{try{f()}catch(e){console.error(e)}};
+const fmt=n=>Math.round(n).toLocaleString('he-IL');
+
+function setup(cv,onResize){
+  const ctx=cv.getContext('2d'),s={ctx,W:0,H:0,visible:true};
+  function rs(){const d=window.devicePixelRatio||1;s.W=cv.clientWidth;s.H=cv.clientHeight;cv.width=Math.round(s.W*d);cv.height=Math.round(s.H*d);ctx.setTransform(d,0,0,d,0,0);onResize&&onResize(s)}
+  rs();window.addEventListener('resize',rs);
+  if('IntersectionObserver' in window)new IntersectionObserver(e=>{s.visible=e[0].isIntersecting}).observe(cv);
+  return s;
+}
+function seg(el,items,cur,onPick){
+  el.innerHTML='';items.forEach(([v,t])=>{const b=document.createElement('button');b.textContent=t;b.dataset.v=v;b.setAttribute('aria-pressed',v===cur);b.addEventListener('click',()=>{[...el.children].forEach(x=>x.setAttribute('aria-pressed',x===b));onPick(v)});el.appendChild(b)});
+}
+
+/* progress */
+const titles=["עגינה", "פעולה ותגובה", "הצלת האסטרונאוט", "למה מרחפים"];
+let done=new Set(store.get('done',[]));
+const stampsEl=$('#stamps'),mapEl=$('#map');
+titles.forEach((t,i)=>{
+  const a=document.createElement('a');a.className='stamp';a.href='#m'+(i+1);a.textContent=i+1;a.title=t;stampsEl.appendChild(a);
+  const m=document.createElement('a');m.href='#m'+(i+1);m.innerHTML='<i>'+(i+1)+'</i>'+t;mapEl.appendChild(m);
+});
+function renderProgress(){
+  [...stampsEl.children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
+  [...mapEl.children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
+  $$('.mission[data-m]').forEach(m=>{const n=+m.dataset.m;m.classList.toggle('done',done.has(n));const b=m.querySelector('.done-btn');if(b)b.textContent=done.has(n)?'בוצע! (לחץ לביטול)':'סמן משימה כבוצעה'});
+  $('#count').textContent=done.size+' / 4';
+  renderCert();
+}
+function markDone(n){if(!done.has(n)){done.add(n);store.set('done',[...done]);renderProgress()}}
+$$('.done-btn').forEach(b=>b.addEventListener('click',()=>{const n=+b.dataset.m;done.has(n)?done.delete(n):done.add(n);store.set('done',[...done]);renderProgress()}));
+
+/* predictions */
+$$('.predict[data-answer]').forEach(p=>{
+  const ans=p.dataset.answer,rev=p.querySelector('.reveal'),ver=p.querySelector('.verdict');
+  p.querySelectorAll('.opt').forEach(o=>o.addEventListener('click',()=>{
+    p.querySelectorAll('.opt').forEach(x=>x.classList.remove('picked','right'));
+    o.classList.add('picked');p.classList.add('answered');
+    const r=p.querySelector('.opt[data-v="'+ans+'"]');r.classList.add('right');
+    if(o===r){ver.textContent='ניבאת נכון!';ver.className='verdict good'}else{ver.textContent='הפתעה! בוא נבדוק למה.';ver.className='verdict surprise'}
+    rev.hidden=false;
+  }));
+});
+const checks=store.get('checks',{});
+$$('.challenge input').forEach(c=>{c.checked=!!checks[c.id];c.addEventListener('change',()=>{checks[c.id]=c.checked;store.set('checks',checks)})});
+
+/* step-by-step explanations: one step at a time, so nobody meets a formula cold */
+$$('[data-walk]').forEach((w,wi)=>{
+  const steps=[...w.querySelectorAll('.wstep')],next=w.querySelector('.walk-next'),count=w.querySelector('.walk-count'),key='walk'+wi;
+  let shown=Math.min(store.get(key,1),steps.length);
+  function render(){steps.forEach((s,i)=>s.hidden=i>=shown);count.textContent='שלב '+shown+' מתוך '+steps.length;next.hidden=shown>=steps.length}
+  next.addEventListener('click',()=>{shown++;store.set(key,shown);render()});render();
+});
+$$('.try').forEach(t=>{
+  const ans=parseFloat(t.dataset.ans),inp=t.querySelector('input'),msg=t.querySelector('.msg'),hints=[...t.querySelectorAll('.hint')];let tries=0;
+  const check=()=>{const v=parseFloat(inp.value);if(isNaN(v)){msg.textContent='כתוב מספר קודם.';msg.className='msg bad';return}
+    if(Math.abs(v-ans)<.01){msg.textContent='נכון!';msg.className='msg good';hints.forEach(h=>h.hidden=false)}
+    else{tries++;showHint();msg.textContent='עוד לא. נסה שוב עם הרמז.';msg.className='msg bad'}};
+  const showHint=()=>{const h=hints.find(x=>x.hidden);if(h)h.hidden=false};
+  t.querySelector('.try-check').addEventListener('click',check);t.querySelector('.try-hint').addEventListener('click',showHint);inp.addEventListener('keydown',e=>{if(e.key==='Enter')check()});
+});
+
+/* mission 2: docking */
+safe(()=>{
+  const cv=$('#dock'),S=setup(cv),ctx=S.ctx,msg=$('#dMsg'),W0=100,H0=60,dock={x:92,y:44};
+  let s,over;
+  function reset(){s={x:10,y:12,vx:0,vy:0,fuel:14};over=false;msg.textContent='כל לחיצה מוסיפה 1 מ/ש בכיוון החץ.';msg.className='msg'}
+  function push(dx,dy){if(over)return;if(s.fuel<=0){msg.textContent='אין דלק! החללית תמשיך כך לנצח. התחל מחדש.';msg.className='msg bad';return}s.vx+=dx;s.vy+=dy;s.fuel--}
+  [['#dU',0,-1],['#dD',0,1],['#dL',-1,0],['#dR',1,0]].forEach(([id,x,y])=>$(id).addEventListener('click',()=>{push(x,y);cv.focus({preventScroll:true})}));
+  cv.addEventListener('keydown',e=>{const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(m){push(...m);e.preventDefault()}});
+  $('#dReset').addEventListener('click',reset);reset();
+  let last=performance.now();
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000);last=now;
+    if(S.visible){
+      const W=S.W,H=S.H,kx=W/W0,ky=H/H0;
+      if(!over){s.x+=s.vx*dt;s.y+=s.vy*dt;
+        const sp=Math.hypot(s.vx,s.vy);
+        if(Math.hypot(s.x-dock.x,s.y-dock.y)<4){over=true;if(sp<1.5){msg.textContent='עגינה מושלמת, במהירות '+sp.toFixed(1)+' מ/ש!';msg.className='msg good';markDone(1)}else{msg.textContent='פגעת בתחנה במהירות '+sp.toFixed(1)+' מ/ש. היה צריך לבלום: לדחוף לצד ההפוך לפני שמגיעים.';msg.className='msg bad'}}
+        else if(s.x<0||s.x>W0||s.y<0||s.y>H0){over=true;msg.textContent='יצאת מהאזור. בלי חיכוך שום דבר לא יעצור אותך. התחל מחדש.';msg.className='msg bad'}}
+      ctx.fillStyle='#0A1226';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';for(let i=0;i<60;i++)ctx.fillRect((i*137)%W,(i*71)%H,1.5,1.5);
+      ctx.fillStyle='#8FA3C4';ctx.fillRect(dock.x*kx+10,0,W,H);ctx.fillStyle='#FFBE2E';ctx.fillRect(dock.x*kx-14,dock.y*ky-22,26,44);
+      const X=s.x*kx,Y=s.y*ky;ctx.fillStyle='#fff';ctx.strokeStyle='#13274A';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X+16,Y);ctx.lineTo(X-12,Y-11);ctx.lineTo(X-12,Y+11);ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.strokeStyle='#5EA3FF';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X,Y);ctx.lineTo(X+s.vx*kx*2,Y+s.vy*ky*2);ctx.stroke();
+      $('#dSpeed').textContent='מהירות: '+Math.hypot(s.vx,s.vy).toFixed(1)+' מ/ש';$('#dFuel').textContent='דלק: '+s.fuel+' דחיפות';
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+});
+
+/* mission 4: the skaters */
+safe(()=>{
+  const cv=$('#skate'),S=setup(cv),ctx=S.ctx,A=$('#sA'),B=$('#sB');let run=null;
+  const info=()=>{$('#sAo').textContent=A.value+' ק"ג';$('#sBo').textContent=B.value+' ק"ג'};
+  [A,B].forEach(e=>e.addEventListener('input',()=>{run=null;info();$('#sOut').textContent='התנע של כל צד יופיע כאן'}));
+  $('#sGo').addEventListener('click',()=>{const J=180,va=J/+A.value,vb=J/+B.value;run={t:0,va,vb};$('#sOut').textContent='ימין: '+A.value+' × '+va.toFixed(1)+' = 180 · שמאל: '+B.value+' × '+vb.toFixed(1)+' = 180'});
+  let last=performance.now();
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000);last=now;
+    if(S.visible){
+      const W=S.W,H=S.H,c=W/2,gy=H-40;if(run)run.t=Math.min(run.t+dt,6);
+      const k=Math.min(W/20,30),xa=c+22+(run?Math.min(run.t*run.va*k,W/2-30):0),xb=c-22-(run?Math.min(run.t*run.vb*k,W/2-30):0);
+      ctx.fillStyle='#D7EEF8';ctx.fillRect(0,0,W,H);ctx.fillStyle='#BCDDEE';ctx.fillRect(0,gy,W,40);
+      [[xa,+A.value,'#2B78DD'],[xb,+B.value,'#E3484E']].forEach(([x,m,col])=>{const r=9+m*.14,ty=gy-r*2-40;ctx.fillStyle=col;ctx.strokeStyle='#13274A';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,ty,r,0,7);ctx.fill();ctx.stroke();ctx.fillRect(x-r*.7,ty+r,r*1.4,gy-ty-r);ctx.strokeRect(x-r*.7,ty+r,r*1.4,gy-ty-r)});
+    }
+    requestAnimationFrame(frame);
+  }
+  info();requestAnimationFrame(frame);
+});
+
+/* mission 4: the rocket log */
+safe(()=>{
+  const cfg=[['a','רקטה קלה'],['b','עם רצועה אחת'],['c','עם שתי רצועות']],log=store.get('log',{}),body=$('#logBody'),bars=$('#bars');
+  cfg.forEach(([k,n])=>{const tr=document.createElement('tr');tr.innerHTML='<td>'+n+'</td>'+[0,1,2].map(i=>'<td><input type="number" min="0" step="0.5" inputmode="decimal" id="t-'+k+'-'+i+'" aria-label="'+n+' זריקה '+(i+1)+'"></td>').join('')+'<td class="avg" id="avg-'+k+'">–</td>';body.appendChild(tr);
+    const b=document.createElement('div');b.className='barrow';b.id='bar-'+k;b.innerHTML='<span>'+n+'</span><div class="track"><div class="fill"></div></div><output>–</output>';bars.appendChild(b)});
+  function render(){const av={};cfg.forEach(([k])=>{const v=[0,1,2].map(i=>parseFloat($('#t-'+k+'-'+i).value)).filter(x=>!isNaN(x));av[k]=v.length?v.reduce((a,b)=>a+b,0)/v.length:null;$('#avg-'+k).textContent=av[k]==null?'–':av[k].toFixed(1)});
+    const vals=Object.values(av).filter(x=>x!=null),mx=Math.max(1,...vals);let best=null;cfg.forEach(([k])=>{if(av[k]!=null&&(best==null||av[k]>av[best]))best=k});
+    cfg.forEach(([k])=>{const r=$('#bar-'+k);r.querySelector('.fill').style.width=av[k]==null?0:(av[k]/mx*100)+'%';r.querySelector('output').textContent=av[k]==null?'–':av[k].toFixed(1);r.classList.toggle('win',k===best&&vals.length>1)});
+    $('#logMsg').textContent=vals.length<2?'מלא את המדידות, והגרף יראה מה קרה.':'הכי רחוק: '+cfg.find(c=>c[0]===best)[1]+', '+av[best].toFixed(1)+' צעדים בממוצע.'}
+  cfg.forEach(([k])=>[0,1,2].forEach(i=>{const e=$('#t-'+k+'-'+i);if(log[e.id]!=null)e.value=log[e.id];e.addEventListener('input',()=>{log[e.id]=e.value;store.set('log',log);render()})}));
+  render();
+});
+
+/* mission 5: the lost astronaut */
+safe(()=>{
+  const cv=$('#astro'),S=setup(cv),ctx=S.ctx,msg=$('#aMsg'),box=$('#aItems');let s,dir=-1,over,last0=0;
+  seg($('#aDir'),[['-1','מהחללית (לנוע אליה)'],['1','אל החללית (לבלום)']],'-1',v=>{dir=+v});
+  function items(){box.innerHTML='';ITEMS.forEach(([k,n,m])=>{const b=document.createElement('button');b.textContent=n+' ('+m+' ק"ג)';b.disabled=!s.left.includes(k)||over;b.addEventListener('click',()=>{if(over)return;astroThrow(s,m,dir);s.left=s.left.filter(x=>x!==k);s.th={t:0,dir,n};items()});box.appendChild(b)})}
+  function reset(){s=astroInit();over=false;msg.textContent='השעון רץ. מה תזרוק קודם?';msg.className='msg';items()}
+  function end(t,w){over=true;msg.textContent=t;msg.className='msg '+(w?'good':'bad');items();if(w)markDone(3)}
+  $('#aReset').addEventListener('click',reset);reset();
+  let last=performance.now();
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000);last=now;
+    if(S.visible){
+      const W=S.W,H=S.H,cy=H*.5,D=ASTRO.distance,L=40,Rr=W-90;
+      if(!over){s.t+=dt;s.x+=s.v*dt;
+        if(s.x>=D){if(Math.abs(s.v)<=ASTRO.safe)end('הצלת אותו! הגעת ב-'+s.v.toFixed(2)+' מ/ש, עם '+Math.round(ASTRO.oxygen-s.t)+' שניות חמצן.',true);else end('התנגשת בחללית במהירות '+s.v.toFixed(2)+' מ/ש. היה צריך לבלום: לזרוק משהו אל החללית.')}
+        else if(s.t>=ASTRO.oxygen)end('החמצן נגמר. המהירות הייתה '+s.v.toFixed(2)+' מ/ש. אולי צריך לזרוק משהו כבד יותר?');
+        else if(s.x<-14)end('נסחפת רחוק מדי.')}
+      if(s.th)s.th.t+=dt;
+      ctx.fillStyle='#0A1226';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';for(let i=0;i<50;i++)ctx.fillRect((i*131)%W,(i*67)%H,1.5,1.5);
+      ctx.fillStyle='#E8EFFA';ctx.strokeStyle='#13274A';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(W-70,cy-36);ctx.lineTo(W-10,cy-20);ctx.lineTo(W-10,cy+20);ctx.lineTo(W-70,cy+36);ctx.closePath();ctx.fill();ctx.stroke();
+      const X=L+(s.x+14)/(D+14)*(Rr-L);
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(X,cy-14,11,0,7);ctx.fill();ctx.stroke();ctx.fillRect(X-10,cy-3,20,26);ctx.strokeRect(X-10,cy-3,20,26);ctx.fillStyle='#5EA3FF';ctx.fillRect(X-6,cy-18,12,7);
+      if(s.th&&s.th.t<4){ctx.fillStyle='#FFBE2E';ctx.beginPath();ctx.arc(X+s.th.dir*(20+s.th.t*80),cy,6,0,7);ctx.fill()}
+      const ox=clamp(1-s.t/ASTRO.oxygen,0,1);ctx.fillStyle='rgba(255,255,255,.2)';ctx.fillRect(12,12,130,12);ctx.fillStyle=ox<.25?'#E3484E':'#3ECB91';ctx.fillRect(12,12,130*ox,12);
+      $('#aOut').textContent='מהירות: '+s.v.toFixed(2)+' מ/ש · נשארו '+Math.max(0,D-s.x).toFixed(0)+' מ׳';
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+});
+
+/* mission 7: Newton's cannon */
+safe(()=>{
+  const cv=$('#cannon'),S=setup(cv),ctx=S.ctx,V=$('#cV'),msg=$('#cMsg');
+  let s=null,trail=[],got=store.get('cannon',{});
+  const info=()=>{$('#cVo').textContent=(+V.value).toFixed(2)+' ק"מ/ש'};
+  function chips(){[['c1','ground','נפל לקרקע'],['c2','orbit','הקיף את כדור הארץ'],['c3','escape','ברח מכדור הארץ']].forEach(([id,k,n])=>{const e=$('#'+id);e.textContent=(got[k]?'☑ ':'☐ ')+n;e.className='chip'+(got[k]?' good':'')})}
+  V.addEventListener('input',info);
+  $('#cGo').addEventListener('click',()=>{s=cannonInit(+V.value);trail=[];msg.textContent='';msg.className='msg'});
+  function frame(){
+    if(S.visible){
+      const W=S.W,H=S.H,cx=W/2,cy=H/2,base=Math.min(W,H)*.2,sc=base/EARTH.R;
+      if(s&&s.state==='fly'){const r=Math.hypot(s.x,s.y),n=Math.ceil(5*Math.pow(r/EARTH.R,1.5));for(let i=0;i<n&&s.state==='fly';i++)cannonStep(s,6);trail.push([s.x,s.y]);if(trail.length>1600)trail.shift();
+        if(s.state!=='fly'){got[s.state]=1;store.set('cannon',got);chips();if(got.orbit&&got.ground)markDone(4);
+          const v=(+V.value).toFixed(2),t={ground:'הכדור נפל אחרי '+Math.round(s.t/60)+' דקות. נסה מהר יותר.',orbit:'מסלול! סיבוב מלא ב-'+Math.round(s.t/60)+' דקות, בגובה עד '+fmt(s.maxR-EARTH.R)+' ק"מ.',escape:'ב-'+v+' ק"מ/ש הכדור בורח ולא חוזר. זאת מהירות המילוט: בערך 11 ק"מ/ש.'}[s.state];msg.textContent=t;msg.className='msg '+(s.state==='ground'?'':'good')}}
+      ctx.fillStyle='#0A1226';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';for(let i=0;i<70;i++)ctx.fillRect((i*131)%W,(i*79)%H,1.5,1.5);
+      ctx.fillStyle='#2B78DD';ctx.strokeStyle='#E8EFFA';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,base,0,7);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#5F9E5A';ctx.beginPath();ctx.ellipse(cx-base*.3,cy+base*.25,base*.35,base*.22,.5,0,7);ctx.ellipse(cx+base*.4,cy-base*.3,base*.3,base*.2,-.4,0,7);ctx.fill();
+      ctx.fillStyle='#FFBE2E';ctx.beginPath();ctx.moveTo(cx-10,cy-base);ctx.lineTo(cx,cy-base-16);ctx.lineTo(cx+10,cy-base);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#FFBE2E';ctx.lineWidth=2;ctx.beginPath();trail.forEach(([x,y],i)=>{const X=cx+x*sc,Y=cy-y*sc;i?ctx.lineTo(X,Y):ctx.moveTo(X,Y)});ctx.stroke();
+      if(s){ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx+s.x*sc,cy-s.y*sc,4,0,7);ctx.fill()}
+    }
+    requestAnimationFrame(frame);
+  }
+  info();chips();requestAnimationFrame(frame);
+});
+
+/* quiz and certificate */
+const Q=[ [ "כשמכבים מנוע של חללית בחלל, מה קורה?", [ "היא עוצרת לאט", "היא ממשיכה באותה מהירות", "היא נופלת" ], 1 ], [ "מחליק כבד ומחליק קל דוחפים זה את זה. מי מקבל כוח גדול יותר?", [ "הכבד", "הקל", "שניהם אותו כוח" ], 2 ], [ "מה זה תנע?", [ "מסה × מהירות", "כוח ÷ מסה", "מהירות × זמן" ], 0 ], [ "למה אסטרונאוט מרחף בתחנת החלל?", [ "אין שם כבידה", "הוא נופל כל הזמן סביב כדור הארץ", "התחנה מגנטית" ], 1 ] ];
+const qa=store.get('quiz',{}),quizEl=$('#quiz');
+Q.forEach(([q,opts,ans],qi)=>{
+  const d=document.createElement('div');d.className='predict quizq';d.innerHTML='<p class="q">'+(qi+1)+'. '+q+'</p><div class="opts">'+opts.map((o,i)=>'<button class="opt" data-i="'+i+'">'+o+'</button>').join('')+'</div>';
+  quizEl.appendChild(d);
+  const btns=[...d.querySelectorAll('.opt')];
+  function show(i){btns.forEach(b=>b.classList.remove('picked','right'));btns[i].classList.add('picked');if(i===ans)btns[i].classList.add('right');else btns[ans].classList.add('right');d.classList.add('answered')}
+  btns.forEach((b,i)=>b.addEventListener('click',()=>{qa[qi]=i;store.set('quiz',qa);show(i);renderCert()}));
+  if(qa[qi]!=null)show(qa[qi]);
+});
+const nameEl=$('#pilotName');nameEl.value=store.get('name','');
+nameEl.addEventListener('input',()=>{store.set('name',nameEl.value);renderCert()});
+function renderCert(){
+  const right=Q.filter((q,i)=>qa[i]===q[2]).length;
+  $('#certName').textContent=nameEl.value.trim()||' ';
+  $('#certText').textContent='השלים '+done.size+' מתוך 4 משימות ו-'+right+' מתוך 4 שאלות בניוטון: הצל את האסטרונאוט, ויודע להסביר איך זזים בחלל.';
+}
+$('#certDate').textContent=new Date().toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
+renderProgress();
+</script>
+</body>
+</html>

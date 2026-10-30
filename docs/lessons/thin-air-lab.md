@@ -1,7 +1,10 @@
-# מעבדת האוויר הדק · The Thin Air Lab
+# מעבדת האוויר הדק · The Thin Air Lab, and טיסה במאדים · Flying on Mars
+
+These were one lesson; they are now lessons 2 and 3 of the flight series. Missions 1–4 below are the
+Thin Air Lab (`lessons/thin-air-lab/`), and missions 5–7 are Flying on Mars (`lessons/mars-flight/`).
 
 Part 2 of aerodynamics, after [The Flying Paper Lab](flying-paper-lab.md). What happens to a wing
-when the air itself changes? A Hebrew lesson for ages 12–15, about 90 minutes, that puts numbers on
+when the air itself changes? A Hebrew lesson for ages 12–15, about an hour each, that puts numbers on
 Bernoulli and lift and tests them in the thinnest air anyone has flown in: the air of Mars. It is
 about flying inside an atmosphere, not about travelling to Mars, so there are no rockets.
 
@@ -30,6 +33,10 @@ It ends with a 5-question quiz and a certificate with the child's name.
 
 ## Notes
 
+- Formulas are never handed over cold. Bernoulli, the pitot reading, the lift equation and the
+  helicopter's 71% each have a step-by-step walkthrough first: what the symbols mean, a solved
+  example, then small exercises with hints. The lift puzzles can show their working.
+
 - The wind tunnel really computes the flow (lattice Boltzmann, D2Q9, about 20,000 cells, 2D). It
   shows comparisons between shapes, at a far lower Reynolds number than a real plane, so a wing
   stalls more gently than in real life.
@@ -37,5 +44,5 @@ It ends with a 5-question quiz and a certificate with the child's name.
 - The games use the real lift equation with simple models: rotor thrust is kρΩ², calibrated to
   2,400 rpm on Mars; propeller thrust falls gently with density.
 - Air and gravity values are rounded: Earth 1.225 kg/m³, Everest 0.47, Titan 5.4, Mars 0.020.
-- Newton is left out on purpose; he gets a lesson of his own.
+- Newton is left out on purpose; he has [lessons of his own](newton-lab.md).
 - Progress, the flight log and the quiz are saved in the browser.

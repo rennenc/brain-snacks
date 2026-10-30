@@ -245,8 +245,26 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 .planet-table{width:100%;min-width:380px;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .planet-table th,.planet-table td{border:1px solid var(--line);padding:6px 8px;text-align:center;font-size:15px}
 .planet-table th{background:var(--sim)}
+.walk{border:2px solid var(--mars);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--card)}
+.walk-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.walk-head b{font-family:var(--display);font-weight:400;font-size:20px;color:var(--mars)}
+.walk-count{font-size:14px;color:var(--ink-soft);white-space:nowrap}
+.wstep{display:flex;flex-direction:column;gap:10px}
+.walk .walk-next{align-self:flex-start}
+.words{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.words div{background:var(--sim);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.words b{font-family:var(--display);font-weight:400;font-size:28px;color:var(--mars);line-height:1}
+.words span{font-weight:800}.words small{font-size:14px;color:var(--ink-soft);line-height:1.35}
+@media (max-width:560px){.words{grid-template-columns:1fr}}
+.try{background:var(--sim);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.hint{background:var(--card);border-inline-start:4px solid var(--signal);padding:6px 10px;border-radius:0 6px 6px 0;font-size:16px}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink);padding:6px 14px}
 @media (max-width:520px){.bar .brand,.count{display:none}.stamps{gap:3px}.home{font-size:13px;padding:4px 8px}}
 
+.nextlab{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--signal);color:var(--signal-ink);border-radius:14px;padding:16px 20px;text-decoration:none;font-weight:800;margin-bottom:24px}
+.nextlab small{display:block;font-weight:600;font-size:15px}
+.nextlab span{font-family:var(--display);font-weight:400;font-size:22px;white-space:nowrap}
+.recap{background:var(--card);border:2px dashed var(--ink-soft);border-radius:12px;padding:12px 16px;margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -258,7 +276,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
       <span>מעבדת האוויר הדק</span>
     </div>
     <div class="stamps" id="stamps" aria-label="משימות שהושלמו"></div>
-    <div class="count" id="count">0 / 7</div>
+    <div class="count" id="count">0 / 4</div>
   </div>
 </header>
 
@@ -266,14 +284,13 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 
 <section class="hero">
   <div>
-    <div class="series">חלק 2, אחרי מעבדת הנייר המעופף</div>
-    <div class="eyebrow">7 משימות · 4 סימולטורים ומשחק טיסה · דפי נייר ושעון עצר</div>
-    <h1>מה קורה לכנף כשהאוויר <mark>נעלם</mark>?</h1>
-    <p class="lead">במעבדה הקודמת גילית שאוויר מהיר לוחץ פחות, ושכנף מרימה בעזרת האוויר. עכשיו נבדוק כמה. נשים מספרים על ברנולי, נמצא את נוסחת העילוי, ונבחן אותה באוויר הכי דק שאפשר לטוס בו: האוויר של מאדים.</p>
-    <div class="kit"><b>מה צריך:</b><span>2–3 דפי A4, ושעון העצר שמובנה בעמוד. כל השאר קורה במסך.</span></div>
+    <div class="series">טיסה, שיעור 2 · לגילאי 12 ומעלה</div>
+    <div class="eyebrow">4 משימות · 3 סימולטורים וחידות · ניסוי בבית · כ-60 דקות</div>
+    <h1>כמה עילוי <mark>כנף</mark> באמת נותנת?</h1>
+    <p class="lead">במעבדה הקודמת גילית שאוויר מהיר לוחץ פחות, ושכנף מרימה בעזרת האוויר. עכשיו נבדוק כמה: נשים מספרים על ברנולי, נלמד לאט את נוסחת העילוי, ונראה אוויר אמיתי במנהרת רוח שאפשר לצייר בה.</p>
+    <div class="kit"><b>מה צריך:</b><span>רצועת נייר ומחשבון. כל השאר קורה במסך.</span></div>
   </div>
-  <div class="hero-art">
-    <svg viewBox="0 0 320 240" aria-hidden="true">
+  <div class="hero-art"><svg viewBox="0 0 320 240" aria-hidden="true">
       <circle cx="240" cy="70" r="46" fill="var(--mars)" stroke="var(--ink)" stroke-width="3"/>
       <path d="M198 60 C 220 48, 250 76, 284 58 M204 90 C 226 80, 250 98, 276 88" fill="none" stroke="var(--card)" stroke-width="3" opacity=".7"/>
       <g class="float">
@@ -289,19 +306,6 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
   </div>
 </section>
 
-<div class="predict" data-answer="one" style="margin-bottom:12px">
-  <p class="q">כמה אוויר יש במטר מעוקב על מאדים, לעומת כדור הארץ?</p>
-  <div class="opts">
-    <button class="opt" data-v="half">בערך חצי</button>
-    <button class="opt" data-v="ten">בערך עשירית</button>
-    <button class="opt" data-v="one">פחות מ-2%</button>
-  </div>
-  <div class="reveal" hidden>
-    <span class="verdict"></span>
-    <p>פחות מ-2%. האוויר על מאדים דליל כמו האוויר בגובה של 30 קילומטר מעל כדור הארץ, פי שלושה מגובה הטיסה של מטוסי נוסעים. ובכל זאת, ב-19 באפריל 2021 רחפן בשם אינג'נואיטי המריא שם. הוא שקל 1.8 ק"ג וביצע 72 טיסות. בסוף הדף תבין איך, ותטיס בעצמך.</p>
-  </div>
-</div>
-
 <nav class="map" id="map" aria-label="מפת המשימות"></nav>
 
 <article class="mission" id="m1" data-m="1">
@@ -309,7 +313,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
   <div class="stack">
     <p>זוכר את המטבעות? לאוויר יש תקציב אנרגיה קבוע לאורך הזרימה. חלק מהמטבעות הולך על <b>לחיצה</b>, וחלק על <b>מהירות</b>. עכשיו אפשר לכתוב את זה כמו מדענים:</p>
     <div class="formula">P + ½ρv² = קבוע<small>לחץ + (חצי × צפיפות האוויר × מהירות בריבוע) נשאר אותו דבר. ρ (נקרא &quot;רו&quot;) היא צפיפות האוויר.</small></div>
-    <div class="predict" data-answer="four">
+    <div class="walk" data-walk><div class="walk-head"><b>מה כתוב בנוסחה? נלך לאט</b><span class="walk-count"></span></div><div class="wstep"><p><b>קודם המילים.</b> כל אות היא מילה:</p><div class="words"><div><b>P</b><span>לחץ</span><small>כמה חזק האוויר לוחץ. נמדד בפסקל.</small></div><div><b>ρ</b><span>צפיפות</span><small>כמה ק&quot;ג אוויר יש במטר מעוקב. ליד הים בערך 1.2.</small></div><div><b>v</b><span>מהירות</span><small>כמה מטרים האוויר עובר בשנייה.</small></div></div></div><div class="wstep"><p><b>החלק שנקרא ½ρv².</b> אלה מטבעות המהירות. קוראים אותו ככה: חצי, כפול צפיפות, כפול מהירות, כפול מהירות שוב. הסימן ² אומר &quot;כפול עצמו&quot;, אז v² זה v × v.</p><p>באוויר רגיל ρ = 1.2, וחצי ממנו זה 0.6. לכן כאן החישוב תמיד אותו דבר:</p><div class="formula">מטבעות מהירות = 0.6 × v × v</div></div><div class="wstep"><p><b>דוגמה פתורה.</b> כמה מטבעות מהירות יש לאוויר שנע ב-20 מ/ש?</p><ol class="steps"><li>כופלים את המהירות בעצמה: 20 × 20 = 400.</li><li>כופלים ב-0.6: 0.6 × 400 = 240.</li><li>יש 240 מטבעות מהירות. כלומר 240 פסקל.</li></ol></div><div class="wstep"><p><b>עכשיו אתה.</b> קודם v × v, ואז כפול 0.6.</p><div class="try" data-ans="60"><p><b>תורך:</b> אוויר נע ב-10 מ/ש. כמה מטבעות מהירות?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>פסקל</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>קודם 10 × 10.</div><div class="hint" hidden>0.6 × 100</div><div class="msg"></div></div><div class="try" data-ans="540"><p><b>תורך:</b> אוויר נע ב-30 מ/ש. כמה מטבעות מהירות?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>פסקל</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>קודם 30 × 30.</div><div class="hint" hidden>0.6 × 900</div><div class="msg"></div></div></div><div class="wstep"><p><b>למה &quot;קבוע&quot;?</b> התקציב הכולל לא משתנה לאורך הזרימה. אם מטבעות המהירות עלו ב-100, מטבעות הלחיצה ירדו ב-100. זה כל מה שברנולי אומר.</p></div><button class="btn walk-next">הבנתי, הלאה</button></div><div class="predict" data-answer="four">
       <p class="q">אם מכפילים את מהירות האוויר, פי כמה גדלים מטבעות המהירות?</p>
       <div class="opts">
         <button class="opt" data-v="two">פי 2</button>
@@ -329,7 +333,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
     <div class="legend"><span><i style="background:var(--high)"></i>מטבעות לחיצה</span><span><i style="background:var(--signal)"></i>מטבעות מהירות</span><span>1 מטבע = 1 פסקל (יחידה של לחץ)</span></div>
     <h3 style="font-size:24px">מד המהירות של המטוס</h3>
     <p>כך מטוסים אמיתיים יודעים כמה מהר הם טסים. צינור קטן על גוף המטוס, <b>צינור פיטו</b>, פונה קדימה ועוצר את האוויר. כל מטבעות המהירות הופכים ללחיצה, והמכשיר מודד את ההפרש. מההפרש הטייס מקבל מהירות.</p>
-    <div class="pitot">
+    <div class="walk" data-walk><div class="walk-head"><b>איך הופכים לחץ למהירות?</b><span class="walk-count"></span></div><div class="wstep"><p><b>הולכים הפוך.</b> קודם חישבנו ממהירות ללחץ. עכשיו המכשיר נותן לחץ, ואנחנו מחפשים מהירות. לכן עושים את הצעדים הפוך: מחלקים, ואז מחפשים איזה מספר כפול עצמו נותן את התוצאה.</p></div><div class="wstep"><p><b>דוגמה פתורה.</b> המכשיר מראה 240 פסקל, באוויר רגיל.</p><ol class="steps"><li>מחלקים ב-0.6: 240 ÷ 0.6 = 400.</li><li>שואלים: איזה מספר כפול עצמו נותן 400? 20, כי 20 × 20 = 400.</li><li>המהירות היא 20 מ/ש.</li></ol><p class="tag">טיפ: נחש מספר, כפול אותו בעצמו, ובדוק. אפשר להשתמש במחשבון.</p></div><div class="wstep"><div class="try" data-ans="10"><p><b>תורך:</b> המכשיר מראה 60 פסקל. מה המהירות?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>מ/ש</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>קודם 60 ÷ 0.6.</div><div class="hint" hidden>איזה מספר כפול עצמו נותן 100?</div><div class="msg"></div></div></div><button class="btn walk-next">הבנתי, הלאה</button></div><div class="pitot">
       <svg viewBox="0 0 120 150" role="img" aria-label="צינור U עם מים שמראה את הפרש הלחץ">
         <path d="M30 10 V115 A30 25 0 0 0 90 115 V10" fill="none" stroke="var(--ink)" stroke-width="3"/>
         <path d="M46 10 V115 A14 11 0 0 0 74 115 V10" fill="none" stroke="var(--ink)" stroke-width="3"/>
@@ -354,7 +358,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
   <div class="stack">
     <p>כנף היא בעצם מכונה שהופכת את ½ρv² לכוח. אם תכפיל את התקציב של המהירות בשטח הכנף, תקבל את הנוסחה שכל מהנדס מטוסים מכיר:</p>
     <div class="formula">L = ½ · ρ · v² · S · C<sub>L</sub><small>עילוי = חצי × צפיפות × מהירות בריבוע × שטח כנף × כמה טוב הכנף מסובבת אוויר (תלוי בזווית)</small></div>
-    <p>מטוס קל שוקל 1,100 ק&quot;ג. המטרה: לגרום לעמודת העילוי לעבור את עמודת המשקל. בכל חידה רק חלק מהכפתורים פתוחים. כפתור ×2 מכפיל את הערך, ואתה רואה פי כמה קפץ העילוי.</p>
+    <div class="walk" data-walk><div class="walk-head"><b>איך קוראים את נוסחת העילוי? נלך לאט</b><span class="walk-count"></span></div><div class="wstep"><p><b>קודם המילים.</b> את ρ ו-v כבר פגשת. נוספים שלושה חדשים:</p><div class="words"><div><b>L</b><span>עילוי</span><small>הכוח שמרים את המטוס, בניוטון.</small></div><div><b>S</b><span>שטח כנף</span><small>כמה מטרים רבועים של כנף יש.</small></div><div><b>C<sub>L</sub></b><span>מקדם עילוי</span><small>מספר שאומר כמה טוב הכנף עובדת. הוא תלוי בזווית, ובדרך כלל הוא בין 0.2 ל-1.4.</small></div></div></div><div class="wstep"><p><b>כמה צריך להרים?</b> כדור הארץ מושך כל ק&quot;ג בערך ב-10 ניוטון. מטוס של 1,100 ק&quot;ג שוקל לכן כ-11,000 ניוטון. המטוס מתרומם כשהעילוי גדול מהמשקל.</p></div><div class="wstep"><p><b>החישוב הוא שרשרת כפל.</b> דוגמה בקלות: צפיפות 1, מהירות 10, כנף של 20 מ², ומקדם 1.</p><ol class="steps"><li>חצי כפול צפיפות: ½ × 1 = 0.5.</li><li>כפול מהירות כפול מהירות: 0.5 × 10 × 10 = 50.</li><li>כפול שטח הכנף: 50 × 20 = 1,000.</li><li>כפול המקדם: 1,000 × 1 = 1,000 ניוטון.</li></ol></div><div class="wstep"><p><b>עכשיו אתה.</b> אותם ארבעה צעדים, אותו דבר אחד אחרי השני.</p><div class="try" data-ans="2000"><p><b>תורך:</b> צפיפות 1, מהירות 20, כנף של 10 מ², מקדם 1. כמה עילוי?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>ניוטון</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>½ × 1 = 0.5, ואז כפול 20 × 20.</div><div class="hint" hidden>0.5 × 400 = 200. עכשיו כפול 10 וכפול 1.</div><div class="msg"></div></div></div><div class="wstep"><p><b>הטריק של ×2.</b> לא צריך לחשב מחדש בכל פעם. כל מה שמופיע פעם אחת בנוסחה (ρ, S, C<sub>L</sub>) מכפיל את העילוי פי 2. המהירות מופיעה פעמיים, v × v, אז היא מכפילה פי 2 × 2 = 4.</p><div class="try" data-ans="8"><p><b>תורך:</b> אם מכפילים גם את המהירות וגם את שטח הכנף, פי כמה גדל העילוי?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>מהירות נותנת פי 4.</div><div class="hint" hidden>שטח נותן פי 2. עכשיו כופלים: 4 × 2.</div><div class="msg"></div></div></div><button class="btn walk-next">הבנתי, הלאה</button></div><p><b>החידות:</b> המחשב עושה את שרשרת הכפל בשבילך. המטרה: לגרום לעמודת העילוי לעבור את עמודת המשקל של מטוס בן 1,100 ק&quot;ג. בכל חידה רק חלק מהכפתורים פתוחים, והכפתור ×2 מראה פי כמה קפץ העילוי. נתקעת? לחץ &quot;הראה לי איך&quot;.</p>
     <div class="locks" id="locks" aria-label="חידות"></div>
     <div class="sim">
       <div class="panel" style="border-top:0">
@@ -366,7 +370,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
         <div class="col"><b id="weightTxt"></b><div class="pillar" id="weightP" style="background:var(--ink)"></div><b>משקל</b></div>
       </div>
       <div class="controls" id="knobs"></div>
-      <div class="panel"><div class="msg" id="lvMsg"></div><div class="row"><span class="chip" id="lvDelta" hidden></span><button class="btn alt" id="lvNext" hidden>לחידה הבאה</button></div></div>
+      <div class="panel"><div class="msg" id="lvMsg"></div><div class="row"><span class="chip" id="lvDelta" hidden></span><button class="btn ghost" id="lvHint">הראה לי איך</button><button class="btn alt" id="lvNext" hidden>לחידה הבאה</button></div><div class="hint" id="lvHow" hidden></div></div>
     </div>
     <button class="done-btn" data-m="2">סמן משימה כבוצעה</button>
   </div>
@@ -375,7 +379,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 <article class="mission" id="m3" data-m="3">
   <div class="mission-head"><div class="num">3</div><div><div class="tag">מנהרת רוח אמיתית · 15 דקות</div><h2>צייר משהו, והאוויר יגיב</h2></div></div>
   <div class="stack">
-    <p>במעבדה הקודמת הזרימה הייתה ציור מדומה. הפעם זה חישוב אמיתי: המחשב מחשב כל שנייה מיליוני התנגשויות של &quot;חבילות אוויר&quot;, ואף אחד לא אמר לו מה אמור לקרות. מערבולות, לחץ וגרר פשוט מופיעים לבד.</p>
+    <p>במעבדה הקודמת הזרימה הייתה ציור מדומה. הפעם זה חישוב אמיתי: המחשב מחשב כל שנייה מיליוני התנגשויות של &quot;חבילות אוויר&quot;, ואף אחד לא אמר לו מה אמור לקרות. מערבולות, לחץ וגרר פשוט מופיעים לבד.</p><ol class="steps"><li>בחר צורה, או בחר &quot;צייר&quot; וצייר על המסך.</li><li>חכה כמה שניות עד שכתוב &quot;מדידה יציבה&quot;.</li><li>קרא את המספרים. כאן אין מה לחשב: גרר ועילוי הם מספרי השוואה בין צורות. גרר 2 הוא פי 2 מגרר 1.</li></ol>
     <div class="predict" data-answer="plate">
       <p class="q">לכל הצורות יש אותו גובה מול הרוח. למי יהיה הכי הרבה גרר?</p>
       <div class="opts">
@@ -431,103 +435,26 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
   </div>
 </article>
 
-<article class="mission" id="m5" data-m="5">
-  <div class="mission-head"><div class="num">5</div><div><div class="tag">ניסוי בבית · 20 דקות · חצי דף ושעון עצר</div><h2>בודקים את הנוסחה עם מסוק נייר</h2></div></div>
-  <div class="stack">
-    <p>נוסחה טובה מנבאת מראש. כשמסוק נייר צונח במהירות קבועה, העילוי שווה למשקל. אם נקטין את שטח הלהבים S, האוויר צריך לזרום מהר יותר כדי לתת אותו עילוי. לפי נוסחת העילוי, שטח קטן פי 2 נותן מהירות גדולה פי √2, כלומר בערך פי 1.4. זה אומר שזמן הנפילה יתקצר ל-71%. בוא נבדוק.</p>
-    <ol class="steps">
-      <li>הכן מסוק נייר, כמו ב<a href="../flying-paper-lab/#m8">משימה 8 במעבדה הקודמת</a>: חתיכה של 5 על 15 ס&quot;מ, קרע של 7 ס&quot;מ, להב אחד אליך ואחד ממך, קיפול משקל בתחתית.</li>
-      <li>בחר נקודה גבוהה וקבועה: יד מורמת, או על כיסא יציב עם מבוגר לידך. שחרר תמיד משם.</li>
-      <li>מדוד 3 נפילות עם להבים של 7 ס&quot;מ. לחץ על שעון העצר כשאתה משחרר, ושוב כשהמסוק נוגע ברצפה.</li>
-      <li>קפל את קצה הלהבים פנימה כדי לקצר אותם ל-5 ס&quot;מ, ומדוד 3 נפילות. אחר כך קצר ל-3.5 ס&quot;מ ומדוד שוב. הנייר נשאר אותו נייר, אז המשקל לא משתנה.</li>
-    </ol>
-    <div class="sim" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
-      <div class="watch" id="wTime">0.00</div>
-      <button class="watchbtn" id="wBtn">שחרר: התחל</button>
-      <div class="tag" id="wNext" style="text-align:center"></div>
-    </div>
-    <div class="log-wrap"><table class="log"><thead><tr><th>אורך להב</th><th>1</th><th>2</th><th>3</th><th>ממוצע (שניות)</th><th>הנוסחה מנבאת</th></tr></thead><tbody id="hBody"></tbody></table></div>
-    <p class="empty" id="hMsg">מלא את השורה הראשונה, והנוסחה תנבא את השאר.</p>
-    <button class="btn" id="hClear" style="align-self:flex-start">נקה מדידות</button>
-    <details><summary>התוצאות לא בדיוק כמו הניבוי?</summary><p>זה נורמלי ומעניין. התגובה של האצבע איטית בערך ב-0.2 שנייה, מסוק נייר מתחיל לאט, והנוסחה היא קירוב. אם הקו הכללי נכון (להבים קצרים נופלים מהר יותר, בערך ביחס שנובא), הנוסחה עברה את המבחן. ככה עובד מדע.</p></details>
-    <button class="done-btn" data-m="5">סמן משימה כבוצעה</button>
-  </div>
-</article>
-
-<article class="mission" id="m6" data-m="6">
-  <div class="mission-head"><div class="num">6</div><div><div class="tag">משחק · 10 דקות</div><h2>הטס את אינג'נואיטי</h2></div></div>
-  <div class="stack">
-    <p>רחפן אמיתי: 1.8 ק&quot;ג, שני רוטורים של 1.2 מטר. להבים של רחפן הם כנפיים שמסתובבות, אז גם כאן עילוי גדל עם צפיפות האוויר ועם המהירות בריבוע. המשימה: הבא אותו לאזור הירוק והחזק אותו שם 3 שניות.</p>
-    <div class="predict" data-answer="mars">
-      <p class="q">באיזה מקום הרוטור יצטרך להסתובב הכי מהר?</p>
-      <div class="opts">
-        <button class="opt" data-v="earth">כדור הארץ</button>
-        <button class="opt" data-v="titan">טיטאן</button>
-        <button class="opt" data-v="mars">מאדים</button>
-      </div>
-      <div class="reveal" hidden><span class="verdict"></span><p>מאדים, למרות שהכבידה שם נמוכה. האוויר כל כך דליל שהרוטור חייב להסתובב בערך 2,400 סיבובים בדקה, כמעט פי 5 מאשר על כדור הארץ. עכשיו מצא את זה בעצמך.</p></div>
-    </div>
-    <div class="sim">
-      <canvas id="hover" class="game" aria-label="רחפן עולה ויורד לפי מהירות הרוטור"></canvas>
-      <div class="toolbar"><div><span class="seglabel">איפה טסים</span><div class="seg" id="hPlanet"></div></div></div>
-      <div class="controls"><div class="ctl"><label for="hRpm">מהירות רוטור <output id="hRpmO">0 סל&quot;ד</output></label><input type="range" id="hRpm" min="0" max="3600" step="2" value="0"></div></div>
-      <div class="readouts"><span class="chip" id="hState">שדה מוכן</span><span class="chip" id="hMach">קצה הלהב: 0% ממהירות הקול</span><button class="btn" id="hReset">התחל מחדש</button></div>
-    </div>
-    <div class="log-wrap"><table class="planet-table"><thead><tr><th>מקום</th><th>צפיפות אוויר (ק&quot;ג/מ³)</th><th>כבידה (מ/ש²)</th><th>סל&quot;ד ריחוף שמצאת</th></tr></thead><tbody id="hTable"></tbody></table></div>
-    <p class="note">שים לב: ככל שהאוויר דליל יותר, צריך לסובב מהר יותר. על הירח אין אוויר בכלל.</p>
-    <button class="done-btn" data-m="6">סמן משימה כבוצעה</button>
-  </div>
-</article>
-
-<article class="mission" id="m7" data-m="7">
-  <div class="mission-head"><div class="num">7</div><div><div class="tag">המשחק הגדול · 15 דקות</div><h2>תכנן מטוס, ואז הטס אותו</h2></div></div>
-  <div class="stack">
-    <p>כאן הכול מתחבר. המשחק מחשב את הטיסה עם נוסחת העילוי האמיתית, 60 פעם בשנייה. תכנן מטוס, המרא לפני סוף המסלול, ועבור דרך שלוש הטבעות. אותו מטוס שעובד בבית לא בהכרח יעבוד במקום אחר. גם מנוע גדול לא תמיד יציל אותך.</p>
-    <div class="sim">
-      <canvas id="fly" class="game" aria-label="משחק טיסה: מטוס מצד, מסלול המראה ושלוש טבעות" tabindex="0"></canvas>
-      <div class="toolbar"><div><span class="seglabel">איפה טסים</span><div class="seg" id="fPlanet"></div></div></div>
-      <div class="controls">
-        <div class="ctl"><label for="fS">שטח כנף <output id="fSo"></output></label><input type="range" id="fS" min="4" max="80" step="1" value="10"></div>
-        <div class="ctl"><label for="fT">כוח מנוע <output id="fTo"></output></label><input type="range" id="fT" min="150" max="1200" step="50" value="400"></div>
-      </div>
-      <div class="readouts"><span class="chip" id="fMass"></span><span class="chip" id="fLO"></span><span class="chip" id="fThr"></span></div>
-      <div class="panel">
-        <div class="fly-ctl"><button id="fUp">אף למעלה ↑</button><button id="fDown">אף למטה ↓</button></div>
-        <div class="row"><button class="btn alt" id="fGo">המרא!</button><span class="tag">במקלדת: חצים למעלה ולמטה</span></div>
-        <div class="msg" id="fMsg"></div>
-      </div>
-    </div>
-    <ul class="challenge">
-      <li><input type="checkbox" id="c71"><label for="c71">הטס את אותו מטוס גם על האוורסט וגם על כדור הארץ. במה הטיסה שונה?</label></li>
-      <li><input type="checkbox" id="c72"><label for="c72">מה המטוס הכי קטן שמצליח להמריא על מאדים?</label></li>
-      <li><input type="checkbox" id="c73"><label for="c73">נסה לנסוק חזק. מתי המטוס מתחיל ליפול, ולמה? (רמז: מנהרת הרוח של המעבדה הקודמת)</label></li>
-    </ul>
-    <button class="done-btn" data-m="7">סמן משימה כבוצעה</button>
-  </div>
-</article>
-
 <section class="mission" id="final" style="border-style:dashed">
-  <div class="mission-head"><div class="num" style="background:var(--signal);color:var(--signal-ink)">★</div><div><div class="tag">מבחן המהנדס</div><h2>5 שאלות לתעודה</h2></div></div>
+  <div class="mission-head"><div class="num" style="background:var(--signal);color:var(--signal-ink)">★</div><div><div class="tag">מבחן המהנדס</div><h2>4 שאלות לתעודה</h2></div></div>
   <div class="quiz" id="quiz"></div>
   <div class="namebox" style="margin-top:20px"><label for="pilotName"><b>השם שלך לתעודה:</b></label><input id="pilotName" type="text" placeholder="הקלד כאן" maxlength="30"></div>
   <div class="cert" style="margin-top:16px">
-    <div class="seal" style="background:var(--mars);color:#fff;border-color:#fff">מהנדס<br>טיסה</div>
-    <h3>תעודת מהנדס אווירודינמיקה</h3>
+    <div class="seal" style="background:var(--mars);color:#fff;border-color:#fff">מהנדס<br>אוויר</div>
+    <h3>תעודת חוקר אוויר</h3>
     <div class="who" id="certName">&nbsp;</div>
     <p id="certText"></p>
     <p style="color:var(--ink-soft);font-size:15px" id="certDate"></p>
   </div>
 </section>
 
+<a class="nextlab" href="../mars-flight/"><div>השיעור הבא<small>בודקים את הנוסחה, ומטיסים באוויר של מאדים</small></div><span>טיסה במאדים ←</span></a>
 <details class="adult" id="adult">
   <summary>למבוגר שמלווה</summary>
   <ul>
-    <li><b>למי זה מתאים:</b> המשך ישיר למעבדת הנייר המעופף. אפשר לחלק לשני מפגשים: משימות 1–3, ואז 4–7.</li>
-    <li><b>הרעיון המרכזי:</b> ½ρv² מופיע גם בברנולי וגם בנוסחת העילוי. מאדים הוא מקרה קיצון של צפיפות נמוכה, לא שיעור על טיסה בחלל. אין כאן רקטות.</li>
-    <li><b>מנהרת הרוח</b> היא חישוב אמיתי (שיטת לטיס בולצמן, דו-ממדי). היא איטית וקטנה ביחס למטוס, לכן המספרים מראים השוואה בין צורות ולא ערכים של מטוס, ולכנף יש פחות סטול מאשר במציאות.</li>
+    <li><b>גיל:</b> מתאים מגיל 12. כדאי לעבור על ההסברים צעד אחר צעד לפני החידות. מחשבון יעזור.</li>
+    <li><b>מנהרת הרוח</b> היא חישוב אמיתי (שיטת לטיס בולצמן, דו-ממדי). היא קטנה ואיטית ביחס למטוס, לכן המספרים הם השוואה בין צורות, ולכנף יש פחות סטול מאשר במציאות.</li>
     <li><b>ברנולי ושובל:</b> ברנולי תקף לאורך זרימה חלקה. בתוך מערבולות ושובל יש איבוד אנרגיה, ולכן הוא לא מסביר את גרר הצורה.</li>
-    <li><b>קירובים במשחקים:</b> ברחפן הדחף הוא kρΩ², מכויל ל-2,400 סל&quot;ד על מאדים. במשחק הטיסה דחף המנוע יורד בעדינות עם הצפיפות, ולא הותאם למטוס מסוים. הירח, טיטאן והאוורסט מבוססים על ערכי צפיפות וכבידה משוערים.</li>
-    <li><b>ניסוי המסוק:</b> המדידה רועשת. שווה לדבר על טעות מדידה ועל מה זה אומר שניבוי &quot;מתאים&quot;.</li>
   </ul>
 </details>
 
@@ -656,7 +583,7 @@ function seg(el,items,cur,onPick){
 }
 
 /* progress */
-const titles=['ברנולי עם מספרים','ארבעת הכפתורים','מנהרת הרוח','הכנף המתגלגלת','מסוק ושעון עצר','אינג\'נואיטי','תכנן והטס'];
+const titles=["ברנולי עם מספרים", "ארבעת הכפתורים", "מנהרת הרוח", "הכנף המתגלגלת"];
 let done=new Set(store.get('done',[]));
 const stampsEl=$('#stamps'),mapEl=$('#map');
 titles.forEach((t,i)=>{
@@ -667,7 +594,7 @@ function renderProgress(){
   [...stampsEl.children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
   [...mapEl.children].forEach((s,i)=>s.classList.toggle('on',done.has(i+1)));
   $$('.mission[data-m]').forEach(m=>{const n=+m.dataset.m;m.classList.toggle('done',done.has(n));const b=m.querySelector('.done-btn');if(b)b.textContent=done.has(n)?'בוצע! (לחץ לביטול)':'סמן משימה כבוצעה'});
-  $('#count').textContent=done.size+' / 7';
+  $('#count').textContent=done.size+' / 4';
   renderCert();
 }
 function markDone(n){if(!done.has(n)){done.add(n);store.set('done',[...done]);renderProgress()}}
@@ -686,6 +613,22 @@ $$('.predict[data-answer]').forEach(p=>{
 });
 const checks=store.get('checks',{});
 $$('.challenge input').forEach(c=>{c.checked=!!checks[c.id];c.addEventListener('change',()=>{checks[c.id]=c.checked;store.set('checks',checks)})});
+
+/* step-by-step explanations: one step at a time, so nobody meets a formula cold */
+$$('[data-walk]').forEach((w,wi)=>{
+  const steps=[...w.querySelectorAll('.wstep')],next=w.querySelector('.walk-next'),count=w.querySelector('.walk-count'),key='walk'+wi;
+  let shown=Math.min(store.get(key,1),steps.length);
+  function render(){steps.forEach((s,i)=>s.hidden=i>=shown);count.textContent='שלב '+shown+' מתוך '+steps.length;next.hidden=shown>=steps.length}
+  next.addEventListener('click',()=>{shown++;store.set(key,shown);render()});render();
+});
+$$('.try').forEach(t=>{
+  const ans=parseFloat(t.dataset.ans),inp=t.querySelector('input'),msg=t.querySelector('.msg'),hints=[...t.querySelectorAll('.hint')];
+  const showHint=()=>{const h=hints.find(x=>x.hidden);if(h)h.hidden=false};
+  const check=()=>{const v=parseFloat(inp.value);if(isNaN(v)){msg.textContent='כתוב מספר קודם.';msg.className='msg bad';return}
+    if(Math.abs(v-ans)<.01){msg.textContent='נכון!';msg.className='msg good';hints.forEach(h=>h.hidden=false)}
+    else{showHint();msg.textContent='עוד לא. נסה שוב עם הרמז.';msg.className='msg bad'}};
+  t.querySelector('.try-check').addEventListener('click',check);t.querySelector('.try-hint').addEventListener('click',showHint);inp.addEventListener('keydown',e=>{if(e.key==='Enter')check()});
+});
 
 /* mission 1: the energy budget */
 safe(()=>{
@@ -754,12 +697,12 @@ safe(()=>{
 safe(()=>{
   const M=1100;
   const LV=[
-    {t:'המראה רגילה',p:'earth',open:['v'],v:10,S:16,a:5,max:{v:90,S:400},text:'כדור הארץ. רק כפתור המהירות פתוח. כמה מהר צריך לרוץ על המסלול?'},
-    {t:'מסלול על האוורסט',p:'everest',open:['v'],v:10,S:16,a:5,max:{v:90,S:400},text:'אותו מטוס, אבל האוויר דליל פי 2.6. כמה מהר עכשיו? שים לב: לא פי 2.6.'},
-    {t:'טיטאן: אוויר סמיך',p:'titan',open:['v'],v:20,S:16,a:5,max:{v:90,S:400},text:'האוויר פי 4.4 מסמיך מבבית, והכבידה נמוכה. מהירות של אופניים אולי מספיקה?'},
-    {t:'מאדים: המהירות לא מספיקה',p:'mars',open:['v'],v:60,S:16,a:5,max:{v:90,S:400},gate:true,text:'אותו מטוס, מהירות מקסימלית 90 מ/ש. נסה. אפשר להצליח? לחץ על ×2 עד הסוף.'},
-    {t:'מאדים: כנף ענקית',p:'mars',open:['v','S','a'],v:60,S:16,a:5,max:{v:90,S:400},text:'עכשיו כל הכפתורים פתוחים. המטרה: לעבור את המשקל עם הכנף הכי קטנה שאתה מצליח.'},
-    {t:'הירח',p:'moon',open:['v','S','a'],v:60,S:16,a:5,max:{v:90,S:400},gate:true,text:'אין אוויר: הצפיפות היא 0. נסה כל מה שאתה רוצה.'}
+    {t:'המראה רגילה',p:'earth',open:['v'],v:10,S:16,a:5,max:{v:90,S:400},text:'כדור הארץ. רק כפתור המהירות פתוח. כמה מהר צריך לרוץ על המסלול?',how:'המשקל הוא 1,100 × 9.8, בערך 10,800 ניוטון. כאן ½ρ × S × C יוצא 6.4, אז צריך 6.4 × v × v = 10,800. כלומר v × v בערך 1,700, ולכן v בערך 42 מ/ש.'},
+    {t:'מסלול על האוורסט',p:'everest',open:['v'],v:10,S:16,a:5,max:{v:90,S:400},text:'אותו מטוס, אבל האוויר דליל פי 2.6. כמה מהר עכשיו? שים לב: לא פי 2.6.',how:'אוויר דליל פי 2.6 דורש v × v גדול פי 2.6. המהירות גדלה רק פי 1.6, כי 1.6 × 1.6 = 2.6. אז 42 × 1.6, בערך 67 מ/ש.'},
+    {t:'טיטאן: אוויר סמיך',p:'titan',open:['v'],v:20,S:16,a:5,max:{v:90,S:400},text:'האוויר פי 4.4 מסמיך מבבית, והכבידה נמוכה. מהירות של אופניים אולי מספיקה?',how:'המשקל כאן הוא 1,100 × 1.35, בערך 1,500 ניוטון. ½ρ × S × C יוצא 28, אז v × v בערך 53, ולכן v בערך 8 מ/ש.'},
+    {t:'מאדים: המהירות לא מספיקה',p:'mars',open:['v'],v:60,S:16,a:5,max:{v:90,S:400},gate:true,text:'אותו מטוס, מהירות מקסימלית 90 מ/ש. נסה. אפשר להצליח? לחץ על ×2 עד הסוף.',how:'גרור את המהירות עד 90. העילוי יגיע רק לכ-21% מהמשקל, כי האוויר דליל מדי. כאן לומדים שכפתור אחד לא מספיק, ואז עוברים לחידה הבאה.'},
+    {t:'מאדים: כנף ענקית',p:'mars',open:['v','S','a'],v:60,S:16,a:5,max:{v:90,S:400},text:'עכשיו כל הכפתורים פתוחים. המטרה: לעבור את המשקל עם הכנף הכי קטנה שאתה מצליח.',how:'קח מהירות 90 וזווית 12, כי אז C גדול. ½ρ × v × v × C יוצא בערך 104 ניוטון לכל מ² של כנף. המשקל כאן 4,080 ניוטון, ו-4,080 ÷ 104 זה בערך 40 מ².'},
+    {t:'הירח',p:'moon',open:['v','S','a'],v:60,S:16,a:5,max:{v:90,S:400},gate:true,text:'אין אוויר: הצפיפות היא 0. נסה כל מה שאתה רוצה.',how:'הנוסחה מתחילה ב-½ × ρ. אם ρ = 0, כל שרשרת הכפל יוצאת 0, לא משנה מה שאר המספרים.'}
   ];
   const KN=[['v','מהירות v','מ/ש',0,90,1],['S','שטח כנף S','מ²',5,400,1],['a','זווית','°',-4,14,1]];
   let cur=0,st={},maxOpen=Math.min(store.get('lvl',0),LV.length-1),last=null;
@@ -780,13 +723,14 @@ safe(()=>{
     else{m.textContent='עדיין לא: העילוי הוא '+Math.round(l/w*100)+'% מהמשקל.';m.className='msg';next.hidden=cur>maxOpen-1}
   }
   function win(){if(cur+1>maxOpen){maxOpen=Math.min(cur+1,LV.length-1);store.set('lvl',maxOpen);locks()}if(cur===LV.length-1)markDone(2)}
-  function load(i){cur=i;const lv=LV[i];st={v:lv.v,S:lv.S,a:lv.a};$('#lvTitle').textContent=(i+1)+'. '+lv.t;$('#lvText').textContent=lv.text;$('#lvDelta').hidden=true;
+  function load(i){cur=i;const lv=LV[i];st={v:lv.v,S:lv.S,a:lv.a};$('#lvTitle').textContent=(i+1)+'. '+lv.t;$('#lvText').textContent=lv.text;$('#lvDelta').hidden=true;$('#lvHow').hidden=true;$('#lvHow').textContent=lv.how;
     KN.forEach(([k])=>{const open=lv.open.includes(k),e=inputs[k];e.value=st[k];e.disabled=!open;e.closest('.knob').classList.toggle('locked',!open);const b=e.closest('.knob').querySelector('.x2');if(b)b.disabled=!open});
     locks();render()}
   function locks(){const el=$('#locks');el.innerHTML='';LV.forEach((l,i)=>{const b=document.createElement('button');b.className='lock'+(i<maxOpen?' open':'')+(i===cur?' cur':'');b.textContent=i+1;b.disabled=i>maxOpen;b.setAttribute('aria-label','חידה '+(i+1));b.addEventListener('click',()=>load(i));el.appendChild(b)})}
   Object.entries(inputs).forEach(([k,e])=>e.addEventListener('input',()=>{st[k]=+e.value;$('#lvDelta').hidden=true;render()}));
   $$('.x2').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.k,before=L(),max=+inputs[k].max,nv=Math.min(max,st[k]*2);if(nv===st[k])return;st[k]=nv;inputs[k].value=nv;render();const d=$('#lvDelta');if(before>0){d.hidden=false;d.textContent='העילוי גדל פי '+(L()/before).toFixed(1)}}));
   $('#lvNext').addEventListener('click',()=>load(Math.min(cur+1,LV.length-1)));
+  $('#lvHint').addEventListener('click',()=>{$('#lvHow').hidden=false});
   load(maxOpen);
 });
 
@@ -853,140 +797,8 @@ safe(()=>{
   requestAnimationFrame(frame);
 });
 
-/* mission 5: stopwatch and log */
-safe(()=>{
-  const rows=[['l7','7 ס"מ',1],['l5','5 ס"מ',.84],['l35','3.5 ס"מ',.71]],log=store.get('heli',{}),body=$('#hBody');
-  rows.forEach(([k,n])=>{const tr=document.createElement('tr');tr.innerHTML='<td>'+n+'</td>'+[0,1,2].map(i=>'<td><input type="number" min="0" step="0.01" inputmode="decimal" id="h-'+k+'-'+i+'" aria-label="'+n+' נפילה '+(i+1)+'"></td>').join('')+'<td class="avg" id="ha-'+k+'">–</td><td id="hp-'+k+'">–</td>';body.appendChild(tr)});
-  const cells=rows.flatMap(([k])=>[0,1,2].map(i=>$('#h-'+k+'-'+i)));
-  function render(){
-    const av={};rows.forEach(([k])=>{const v=[0,1,2].map(i=>parseFloat($('#h-'+k+'-'+i).value)).filter(x=>!isNaN(x));av[k]=v.length?v.reduce((a,b)=>a+b,0)/v.length:null;$('#ha-'+k).textContent=av[k]==null?'–':av[k].toFixed(2)});
-    rows.forEach(([k,,r])=>{$('#hp-'+k).textContent=av.l7==null?'–':(av.l7*r).toFixed(2)});
-    const m=$('#hMsg');
-    if(av.l7!=null&&av.l35!=null){const pct=Math.round(av.l35/av.l7*100);m.textContent='להבים של 3.5 ס"מ נפלו ב-'+pct+'% מהזמן של 7 ס"מ. הנוסחה ניבאה 71%.'}else m.textContent='מלא את השורה הראשונה, והנוסחה תנבא את השאר.';
-    const nx=cells.find(c=>c.value==='');$('#wNext').textContent=nx?'המדידה הבאה נרשמת ל: '+nx.getAttribute('aria-label'):'כל המדידות נרשמו';
-  }
-  cells.forEach(c=>{if(log[c.id]!=null)c.value=log[c.id];c.addEventListener('input',()=>{log[c.id]=c.value;store.set('heli',log);render()})});
-  let t0=0,run=false,raf=0;const out=$('#wTime'),btn=$('#wBtn');
-  const tick=()=>{out.textContent=((performance.now()-t0)/1000).toFixed(2);raf=requestAnimationFrame(tick)};
-  btn.addEventListener('click',()=>{
-    if(!run){run=true;t0=performance.now();btn.textContent='נגע ברצפה: עצור';btn.classList.add('run');tick()}
-    else{run=false;cancelAnimationFrame(raf);const v=((performance.now()-t0)/1000).toFixed(2);out.textContent=v;btn.textContent='שחרר: התחל';btn.classList.remove('run');const nx=cells.find(c=>c.value==='');if(nx){nx.value=v;log[nx.id]=v;store.set('heli',log);render()}}
-  });
-  $('#hClear').addEventListener('click',()=>{cells.forEach(c=>{c.value='';delete log[c.id]});store.set('heli',log);render()});
-  render();
-});
-
-/* mission 6: hover Ingenuity */
-safe(()=>{
-  const cv=$('#hover'),rIn=$('#hRpm'),S=setup(cv),ctx=S.ctx;
-  let pk='mars',s={y:0,v:0,rpm:0},inBand=0,won=false,spin=0,flown=false;
-  const found=store.get('hover',{}),BAND=[4,6.5];
-  function table(){$('#hTable').innerHTML=PLANET_ORDER.map(k=>{const p=PLANETS[k];return'<tr><td>'+p.name+'</td><td>'+p.rho+'</td><td>'+p.g+'</td><td>'+(found[k]?fmt(found[k]):k==='moon'?'אי אפשר':'–')+'</td></tr>'}).join('')}
-  function reset(){s={y:0,v:0,rpm:0};inBand=0;won=false;flown=false;rIn.value=0;const h=hoverRpm(PLANETS[pk]);rIn.max=isFinite(h)?Math.min(3600,Math.round(h*2.2)):3600;rIn.step=rIn.max>1500?4:1}
-  seg($('#hPlanet'),PLANET_ORDER.map(k=>[k,PLANETS[k].name]),pk,v=>{pk=v;reset()});
-  $('#hReset').addEventListener('click',reset);
-  let last=performance.now();
-  function frame(now){
-    const dt=Math.min(.05,(now-last)/1000);last=now;
-    if(S.visible){
-      const p=PLANETS[pk],W=S.W,H=S.H,tgt=+rIn.value;
-      heliStep(s,tgt,p,dt);spin+=s.rpm/60*dt*2*Math.PI*.18;if(s.y>.1)flown=true;
-      const gy=H-34,scale=(gy-30)/14,mach=tipMach(s.rpm,p);
-      const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,p.sky[0]);g.addColorStop(1,p.sky[1]);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-      const b0=gy-BAND[1]*scale,b1=gy-BAND[0]*scale;ctx.fillStyle='rgba(23,143,98,.28)';ctx.fillRect(0,b0,W,b1-b0);ctx.strokeStyle='#178F62';ctx.setLineDash([8,6]);ctx.lineWidth=2;ctx.strokeRect(-4,b0,W+8,b1-b0);ctx.setLineDash([]);
-      ctx.fillStyle=p.ground;ctx.fillRect(0,gy,W,H-gy);
-      const x=W/2,y=gy-s.y*scale;
-      ctx.strokeStyle='#13274A';ctx.lineWidth=3;ctx.lineCap='round';
-      ctx.fillStyle='#fff';ctx.fillRect(x-18,y-26,36,22);ctx.strokeRect(x-18,y-26,36,22);
-      ctx.beginPath();ctx.moveTo(x-14,y-4);ctx.lineTo(x-24,y);ctx.moveTo(x+14,y-4);ctx.lineTo(x+24,y);ctx.moveTo(x,y-26);ctx.lineTo(x,y-54);ctx.stroke();
-      [[-40,'#FFBE2E'],[-52,'#DCE7F3']].forEach(([o,c],i)=>{const r=Math.abs(Math.cos(spin*(i?1:-1)))*58+8;ctx.fillStyle=c;ctx.strokeStyle='#13274A';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,y+o,r,4,0,0,Math.PI*2);ctx.fill();ctx.stroke()});
-      ctx.fillStyle='#fff';ctx.font='700 15px Assistant, sans-serif';ctx.textAlign='right';ctx.fillText('גובה: '+s.y.toFixed(1)+' מ׳',W-12,24);ctx.textAlign='left';ctx.fillText(p.name,12,24);
-      $('#hRpmO').textContent=fmt(tgt)+' סל"ד';
-      const hm=$('#hMach');hm.textContent='קצה הלהב: '+Math.round(mach*100)+'% ממהירות הקול';hm.className='chip'+(mach>.8?' warn':'');
-      const st=$('#hState');
-      if(p.rho===0){st.textContent=s.rpm>300?'הרוטור מסתובב בריק: אין אוויר, אין עילוי':'אין כאן אוויר';st.className='chip warn'}
-      else{const inn=s.y>=BAND[0]&&s.y<=BAND[1]&&Math.abs(s.v)<1.5;inBand=inn?inBand+dt:0;
-        if(won){st.textContent='ריחוף מוצלח! '+fmt(found[pk])+' סל"ד';st.className='chip good'}
-        else if(inn){st.textContent='מחזיק... '+Math.max(0,3-inBand).toFixed(1);st.className='chip good';if(inBand>=3){won=true;found[pk]=Math.round(s.rpm);store.set('hover',found);table();if(found.mars&&found.earth)markDone(6)}}
-        else if(mach>.85){st.textContent='זהירות: קצה הלהב מתקרב למהירות הקול';st.className='chip warn'}
-        else{st.textContent=s.y>BAND[1]?'גבוה מדי: הורד סל"ד':flown?'עלה לאזור הירוק':'הגדל סל"ד עד שתתרומם';st.className='chip'}}
-    }
-    requestAnimationFrame(frame);
-  }
-  reset();table();requestAnimationFrame(frame);
-});
-
-/* mission 7: design and fly */
-safe(()=>{
-  const cv=$('#fly'),sIn=$('#fS'),tIn=$('#fT'),S=setup(cv),ctx=S.ctx,msg=$('#fMsg');
-  let pk='earth',st=flightInit(),phase='ready',ctl=0,keys={},ring=0,air=false,wins=store.get('wins',{});
-  const design=()=>({S:+sIn.value,T:+tIn.value});
-  function say(t,c){msg.textContent=t;msg.className='msg'+(c?' '+c:'')}
-  function info(){const d=design(),p=PLANETS[pk];$('#fSo').textContent=d.S+' מ²';$('#fTo').textContent=d.T+' ניוטון';$('#fMass').textContent='מסה: '+fmt(massOf(d))+' ק"ג';
-    const v=takeoffSpeed(d,p);$('#fLO').textContent=isFinite(v)?'מהירות המראה: '+v.toFixed(0)+' מ/ש':'אין עילוי כאן';
-    $('#fThr').textContent='דחף כאן: '+fmt(thrustOf(d,p))+' ניוטון'}
-  function pl(){$('#fPlanet').querySelectorAll('button').forEach(b=>b.classList.toggle('won',!!wins[b.dataset.v]))}
-  function reset(){st=flightInit();ring=0;air=false;phase='ready';$('#fGo').textContent='המרא!';say('תכנן, ולחץ המרא. כשתגיע למהירות ההמראה, הרם את האף.')}
-  seg($('#fPlanet'),PLANET_ORDER.map(k=>[k,PLANETS[k].name]),pk,v=>{pk=v;reset();info()});
-  [sIn,tIn].forEach(e=>e.addEventListener('input',()=>{info();if(phase!=='fly')reset()}));
-  $('#fGo').addEventListener('click',()=>{
-    if(phase==='fly'||phase==='end'){reset();if(phase==='ready'&&false)return}
-    const p=PLANETS[pk];
-    if(p.rho===0){say('בלי אוויר הכנף לא נותנת עילוי, והמדחף לא דוחף דבר. כאן צריך רקטה, וזה כבר סיפור אחר.','bad');phase='end';$('#fGo').textContent='נסה שוב';return}
-    phase='fly';$('#fGo').textContent='התחל מחדש';say('מאיץ על המסלול...');cv.focus({preventScroll:true})
-  });
-  const hold=(el,v)=>{const on=e=>{e.preventDefault();ctl=v},off=()=>{ctl=0};el.addEventListener('pointerdown',on);['pointerup','pointerleave','pointercancel'].forEach(n=>el.addEventListener(n,off))};
-  hold($('#fUp'),1);hold($('#fDown'),-1);
-  cv.addEventListener('keydown',e=>{if(e.key==='ArrowUp'||e.key==='ArrowDown'){keys[e.key]=1;e.preventDefault()}});
-  cv.addEventListener('keyup',e=>{keys[e.key]=0});
-  function end(text,win){phase='end';$('#fGo').textContent='נסה שוב';say(text,win?'good':'bad');
-    if(win){wins[pk]=1;store.set('wins',wins);pl();if(wins.mars&&wins.earth)markDone(7)}}
-  function update(dt){
-    const p=PLANETS[pk],c=course(p),d=design(),inp=ctl||(keys.ArrowUp?1:keys.ArrowDown?-1:0);
-    flightStep(st,inp,dt,p,d);
-    if(!st.ground&&!air){air=true;say('באוויר! כוון לטבעת הראשונה.','good')}
-    if(st.ground&&st.x>c.runway)return end('המסלול נגמר ב-'+st.vx.toFixed(0)+' מ/ש, וצריך '+takeoffSpeed(d,p).toFixed(0)+' מ/ש. '+(pk==='mars'?'נסה כנף גדולה יותר, היא מורידה את מהירות ההמראה.':'נסה יותר מנוע, או הרם את האף מוקדם יותר.'));
-    if(!st.ground&&st.y<=0)return end('התרסקת. '+(st.stall?'המטוס נכנס לסטול: הזווית הייתה גדולה מדי והעילוי נפל.':'ירדת מהר מדי. הרם את האף בעדינות.'));
-    if(ring<3&&st.x>=c.rings[ring][0]){if(Math.abs(st.y-c.rings[ring][1])<=c.r){ring++;say('טבעת '+ring+' מתוך 3!','good')}else return end('פספסת טבעת '+(ring+1)+'. עברת בגובה '+st.y.toFixed(0)+' מ׳, והיא בגובה '+c.rings[ring][1].toFixed(0)+' מ׳.')}
-    if(st.x>=c.finish)end('הצלחת לטוס ב'+p.name+' עם כנף של '+d.S+' מ²! מהירות ההמראה הייתה '+takeoffSpeed(d,p).toFixed(0)+' מ/ש.',true);
-  }
-  function draw(){
-    const p=PLANETS[pk],c=course(p),W=S.W,H=S.H,gy=H-30,top=Math.max(c.rings[1][1]*1.8,70),sc=(gy-30)/top,mx=Math.min(sc*1.1,W/ (c.finish/ 5));
-    const camX=st.x-W*.3/mx,toX=x=>(x-camX)*mx,toY=y=>gy-y*sc;
-    const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,p.sky[0]);g.addColorStop(1,p.sky[1]);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-    ctx.fillStyle=p.ground;ctx.fillRect(0,gy,W,H-gy);
-    const r0=Math.max(0,toX(0)),r1=Math.min(W,toX(c.runway));if(r1>0){ctx.fillStyle='#3a3f4a';ctx.fillRect(r0,gy,r1-r0,8);ctx.fillStyle='#fff';for(let x=0;x<c.runway;x+=30){const X=toX(x);if(X>-20&&X<W)ctx.fillRect(X,gy+3,14,2)}}
-    for(let x=Math.floor(camX/50)*50;x<camX+W/mx;x+=50){ctx.fillStyle='rgba(19,39,74,.28)';ctx.fillRect(toX(x),gy+10,2,10)}
-    c.rings.forEach((r,i)=>{const X=toX(r[0]),Y=toY(r[1]),rad=c.r*sc;ctx.lineWidth=5;ctx.strokeStyle=i<ring?'#178F62':'#FFBE2E';ctx.beginPath();ctx.ellipse(X,Y,rad*.3,rad,0,0,Math.PI*2);ctx.stroke()});
-    const fx=toX(c.finish);ctx.fillStyle='#13274A';ctx.fillRect(fx,gy-60,3,60);ctx.fillStyle='#E3484E';ctx.fillRect(fx+3,gy-60,24,14);
-    const X=toX(st.x),Y=toY(st.y)-6,ws=Math.min(1.6,.7+design().S/60);
-    ctx.save();ctx.translate(X,Y);ctx.rotate(-st.pitch*Math.PI/180);ctx.fillStyle='#fff';ctx.strokeStyle='#13274A';ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(30,0);ctx.lineTo(-24,-5);ctx.lineTo(-30,-14);ctx.lineTo(-34,-14);ctx.lineTo(-30,4);ctx.lineTo(-10,6);ctx.closePath();ctx.fill();ctx.stroke();
-    ctx.fillStyle='#FFBE2E';ctx.beginPath();ctx.ellipse(0,-1,22*ws,4,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
-    if(st.ground&&phase==='fly'&&st.vx>=takeoffSpeed(design(),p)*.95){ctx.fillStyle='#fff';ctx.font='800 20px Assistant, sans-serif';ctx.textAlign='center';ctx.fillText('הרם את האף!',W/2,50)}
-    ctx.fillStyle='rgba(13,26,49,.62)';ctx.fillRect(8,8,158,92);ctx.fillStyle='#fff';ctx.font='700 13px Assistant, sans-serif';ctx.textAlign='right';
-    const mg=massOf(design())*p.g,ratio=mg?st.L/mg:0;
-    ctx.fillText('מהירות: '+(st.v||0).toFixed(0)+' מ/ש',158,26);ctx.fillText('גובה: '+st.y.toFixed(0)+' מ׳',158,44);ctx.fillText('עילוי/משקל: '+Math.round(ratio*100)+'%',158,62);
-    if(ring<3)ctx.fillText('טבעת הבאה: גובה '+c.rings[ring][1].toFixed(0)+' מ׳',158,80);
-    if(st.stall){ctx.fillStyle='#E3484E';ctx.fillRect(W-82,10,72,26);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText('סטול!',W-46,28)}
-  }
-  let last=performance.now();
-  function frame(now){
-    const dt=Math.min(.05,(now-last)/1000);last=now;
-    if(S.visible){if(phase==='fly'){const sub=pk==='mars'?2:1;for(let i=0;i<sub&&phase==='fly';i++)update(dt)}draw()}
-    requestAnimationFrame(frame);
-  }
-  reset();info();pl();requestAnimationFrame(frame);
-});
-
 /* quiz and certificate */
-const Q=[
-  ['מכפילים את מהירות האוויר. מה קורה ל-½ρv²?',['גדל פי 2','גדל פי 4','לא משתנה'],1],
-  ['על מאדים האוויר דליל פי 60. איך אפשר בכל זאת לקבל את אותו עילוי?',['רק מנוע גדול יותר','מהירות גבוהה פי 8 בערך, או כנף גדולה פי 60','אי אפשר בשום אופן'],1],
-  ['למה ללוח שטוח יש יותר גרר מלטיפה באותו גובה?',['הוא כבד יותר','מאחוריו נפתח בור של לחץ נמוך','האוויר חם מלפניו'],1],
-  ['איך צינור פיטו יודע מה המהירות?',['סופר חלקיקי אוויר','מודד את הלחץ שנוסף כשעוצרים את הזרימה','מקבל אות מלוויין'],1],
-  ['למה רוטור צריך להסתובב הכי מהר דווקא במקום עם אוויר דליל?',['כי העילוי תלוי בצפיפות, וצריך לפצות במהירות','כי קר שם','כי הכבידה שם גבוהה'],0]
-];
+const Q=[ [ "מכפילים את מהירות האוויר. מה קורה ל-½ρv²?", [ "גדל פי 2", "גדל פי 4", "לא משתנה" ], 1 ], [ "איך צינור פיטו יודע מה המהירות?", [ "סופר חלקיקי אוויר", "מודד את הלחץ שנוסף כשעוצרים את הזרימה", "מקבל אות מלוויין" ], 1 ], [ "אם מכפילים את שטח הכנף, פי כמה גדל העילוי?", [ "פי 2", "פי 4", "לא משתנה" ], 0 ], [ "למה ללוח שטוח יש יותר גרר מלטיפה באותו גובה?", [ "הוא כבד יותר", "מאחוריו נפתח בור של לחץ נמוך", "האוויר חם מלפניו" ], 1 ] ];
 const qa=store.get('quiz',{}),quizEl=$('#quiz');
 Q.forEach(([q,opts,ans],qi)=>{
   const d=document.createElement('div');d.className='predict quizq';d.innerHTML='<p class="q">'+(qi+1)+'. '+q+'</p><div class="opts">'+opts.map((o,i)=>'<button class="opt" data-i="'+i+'">'+o+'</button>').join('')+'</div>';
@@ -1001,7 +813,7 @@ nameEl.addEventListener('input',()=>{store.set('name',nameEl.value);renderCert()
 function renderCert(){
   const right=Q.filter((q,i)=>qa[i]===q[2]).length;
   $('#certName').textContent=nameEl.value.trim()||' ';
-  $('#certText').textContent='השלים '+done.size+' מתוך 7 משימות ו-'+right+' מתוך 5 שאלות במעבדת האוויר הדק, ויודע לחשב למה כנף מרימה גם באוויר דליל.';
+  $('#certText').textContent='השלים '+done.size+' מתוך 4 משימות ו-'+right+' מתוך 4 שאלות במעבדת האוויר הדק, ויודע לחשב מה מרים כנף.';
 }
 $('#certDate').textContent=new Date().toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
 renderProgress();
