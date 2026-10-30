@@ -98,6 +98,30 @@
       "summary": "Part 2 of aerodynamics: Bernoulli with numbers, a pitot-tube speed puzzle, lift-equation locks, a real fluid simulation you can draw in, paper experiments timed with a stopwatch, and hovering a helicopter and flying a plane of your own design in the thin air of Mars."
     },
     {
+      "id": "newton-lab",
+      "kind": "lesson",
+      "title": "מעבדת ניוטון",
+      "title_en": "The Newton Lab",
+      "path": "lessons/newton-lab/",
+      "ages": [
+        9,
+        13
+      ],
+      "languages": [
+        "he"
+      ],
+      "skills": [
+        "Newton's three laws",
+        "F = ma",
+        "action and reaction, momentum",
+        "why rockets use stages",
+        "orbits and free fall"
+      ],
+      "uses_microphone": false,
+      "docs": "docs/lessons/newton-lab.md",
+      "summary": "Part 3: how a rocket moves with nothing to push against. Newton's three laws through a frictionless puck, docking, cart races, hammer and feather, a paper rocket, rescuing a drifting astronaut, building a staged rocket, Newton's cannon and a transfer orbit to Mars."
+    },
+    {
       "id": "sound-lab",
       "kind": "lesson",
       "title": "מעבדת הצליל",
