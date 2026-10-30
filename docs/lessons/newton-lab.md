@@ -1,7 +1,7 @@
 # מעבדת ניוטון · The Newton Lab
 
 Part 3, after [The Flying Paper Lab](flying-paper-lab.md) and [The Thin Air Lab](thin-air-lab.md).
-How does a rocket move when there is nothing to push against? A Hebrew lesson for ages 9–13, about
+How does a rocket move when there is nothing to push against? A Hebrew lesson for ages 12–15, about
 two hours, best split into two or three sittings. It needs paper, a coin, a book, a straw and tape.
 
 Play: https://brainsnacks.pages.dev/lessons/newton-lab/ · Code: [`site/lessons/newton-lab/index.html`](../../site/lessons/newton-lab/index.html)
@@ -25,6 +25,9 @@ Play: https://brainsnacks.pages.dev/lessons/newton-lab/ · Code: [`site/lessons/
 It ends with a 5-question quiz and a space navigator certificate.
 
 ## Notes
+
+- Formulas are never handed over cold. Each one has a step-by-step walkthrough first: what the
+  words mean, a solved example, then small exercises with hints, and only then the puzzles.
 
 - All the physics lives in one DOM-free block at the top of the script, so it can be run in Node.
 - The rocket uses the rocket equation with a fixed exhaust speed of 3.4 km/s; goals include rough

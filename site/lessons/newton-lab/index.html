@@ -250,6 +250,23 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 .pad button:active{background:var(--signal);color:var(--signal-ink)}
 #dU{grid-column:2;grid-row:1}#dL{grid-column:1;grid-row:2}#dD{grid-column:2;grid-row:2}#dR{grid-column:3;grid-row:2}
 .seg button:disabled{opacity:.35;cursor:not-allowed}
+.walk{border:2px solid var(--space);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--card)}
+.walk-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.walk-head b{font-family:var(--display);font-weight:400;font-size:20px;color:var(--space)}
+.walk-count{font-size:14px;color:var(--ink-soft);white-space:nowrap}
+.wstep{display:flex;flex-direction:column;gap:10px}
+.walk .walk-next{align-self:flex-start}
+.words{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.words div{background:var(--sim);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.words b{font-family:var(--display);font-weight:400;font-size:28px;color:var(--space);line-height:1}
+.words span{font-weight:800}.words small{font-size:14px;color:var(--ink-soft);line-height:1.35}
+@media (max-width:560px){.words{grid-template-columns:1fr}}
+.tick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.tick div{background:var(--sim);border-radius:10px;padding:8px 4px;text-align:center;display:flex;flex-direction:column}
+.tick small{font-size:12px;color:var(--ink-soft)}.tick b{font-family:var(--display);font-weight:400;font-size:24px;color:var(--high)}
+.try{background:var(--sim);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.hint{background:var(--card);border-inline-start:4px solid var(--signal);padding:6px 10px;border-radius:0 6px 6px 0;font-size:16px}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink);padding:6px 14px}
 
 </style>
 </head>
@@ -270,7 +287,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 
 <section class="hero">
   <div>
-    <div class="series">חלק 3, אחרי מעבדת האוויר הדק</div>
+    <div class="series">חלק 3, אחרי מעבדת האוויר הדק · לגילאי 12 ומעלה</div>
     <div class="eyebrow">8 משימות · 7 סימולטורים ומשחקים · 3 ניסויים בבית</div>
     <h1>איך רקטה נוסעת כשאין מה <mark>לדחוף</mark>?</h1>
     <p class="lead">מכונית דוחפת את הכביש. מטוס דוחף את האוויר. בחלל אין כביש ואין אוויר, ובכל זאת רקטות מגיעות למאדים. את הסוד הזה גילה אייזק ניוטון לפני יותר מ-300 שנה, בשלושה חוקים קצרים. עכשיו תשתמש בהם כדי להציל אסטרונאוט, לבנות רקטה ולקלוע למאדים.</p>
@@ -355,7 +372,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
   <div class="mission-head"><div class="num">3</div><div><div class="tag">החוק השני · חידות וניסוי · 15 דקות</div><h2>כמה קשה להזיז?</h2></div></div>
   <div class="stack">
     <div class="formula">F = m · a<small>כוח = מסה × תאוצה. אותו כוח על מסה כפולה נותן חצי תאוצה.</small></div>
-    <p>כל חידה: גרום לעגלה הכחולה להגיע בדיוק עם העגלה האפורה, או לנצח אותה. האפורה נוסעת תמיד עם 10 ניוטון על 2 ק&quot;ג.</p>
+    <div class="walk" data-walk><div class="walk-head"><b>מה זה F = m · a? נלך לאט</b><span class="walk-count"></span></div><div class="wstep"><p><b>שלוש מילים לפני הכול.</b> הנוסחה בעצם משפט קצר. כל אות היא מילה:</p><div class="words"><div><b>F</b><span>כוח</span><small>כמה חזק דוחפים. נמדד בניוטון. ניוטון אחד הוא בערך המשקל של תפוח קטן ביד.</small></div><div><b>m</b><span>מסה</span><small>כמה חומר יש בדבר שדוחפים. נמדדת בקילוגרמים.</small></div><div><b>a</b><span>תאוצה</span><small>בכמה המהירות עולה בכל שנייה.</small></div></div></div><div class="wstep"><p><b>המילה הכי מבלבלת: תאוצה.</b> היא לא המהירות עצמה, אלא כמה מהר המהירות משתנה. עגלה עם תאוצה 5 מתחילה מ-0 ומרוויחה 5 מ/ש בכל שנייה:</p><div class="tick"><div><small>התחלה</small><b>0</b></div><div><small>אחרי שנייה</small><b>5</b></div><div><small>אחרי 2 שניות</small><b>10</b></div><div><small>אחרי 3 שניות</small><b>15</b></div></div><p class="tag">המספרים הם מהירות, במטר לשנייה.</p></div><div class="wstep"><p><b>איך הכוח מתחלק.</b> דמיין שהכוח הוא 12 סוכריות, והמסה היא 3 ילדים. כל ילד מקבל 12 ÷ 3 = 4. ככה גם כאן: הכוח מתחלק על כל קילוגרם. לכן כשרוצים למצוא תאוצה, <b>מחלקים</b>:</p><div class="formula">a = F ÷ m<small>תאוצה = כוח ÷ מסה. זאת אותה נוסחה, רק כתובה כדי למצוא את a.</small></div></div><div class="wstep"><p><b>דוגמה פתורה.</b> דוחפים עגלה של 2 ק&quot;ג בכוח של 10 ניוטון. מה התאוצה?</p><ol class="steps"><li>מה ידוע? F = 10, m = 2.</li><li>מה מחפשים? את a, אז מחלקים: a = F ÷ m.</li><li>מציבים מספרים: a = 10 ÷ 2.</li><li>מחשבים: a = 5. כלומר המהירות עולה ב-5 מ/ש בכל שנייה.</li></ol></div><div class="wstep"><p><b>עכשיו אתה.</b> תמיד אותם ארבעה צעדים: מה ידוע, מה מחפשים, מציבים, מחשבים.</p><div class="try" data-ans="3"><p><b>תורך:</b> דוחפים ארגז של 4 ק"ג בכוח של 12 ניוטון. מה התאוצה?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>מ/ש²</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>מחלקים כוח במסה: a = F ÷ m.</div><div class="hint" hidden>a = 12 ÷ 4</div><div class="msg"></div></div><div class="try" data-ans="4"><p><b>תורך:</b> דוחפים אופניים של 5 ק"ג בכוח של 20 ניוטון. מה התאוצה?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>מ/ש²</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>a = F ÷ m</div><div class="hint" hidden>a = 20 ÷ 5</div><div class="msg"></div></div></div><div class="wstep"><p><b>הפוך: כמה כוח צריך?</b> לפעמים יודעים איזו תאוצה רוצים, ומחפשים כוח. אז כופלים, כמו בנוסחה המקורית: F = m × a.</p><p>דוגמה: עגלה של 3 ק&quot;ג, ורוצים תאוצה 5. אז F = 3 × 5 = 15 ניוטון.</p><div class="try" data-ans="30"><p><b>תורך:</b> עגלה של 6 ק"ג, ורוצים תאוצה 5. כמה כוח צריך?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>ניוטון</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>עכשיו מחפשים את F, אז כופלים: F = m × a.</div><div class="hint" hidden>F = 6 × 5</div><div class="msg"></div></div></div><button class="btn walk-next">הבנתי, הלאה</button></div><p><b>החידות:</b> העגלה האפורה נוסעת תמיד עם 10 ניוטון על 2 ק&quot;ג, כלומר תאוצה 5. כדי להגיע איתה, גם לכחולה צריכה להיות תאוצה 5 לפחות. חשב קודם על דף, ואז כוון את המחוונים ולחץ מרוץ. נתקעת? לחץ &quot;הראה לי איך&quot;.</p>
     <div class="locks" id="locks" aria-label="חידות"></div>
     <div class="sim">
       <canvas id="race" aria-label="מרוץ של שתי עגלות"></canvas>
@@ -364,7 +381,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
         <div class="ctl"><label for="rF">כוח על הכחולה <output id="rFo"></output></label><input type="range" id="rF" min="1" max="40" step="1" value="10"></div>
         <div class="ctl"><label for="rM">מסה של הכחולה <output id="rMo"></output></label><input type="range" id="rM" min="1" max="10" step=".5" value="2"></div>
       </div>
-      <div class="panel"><div class="row"><span class="chip" id="rA"></span><button class="btn alt" id="rGo">מרוץ!</button><button class="btn" id="rNext" hidden>לחידה הבאה</button></div><div class="msg" id="rMsg"></div></div>
+      <div class="panel"><div class="row"><span class="chip" id="rA"></span><button class="btn alt" id="rGo">מרוץ!</button><button class="btn ghost" id="rHint">הראה לי איך</button><button class="btn" id="rNext" hidden>לחידה הבאה</button></div><div class="hint" id="rHow" hidden></div><div class="msg" id="rMsg"></div></div>
     </div>
     <h3 style="font-size:24px">פטיש ונוצה</h3>
     <p>אם קשה יותר להזיז דבר כבד, למה הוא לא נופל לאט יותר? כי גם כדור הארץ מושך אותו חזק יותר, באותו יחס בדיוק. התוצאה: כולם מקבלים אותה תאוצה. מה שמפריע לנוצה הוא רק האוויר.</p>
@@ -390,7 +407,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
   <div class="mission-head"><div class="num">4</div><div><div class="tag">החוק השלישי · סימולטור וניסוי בבית · 20 דקות</div><h2>כל דחיפה דוחפת בחזרה</h2></div></div>
   <div class="stack">
     <div class="rule">החוק השלישי: כשאתה דוחף משהו, הוא דוחף אותך באותו כוח, בכיוון ההפוך.<small>זה גם מה שמרים כנף: היא דוחפת אוויר למטה, והאוויר דוחף אותה למעלה. במעבדה הראשונה ראית את זה כחץ אוויר שיורד מאחורי הכנף.</small></div>
-    <div class="predict" data-answer="heavyless">
+    <div class="walk" data-walk><div class="walk-head"><b>מה זה תנע? נלך לאט</b><span class="walk-count"></span></div><div class="wstep"><p><b>תנע אומר כמה קשה לעצור משהו.</b> כדור טניס שזורקים אליך קל לעצור. משאית באותה מהירות, הרבה פחות. גם מהירות קובעת: משאית שזזה ממש לאט אפשר לעצור בקלות יחסית.</p><div class="formula">תנע = מסה × מהירות<small>אין כאן אותיות: פשוט כופלים ק&quot;ג במטר לשנייה.</small></div></div><div class="wstep"><p><b>דוגמה פתורה.</b> מחליק של 30 ק&quot;ג נע ב-6 מ/ש. התנע שלו: 30 × 6 = 180.</p><p>מחליק של 90 ק&quot;ג נע ב-2 מ/ש. התנע שלו: 90 × 2 = 180. אותו תנע, כי הכבד איטי יותר.</p></div><div class="wstep"><p><b>החוק.</b> כששניים דוחפים זה את זה, כל אחד מקבל <b>אותו תנע</b>, לכיוונים הפוכים. אם יודעים את התנע, מוצאים מהירות בחילוק: מהירות = תנע ÷ מסה.</p><div class="try" data-ans="3"><p><b>תורך:</b> דחיפה נותנת לכל אחד תנע 120. מחליק של 40 ק"ג: באיזו מהירות יזוז?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>מ/ש</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>מהירות = תנע ÷ מסה</div><div class="hint" hidden>120 ÷ 40</div><div class="msg"></div></div><div class="try" data-ans="2"><p><b>תורך:</b> אותה דחיפה (תנע 120). מחליק של 60 ק"ג: באיזו מהירות יזוז?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><span>מ/ש</span><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>מהירות = תנע ÷ מסה</div><div class="hint" hidden>120 ÷ 60</div><div class="msg"></div></div></div><button class="btn walk-next">הבנתי, הלאה</button></div><div class="predict" data-answer="heavyless">
       <p class="q">מחליק של 30 ק&quot;ג ומחליק של 90 ק&quot;ג עומדים על קרח ודוחפים זה את זה. מה יקרה?</p>
       <div class="opts">
         <button class="opt" data-v="onlylight">רק הקל יזוז</button>
@@ -425,7 +442,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 <article class="mission" id="m5" data-m="5">
   <div class="mission-head"><div class="num">5</div><div><div class="tag">משחק · 10 דקות</div><h2>הצל את האסטרונאוט</h2></div></div>
   <div class="stack">
-    <p>הכבל נקרע. האסטרונאוט נסחף לאט מהחללית, יש לו 70 שניות של חמצן, ומה שיש לו ביד זה ציוד. הדרך היחידה לזוז: <b>לזרוק דברים</b>. זרוק מהחללית כדי לנוע אליה. כמו ברקטה, כל קילוגרם שזרקת דוחף אותך לצד השני. זהירות: אם תגיע מהר מ-0.8 מ/ש, תתרסק. כדי לבלום, זרוק משהו לכיוון החללית.</p>
+    <p>הכבל נקרע. האסטרונאוט נסחף לאט מהחללית, יש לו 70 שניות של חמצן, ומה שיש לו ביד זה ציוד. הדרך היחידה לזוז: <b>לזרוק דברים</b>.</p><div class="walk" data-walk><div class="walk-head"><b>איך עובד המשחק</b><span class="walk-count"></span></div><div class="wstep"><p><b>זה אותו חוק של המחליקים.</b> כשאתה זורק חפץ, הוא מקבל תנע לצד אחד ואתה מקבל את אותו תנע לצד השני. כל חפץ נזרק במהירות 12 מ/ש.</p><p>דוגמה: זורקים ארגז של 12 ק&quot;ג. התנע שלו 12 × 12 = 144. האסטרונאוט שוקל עכשיו כ-127 ק&quot;ג, אז הוא מקבל 144 ÷ 127, בערך 1.1 מ/ש.</p></div><div class="wstep"><ol class="steps"><li>כדי לנוע אל החללית, זרוק חפץ <b>מהחללית</b> והלאה.</li><li>אם אתה נע מהר מ-0.8 מ/ש, תתרסק. כדי לבלום, זרוק משהו קטן <b>אל החללית</b>.</li><li>שים לב: חפץ קטן לא יספיק כדי להגיע בזמן, וחפץ גדול מדי ידרוש בלימה חזקה.</li></ol></div><button class="btn walk-next">הבנתי, הלאה</button></div>
     <div class="sim">
       <canvas id="astro" aria-label="אסטרונאוט ציף ליד חללית"></canvas>
       <div class="toolbar"><div><span class="seglabel">לזרוק לכיוון</span><div class="seg" id="aDir"></div></div></div>
@@ -438,7 +455,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 <article class="mission" id="m6" data-m="6">
   <div class="mission-head"><div class="num">6</div><div><div class="tag">סימולטור · 15 דקות</div><h2>בנה רקטה</h2></div></div>
   <div class="stack">
-    <p>רקטה היא בעיקר דלק שסוחב דלק. כל טון שמוסיפים צריך גם להרים את עצמו. כמה מהירות רקטה יכולה להשיג? זה תלוי ביחס בין המסה בהתחלה למסה בסוף. כך מחשבים את זה בכל סוכנות חלל.</p>
+    <p>רקטה היא בעיקר דלק שסוחב דלק. כל טון דלק שמוסיפים צריך גם להרים את עצמו.</p><div class="walk" data-walk><div class="walk-head"><b>למה זה כל כך קשה? נלך לאט</b><span class="walk-count"></span></div><div class="wstep"><p><b>מה המטרה?</b> להגיע למהירות עצומה. כדי להישאר במסלול צריך 9.4 ק&quot;מ <b>בשנייה</b>. במהירות כזאת מגיעים מתל אביב לירושלים בפחות מ-7 שניות.</p></div><div class="wstep"><p><b>היחס הוא הכול.</b> מחלקים את מסת הרקטה בהתחלה במסה בסוף, אחרי שהדלק נגמר.</p><p>דוגמה: רקטה של 100 טון שנשארת עם 20 טון. היחס הוא 100 ÷ 20 = 5.</p><div class="try" data-ans="6"><p><b>תורך:</b> רקטה של 300 טון נשארת עם 50 טון. מה היחס?</p><div class="row"><input class="numin" type="number" inputmode="decimal" aria-label="התשובה"><button class="btn try-check">בדוק</button><button class="btn ghost try-hint">רמז</button></div><div class="hint" hidden>מחלקים התחלה בסוף.</div><div class="hint" hidden>300 ÷ 50</div><div class="msg"></div></div></div><div class="wstep"><p><b>החלק המפתיע.</b> בכל פעם שהיחס מוכפל, מקבלים רק את אותה <b>תוספת</b> קבועה, ולא פי 2:</p><div class="tick"><div><small>יחס 2</small><b>2.4</b></div><div><small>יחס 4</small><b>4.7</b></div><div><small>יחס 8</small><b>7.1</b></div><div><small>יחס 16</small><b>9.4</b></div></div><p class="tag">המספרים הם ק&quot;מ/ש. בכל הכפלה נוספים בערך 2.4.</p></div><div class="wstep"><p><b>למה צריך שלבים.</b> המיכל שוקל משהו גם כשהוא ריק, ולכן אי אפשר להגיע ליחס 16 בשלב אחד. הפתרון: לזרוק מיכל ריק באמצע. זה כמו טיול עם בקבוקי מים: כל בקבוק ריק שזורקים (לפח!) מקל על ההמשך.</p></div><div class="wstep"><ol class="steps"><li>בחר יעד.</li><li>התחל מ-300 טון בשלב 1 ו-60 טון בשלב 2, ולחץ שיגור. זה אמור להספיק למסלול.</li><li>בשביל הירח ומאדים הוסף גם שלב 3. שלב עליון קטן שווה הרבה, כי הוא לא צריך להרים כלום מעליו.</li></ol></div><button class="btn walk-next">הבנתי, הלאה</button></div>
     <div class="predict" data-answer="no">
       <p class="q">רקטה אחת עם פי 20 דלק תגיע למהירות גדולה פי 20?</p>
       <div class="opts">
@@ -467,7 +484,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 <article class="mission" id="m7" data-m="7">
   <div class="mission-head"><div class="num">7</div><div><div class="tag">סימולטור · 10 דקות</div><h2>התותח של ניוטון</h2></div></div>
   <div class="stack">
-    <p>ב-1687 ניוטון דמיין תותח על הר גבוה מאוד. כדור שנורה נופל לקרקע. מהר יותר, הוא נופל רחוק יותר. ואם הוא מהיר מספיק? הקרקע מתעקמת מתחתיו בדיוק באותו קצב שהוא נופל.</p>
+    <p>ב-1687 ניוטון דמיין תותח על הר גבוה מאוד. כדור שנורה נופל לקרקע. מהר יותר, הוא נופל רחוק יותר. ואם הוא מהיר מספיק? הקרקע מתעקמת מתחתיו בדיוק באותו קצב שהוא נופל.</p><p><b>איך משתמשים:</b> קבע מהירות ולחץ אש. כאן אין מה לחשב. נסה 6, אחר כך 7.5, ואז חפש מעל 7.75. המטרה היא לסמן את שלושת הריבועים.</p>
     <div class="sim">
       <canvas id="cannon" class="tall" aria-label="כדור הארץ, תותח ומסלול הכדור"></canvas>
       <div class="controls"><div class="ctl"><label for="cV">מהירות יציאה <output id="cVo"></output></label><input type="range" id="cV" min="4" max="11.6" step=".01" value="6"></div></div>
@@ -482,7 +499,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 <article class="mission" id="m8" data-m="8">
   <div class="mission-head"><div class="num">8</div><div><div class="tag">המשחק הגדול · 15 דקות</div><h2>קלע למאדים</h2></div></div>
   <div class="stack">
-    <p>מאדים זז, וגם כדור הארץ. אסור לכוון לאן שהוא נמצא עכשיו, אלא לאן שהוא <b>יהיה</b> בעוד 6 עד 8 חודשים. המנוע עובד רק דקות בודדות בהתחלה, ואחר כך החללית נופלת סביב השמש בדיוק לפי חוקי ניוטון. בחר עוצמה, חכה לרגע הנכון, ושגר.</p>
+    <p>מאדים זז, וגם כדור הארץ. אסור לכוון לאן שהוא נמצא עכשיו, אלא לאן שהוא <b>יהיה</b> בעוד 6 עד 8 חודשים. המנוע עובד רק דקות בודדות בהתחלה, ואחר כך החללית נופלת סביב השמש בדיוק לפי חוקי ניוטון.</p><ol class="steps"><li>השאר את המהירות על 2.95.</li><li>הסתכל על המספר &quot;מאדים לפנינו&quot;. הוא יורד לאט.</li><li>כשהוא נהיה ירוק, בערך 44 מעלות, לחץ שיגור.</li></ol>
     <div class="predict" data-answer="ahead">
       <p class="q">איפה צריך להיות מאדים ברגע השיגור?</p>
       <div class="opts">
@@ -519,7 +536,7 @@ footer{padding-block:0 40px;color:var(--ink-soft);font-size:14px}
 <details class="adult" id="adult">
   <summary>למבוגר שמלווה</summary>
   <ul>
-    <li><b>זמן:</b> כשעתיים, עדיף בשניים או שלושה מפגשים: משימות 1–3, 4–5, 6–8.</li>
+    <li><b>גיל:</b> מתאים מגיל 12. ילדים צעירים יותר ייהנו מהמשחקים, אבל הם יצטרכו מבוגר לידם בחלקים של החישובים.</li><li><b>זמן:</b> כשעתיים, עדיף בשניים או שלושה מפגשים: משימות 1–3, 4–5, 6–8. כדאי לעבור על ההסברים צעד אחר צעד לפני החידות.</li>
     <li><b>ציוד:</b> דפים, מטבע, ספר, קשית ונייר דבק. קריעה של רצועה לרקטה מתאימה, אין צורך במספריים.</li>
     <li><b>שפה:</b> בחוק השלישי כדאי להדגיש שהכוחות פועלים על גופים שונים, ולכן הם לא מבטלים זה את זה.</li>
     <li><b>החישובים:</b> הנפילה, הזריקות, התותח והטיסה למאדים מחושבים לפי חוקי ניוטון, והכבידה מחושבת ביחס הפוך לריבוע המרחק.</li>
@@ -662,6 +679,22 @@ $$('.predict[data-answer]').forEach(p=>{
 const checks=store.get('checks',{});
 $$('.challenge input').forEach(c=>{c.checked=!!checks[c.id];c.addEventListener('change',()=>{checks[c.id]=c.checked;store.set('checks',checks)})});
 
+/* step-by-step explanations: one step at a time, so nobody meets a formula cold */
+$$('[data-walk]').forEach((w,wi)=>{
+  const steps=[...w.querySelectorAll('.wstep')],next=w.querySelector('.walk-next'),count=w.querySelector('.walk-count'),key='walk'+wi;
+  let shown=Math.min(store.get(key,1),steps.length);
+  function render(){steps.forEach((s,i)=>s.hidden=i>=shown);count.textContent='שלב '+shown+' מתוך '+steps.length;next.hidden=shown>=steps.length}
+  next.addEventListener('click',()=>{shown++;store.set(key,shown);render()});render();
+});
+$$('.try').forEach(t=>{
+  const ans=parseFloat(t.dataset.ans),inp=t.querySelector('input'),msg=t.querySelector('.msg'),hints=[...t.querySelectorAll('.hint')];let tries=0;
+  const check=()=>{const v=parseFloat(inp.value);if(isNaN(v)){msg.textContent='כתוב מספר קודם.';msg.className='msg bad';return}
+    if(Math.abs(v-ans)<.01){msg.textContent='נכון!';msg.className='msg good';hints.forEach(h=>h.hidden=false)}
+    else{tries++;showHint();msg.textContent='עוד לא. נסה שוב עם הרמז.';msg.className='msg bad'}};
+  const showHint=()=>{const h=hints.find(x=>x.hidden);if(h)h.hidden=false};
+  t.querySelector('.try-check').addEventListener('click',check);t.querySelector('.try-hint').addEventListener('click',showHint);inp.addEventListener('keydown',e=>{if(e.key==='Enter')check()});
+});
+
 /* mission 1: the puck */
 safe(()=>{
   const cv=$('#puck'),S=setup(cv),ctx=S.ctx;
@@ -727,17 +760,18 @@ safe(()=>{
 safe(()=>{
   const cv=$('#race'),S=setup(cv),ctx=S.ctx,F=$('#rF'),M=$('#rM'),TRACK=20,msg=$('#rMsg'),next=$('#rNext');
   const LV=[
-    {t:'אותה עגלה',text:'לכחולה יש 2 ק"ג, כמו לאפורה. כמה כוח צריך?',m:2,lockM:true,F:4},
-    {t:'עגלה כבדה',text:'לכחולה יש 6 ק"ג. כמה כוח צריך כדי לא לפגר?',m:6,lockM:true,F:10},
-    {t:'מנוע קטן',text:'הכוח תקוע על 5 ניוטון. איזו מסה תספיק?',F:5,lockF:true,m:6},
-    {t:'העגלה הכבדה מנצחת',text:'כוח תקוע על 40 ניוטון. מה המסה הכי גדולה שעדיין לא מפסידה?',F:40,lockF:true,m:2}
+    {t:'אותה עגלה',text:'לכחולה יש 2 ק"ג, כמו לאפורה. כמה כוח צריך?',m:2,lockM:true,F:4,how:'רוצים תאוצה 5, והמסה 2. מחפשים כוח, אז כופלים: F = 2 × 5 = 10 ניוטון.'},
+    {t:'עגלה כבדה',text:'לכחולה יש 6 ק"ג. כמה כוח צריך כדי לא לפגר?',m:6,lockM:true,F:10,how:'רוצים תאוצה 5, והמסה 6. F = 6 × 5 = 30 ניוטון.'},
+    {t:'מנוע קטן',text:'הכוח תקוע על 5 ניוטון. איזו מסה תספיק?',F:5,lockF:true,m:6,how:'רוצים תאוצה 5, והכוח 5. מחפשים מסה, אז מחלקים כוח בתאוצה: m = 5 ÷ 5 = 1 ק"ג.'},
+    {t:'העגלה הכבדה מנצחת',text:'כוח תקוע על 40 ניוטון. מה המסה הכי גדולה שעדיין לא מפסידה?',F:40,lockF:true,m:2,how:'התאוצה צריכה להיות לפחות 5. m = 40 ÷ 5 = 8 ק"ג. כל מסה קטנה מזה תנצח.'}
   ];
   let cur=0,open=Math.min(store.get('race',0),LV.length-1),run=null;
   function locks(){const el=$('#locks');el.innerHTML='';LV.forEach((l,i)=>{const b=document.createElement('button');b.className='lock'+(i<open?' open':'')+(i===cur?' cur':'');b.textContent=i+1;b.disabled=i>open;b.addEventListener('click',()=>load(i));el.appendChild(b)})}
   function info(){$('#rFo').textContent=F.value+' ניוטון';$('#rMo').textContent=M.value+' ק"ג';$('#rA').textContent='תאוצה: '+(+F.value/+M.value).toFixed(1)+' מ/ש² (האפורה: 5.0)'}
-  function load(i){cur=i;const l=LV[i];F.value=l.F||10;M.value=l.m||2;F.disabled=!!l.lockF;M.disabled=!!l.lockM;$('#rTitle').textContent=(i+1)+'. '+l.t;$('#rText').textContent=l.text;next.hidden=true;msg.textContent='';msg.className='msg';run=null;info();locks()}
+  function load(i){cur=i;const l=LV[i];F.value=l.F||10;M.value=l.m||2;F.disabled=!!l.lockF;M.disabled=!!l.lockM;$('#rTitle').textContent=(i+1)+'. '+l.t;$('#rText').textContent=l.text;next.hidden=true;msg.textContent='';msg.className='msg';run=null;$('#rHow').hidden=true;$('#rHow').textContent=l.how;info();locks()}
   [F,M].forEach(e=>e.addEventListener('input',()=>{run=null;info()}));
   $('#rGo').addEventListener('click',()=>{run={t:0,a:+F.value/+M.value}});
+  $('#rHint').addEventListener('click',()=>{$('#rHow').hidden=false});
   next.addEventListener('click',()=>load(Math.min(cur+1,LV.length-1)));
   let last=performance.now();
   function frame(now){
