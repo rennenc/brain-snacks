@@ -1,7 +1,7 @@
 # מעבדת האוויר הדק · The Thin Air Lab
 
 Part 2 of aerodynamics, after [The Flying Paper Lab](flying-paper-lab.md). What happens to a wing
-when the air itself changes? A Hebrew lesson for ages 9–13, about 90 minutes, that puts numbers on
+when the air itself changes? A Hebrew lesson for ages 12–15, about 90 minutes, that puts numbers on
 Bernoulli and lift and tests them in the thinnest air anyone has flown in: the air of Mars. It is
 about flying inside an atmosphere, not about travelling to Mars, so there are no rockets.
 
