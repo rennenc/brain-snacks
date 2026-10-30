@@ -51,6 +51,29 @@
       "summary": "A fishing game: a voice asks for a number (then a count, a sum or a difference) and the child taps the fish carrying the answer. Nine levels, a new fish species for the aquarium after each one."
     },
     {
+      "id": "times-bunnies",
+      "kind": "game",
+      "title": "ארנבי הכפל",
+      "title_en": "Times Bunnies",
+      "path": "games/times-bunnies/",
+      "ages": [
+        7,
+        10
+      ],
+      "languages": [
+        "he"
+      ],
+      "skills": [
+        "the times table to 10 × 10",
+        "multiplication as area",
+        "the commutative property",
+        "splitting a hard fact into two easy ones"
+      ],
+      "uses_microphone": false,
+      "docs": "docs/games/times-bunnies.md",
+      "summary": "The 10×10 times table as a garden: drag out a rectangle and bunnies pop out of every square, so multiplication is area. Ten levels, a rotate-the-garden trick, splitting hard facts, a timed race, a bunny family to collect and a personal board that fills up."
+    },
+    {
       "id": "flying-paper-lab",
       "kind": "lesson",
       "title": "מעבדת הנייר המעופף",
@@ -104,8 +127,8 @@
       "title_en": "The Newton Lab",
       "path": "lessons/newton-lab/",
       "ages": [
-        9,
-        13
+        12,
+        15
       ],
       "languages": [
         "he"

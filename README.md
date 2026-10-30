@@ -15,9 +15,10 @@ tracking.
 |---|---|---|---|---|---|
 | 🎮 Game | [Rotem's Sky Letters](https://brainsnacks.pages.dev/games/rotem-sky/) | 4–7 | עברית + English | Reading aloud: English syllables (BA, DE…) and Hebrew words with nikud | [docs](docs/games/rotem-sky.md) |
 | 🎮 Game | [דגי המספרים · Number Fish](https://brainsnacks.pages.dev/games/number-fish/) | 4–7 | עברית | Numbers to 20, counting, adding and subtracting within 10 | [docs](docs/games/number-fish.md) |
+| 🎮 Game | [ארנבי הכפל · Times Bunnies](https://brainsnacks.pages.dev/games/times-bunnies/) | 7–10 | עברית | The times table to 10 × 10, and that multiplication is area | [docs](docs/games/times-bunnies.md) |
 | 🧪 Lesson | [מעבדת הנייר המעופף · The Flying Paper Lab](https://brainsnacks.pages.dev/lessons/flying-paper-lab/) | 8–12 | עברית | Air pressure, Bernoulli, lift and drag, fair experiments | [docs](docs/lessons/flying-paper-lab.md) |
 | 🧪 Lesson | [מעבדת האוויר הדק · The Thin Air Lab](https://brainsnacks.pages.dev/lessons/thin-air-lab/) | 9–13 | עברית | Bernoulli with numbers, the lift equation, air density, drag and vortices | [docs](docs/lessons/thin-air-lab.md) |
-| 🧪 Lesson | [מעבדת ניוטון · The Newton Lab](https://brainsnacks.pages.dev/lessons/newton-lab/) | 9–13 | עברית | Newton's three laws, momentum, rockets and stages, orbits | [docs](docs/lessons/newton-lab.md) |
+| 🧪 Lesson | [מעבדת ניוטון · The Newton Lab](https://brainsnacks.pages.dev/lessons/newton-lab/) | 12–15 | עברית | Newton's three laws, momentum, rockets and stages, orbits | [docs](docs/lessons/newton-lab.md) |
 | 🧪 Lesson | [מעבדת הצליל · The Sound Lab](https://brainsnacks.pages.dev/lessons/sound-lab/) | 9–13 | עברית | Waves, frequency, inverse proportion, musical ratios, speed of sound | [docs](docs/lessons/sound-lab.md) |
 | 🧪 Lesson | [כמה ארוכה שנה? · How Long Is a Year?](https://brainsnacks.pages.dev/lessons/calendars/) | 10–14 | עברית | The solar year vs. the lunar month; leap years in the Gregorian, Hebrew and Islamic calendars, calculated by hand | [docs](docs/lessons/calendars.md) |
 
@@ -50,6 +51,7 @@ site/                                   published as-is to Cloudflare Pages (no 
   catalog.json                          the list of games and lessons, machine-readable
   games/rotem-sky/index.html            Rotem's Sky Letters (one self-contained file)
   games/number-fish/index.html          Number Fish
+  games/times-bunnies/index.html        Times Bunnies
   lessons/flying-paper-lab/index.html   The Flying Paper Lab
   lessons/thin-air-lab/index.html       The Thin Air Lab
   lessons/newton-lab/index.html         The Newton Lab
