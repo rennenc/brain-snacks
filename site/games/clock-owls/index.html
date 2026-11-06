@@ -97,7 +97,7 @@ h1{font:800 clamp(34px,8vw,52px) var(--text);margin:0;color:var(--hourh);line-he
 .compact .box{padding-top:8px;padding-bottom:10px}
 .compact #play{gap:5px}
 .compact .qcard{min-height:0;padding:6px 14px}
-.compact .qcard .sub{display:none}
+.compact .qcard .sub{font-size:13px!important;line-height:1.3;margin:0}
 .compact .opt{padding:6px 12px}
 /* nothing in a screen may be squeezed; if space runs out the clock shrinks instead */
 .screen>*{flex-shrink:0}
@@ -379,17 +379,21 @@ function confetti(){if(reduce)return;for(let i=0;i<24;i++){const c=document.crea
 function angleOf(e){const r=clock.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*200-100,y=(e.clientY-r.top)/r.height*200-100;return{a:(Math.atan2(x,-y)*180/Math.PI+360)%360,d:Math.hypot(x,y)}}
 const canDrag=()=>mode==='free'||(cur&&cur.type==='set'&&!busy&&!$('#play').hidden);
 clock.addEventListener('pointerdown',e=>{if(!canDrag())return;ac();const{a,d}=angleOf(e),L=LEVELS[LV];
-  if(mode!=='free'&&L.hourOnly)drag='hour';
+  if(mode!=='free'&&L.hourOnly){drag='hour';if(d>60)say('בשלב הזה המחוג הארוך נשאר על 12. גוררים רק את המחוג הקצר והכחול.','tip')}
   else{const ang=handAngles(setSt.h,setSt.m),dif=(x,y)=>Math.min(Math.abs(x-y),360-Math.abs(x-y));drag=d>60?'minute':d<40?'hour':(dif(a,ang.minute)<dif(a,ang.hour)?'minute':'hour')}
   clock.setPointerCapture(e.pointerId);lastA=a;move(e);e.preventDefault()});
 clock.addEventListener('pointermove',e=>{if(drag)move(e)});
-['pointerup','pointercancel'].forEach(n=>clock.addEventListener(n,()=>{drag=null}));
+/* while dragging, the long hand follows the finger minute by minute; on letting go it settles on the nearest place this level allows */
+['pointerup','pointercancel'].forEach(n=>clock.addEventListener(n,()=>{
+  if(drag==='minute'){const step=mode==='free'?5:LEVELS[LV].step;let m=Math.round(setSt.m/step)*step;if(m>=60){m=0;setSt.h=wrapH(setSt.h+1)}
+    if(m!==setSt.m){setSt.m=m;sTick();drawClock(clock,setSt,mode==='free'?{ring:true,shade:setSt.m||null}:opts());if(mode==='free')freeShow()}}
+  drag=null}));
 function move(e){const{a}=angleOf(e),before=setSt.h+':'+setSt.m,step=mode==='free'?5:LEVELS[LV].step;
   if(drag==='hour'){if(mode!=='free'&&LEVELS[LV].hourOnly){setSt.m=0;let h=Math.round(a/30);setSt.h=h===0?12:h}else dragHour(setSt,a)}
-  else dragMinute(setSt,a,step===60?15:step,lastA);
+  else dragMinute(setSt,a,1,lastA);
   lastA=a;
   if(setSt.h+':'+setSt.m!==before){sTick();drawClock(clock,setSt,mode==='free'?{ring:true,shade:setSt.m||null}:opts());if(mode==='free')freeShow()}}
-function freeShow(){$('#freeWords').textContent=timeWords(setSt.h,setSt.m);$('#freeDig').textContent=digital(setSt.h,setSt.m)}
+function freeShow(){let h=setSt.h,m=Math.round(setSt.m/5)*5;if(m>=60){m=0;h=wrapH(h+1)}$('#freeWords').textContent=timeWords(h,m);$('#freeDig').textContent=digital(setSt.h,setSt.m)}
 $('#toFree').addEventListener('click',()=>{ac();mode='free';cur=null;show('play');requestAnimationFrame(layout);$('#lvName').textContent='שעון חופשי';$('#pearls').innerHTML='';$('#q').innerHTML='<div class="ask">גררו את המחוגים לכל שעה שתרצו</div>';$('#opts').innerHTML='';$('#setRow').hidden=true;$('#hintBtn').hidden=true;say('');$('#freeOut').hidden=false;setSt={h:3,m:0};clock.classList.add('draggable');drawClock(clock,setSt,{ring:true});freeShow()});
 
 /* menu */
