@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ינשופי השעון</title>
+<meta name="description" content="משחק לקריאת שעון מחוגים לגילאי 6–7: שעות עגולות, וחצי, ורבע, רבע ל, וקפיצות של 5 דקות. בכל שעה עגולה הינשופון קורא הוּ לפי מספר השעה.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* Layout: an evening sky with a wooden clock tower in the middle. The owl lives in the tower's round window; the big clock face below is the thing children touch. */
+:root{--sky1:#2B3F8C;--sky2:#7A8FE0;--sky3:#F7C9A8;--wood:#B97A4C;--wood2:#8E5634;--face:#FFFDF6;--ink:#2B2A44;--ink-soft:#6C6A86;--card:#FFFFFF;--hourh:#2F6FDB;--minh:#FF7A2F;--sun:#FFD15C;--ok:#2BB673;--bad:#FF6B6B;--shade:#FFD15C;--shade2:#9FD8FF;
+  --display:"Fredoka","Rubik",ui-rounded,system-ui,sans-serif;--text:"Rubik","Arial Hebrew",system-ui,sans-serif;--clock:300px;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;color:var(--ink);font-family:var(--text);background:var(--sky2);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+[hidden]{display:none!important}
+button{font-family:var(--text);color:var(--ink);cursor:pointer;border:0}
+:focus-visible{outline:4px solid var(--sun);outline-offset:2px}
+.scene{position:fixed;inset:0;background:linear-gradient(var(--sky1),var(--sky2) 55%,var(--sky3));overflow:hidden}
+.star{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;opacity:.8;animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.25}}
+.moon{position:absolute;top:34px;left:34px;width:58px;height:58px;border-radius:50%;background:#FFF3C4;box-shadow:12px -6px 0 0 var(--sky1) inset}
+.hill{position:absolute;bottom:-22%;border-radius:50%;background:#3E6B4A}.hill.a{width:80%;height:40%;right:-10%}.hill.b{width:80%;height:34%;left:-16%;background:#4F8159}
+.home{position:fixed;z-index:9;top:max(10px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));background:rgba(255,255,255,.92);color:var(--ink);text-decoration:none;border-radius:999px;padding:8px 14px;font:700 14px var(--text);box-shadow:0 4px 0 rgba(43,42,68,.18)}
+.corner{position:fixed;z-index:9;top:max(10px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));display:flex;gap:6px}
+.stars{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.92);border-radius:999px;padding:6px 12px;font:700 18px var(--display);box-shadow:0 4px 0 rgba(43,42,68,.18)}
+.stars i{font-style:normal;color:#F5B400}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;padding:calc(max(10px,env(safe-area-inset-top)) + 48px) max(12px,env(safe-area-inset-right)) 12px max(12px,env(safe-area-inset-left));overflow-y:auto;gap:8px}
+.card{background:var(--card);border-radius:26px;box-shadow:0 8px 0 rgba(43,42,68,.18);padding:16px 18px;width:min(620px,100%);display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+h1{font:800 clamp(34px,8vw,52px) var(--text);margin:0;color:var(--hourh);line-height:1.05}
+.sub{margin:0;color:var(--ink-soft);font-size:17px;line-height:1.45;max-width:30em}
+.big{background:var(--minh);color:#fff;font:800 20px var(--text);padding:12px 28px;border-radius:999px;box-shadow:0 6px 0 #D95A12}
+.big:active{transform:translateY(3px);box-shadow:0 3px 0 #D95A12}
+.big.soft{background:#fff;color:var(--ink);box-shadow:0 6px 0 #DDE1EE}
+.big.go{background:var(--ok);box-shadow:0 6px 0 #1C8D56}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%}
+.lvl{background:#F4F1FF;border-radius:18px;padding:8px 4px 6px;display:flex;flex-direction:column;align-items:center;box-shadow:0 4px 0 #DCD5F7;transition:transform .15s}
+.lvl:hover{transform:translateY(-3px)}.lvl svg{width:50px;height:50px}.lvl b{font-size:15px}.lvl span{font-size:13px;color:#F5B400;letter-spacing:1px}.lvl u{text-decoration:none;color:#DEDAF0}
+.lvl.won{background:#EAFBE3;box-shadow:0 4px 0 #C4ECB3}
+.owl{display:block;width:100%;height:100%;overflow:visible}
+.owl .lid{transform-box:fill-box;transform-origin:top;transform:scaleY(0);animation:blink 4.6s infinite;animation-delay:var(--d)}
+@keyframes blink{0%,93%,100%{transform:scaleY(0)}96%{transform:scaleY(1)}}
+.owl .wing{transform-box:fill-box;transform-origin:top center}
+.owl.flap .wing.l{animation:flapL .35s ease-in-out 4}.owl.flap .wing.r{animation:flapR .35s ease-in-out 4}
+@keyframes flapL{50%{transform:rotate(28deg)}}@keyframes flapR{50%{transform:rotate(-28deg)}}
+.owl.bob{animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6%) rotate(-3deg)}}
+#heroOwl{width:120px;height:120px}
+/* the clock tower */
+.tower{position:relative;width:calc(var(--clock) + 40px);display:flex;flex-direction:column;align-items:center}
+.roof{width:0;height:0;border-left:calc(var(--clock)*.42) solid transparent;border-right:calc(var(--clock)*.42) solid transparent;border-bottom:calc(var(--clock)*.2) solid var(--wood2);margin-bottom:-2px}
+.box{background:var(--wood);border-radius:20px 20px 26px 26px;padding:calc(var(--clock)*.04) 14px 16px;display:flex;flex-direction:column;align-items:center;box-shadow:0 8px 0 var(--wood2);position:relative}
+.window{width:calc(var(--clock)*.3);height:calc(var(--clock)*.24);border-radius:999px 999px 10px 10px;background:#3A2516;position:relative;overflow:hidden;margin-bottom:8px;border:4px solid var(--wood2)}
+.window .door{position:absolute;inset:0;background:#7C4A2A;transform-origin:right center;transition:transform .35s;border-radius:999px 999px 6px 6px}
+.window.open .door{transform:perspective(200px) rotateY(-100deg)}
+.window .wo{position:absolute;left:10%;right:10%;bottom:-70%;height:100%;transition:bottom .4s cubic-bezier(.3,1.6,.5,1)}
+.window.open .wo{bottom:-8%}
+.hoots{position:absolute;top:10px;left:12px;display:flex;flex-direction:column;gap:3px;z-index:3}
+.hoot{background:#fff;border-radius:999px;padding:1px 9px;font:700 15px var(--display);box-shadow:0 2px 0 rgba(0,0,0,.15);animation:pop .3s both}
+@keyframes pop{from{transform:scale(.2);opacity:0}to{transform:none;opacity:1}}
+#clock{width:var(--clock);height:var(--clock);display:block;touch-action:none}
+#clock.draggable{cursor:grab}
+.pend{width:4px;height:34px;background:var(--wood2);transform-origin:top;animation:swing 1s ease-in-out infinite alternate;position:relative;margin-top:2px}
+.pend::after{content:"";position:absolute;bottom:-14px;left:-10px;width:24px;height:24px;border-radius:50%;background:var(--sun);border:3px solid var(--wood2)}
+@keyframes swing{from{transform:rotate(14deg)}to{transform:rotate(-14deg)}}
+.bar{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+.ghost{background:rgba(255,255,255,.88);border-radius:999px;padding:5px 12px;font-weight:700;font-size:14px}
+.pearls{display:flex;gap:5px}.pearls i{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.6);display:block}.pearls i.on{background:var(--ok)}.pearls i.cur{background:var(--sun);transform:scale(1.3)}
+.qcard{background:var(--card);border-radius:20px;box-shadow:0 5px 0 rgba(43,42,68,.18);padding:8px 16px;width:min(560px,100%);text-align:center;min-height:64px}
+.qcard .ask{font:700 clamp(19px,5vw,25px) var(--text);line-height:1.25}
+.qcard .ask b{color:var(--minh)}
+.dig{font:700 20px var(--display);color:var(--ink-soft);direction:ltr;unicode-bidi:isolate;display:inline-block;background:#F1F3FA;border-radius:10px;padding:0 10px;margin-top:2px}
+.icon{font-size:30px;line-height:1}
+.fb{min-height:24px;font:700 16px var(--text);text-align:center;padding:3px 12px;border-radius:12px;max-width:560px}
+.fb:empty{visibility:hidden}.fb.good{background:#E3F8EC;color:#128A55}.fb.bad{background:#FFEDED;color:#D23F3F}.fb.tip{background:#FFF6D8;color:#7A5A00}
+.opts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.opt{background:#fff;border-radius:18px;padding:8px 14px;min-width:96px;box-shadow:0 5px 0 #D6DAEA;display:flex;flex-direction:column;align-items:center;gap:2px;font:700 18px var(--text)}
+.opt .dig{font-size:17px;background:none;padding:0}
+.opt:active{transform:translateY(3px);box-shadow:0 2px 0 #D6DAEA}
+.opt.right{background:var(--ok);color:#fff;box-shadow:0 5px 0 #1C8D56}.opt.right .dig{color:#E9FFF1}
+.opt.wrong{background:#ECEEF4;color:#A4A8BA;box-shadow:none}
+.overlay{position:fixed;inset:0;z-index:20;background:rgba(43,42,68,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+#demo{width:min(240px,60vw);height:min(240px,60vw)}
+.conf{position:fixed;top:-30px;font-style:normal;font-size:24px;animation:fall 2.8s ease-in both;z-index:30}
+@keyframes fall{to{transform:translateY(110vh) rotate(420deg)}}
+.free{display:flex;flex-direction:column;align-items:center;gap:4px}
+.free .words{font:800 28px var(--text);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.2)}
+@media (prefers-reduced-motion:reduce){.owl .lid,.owl.bob,.pend,.star{animation:none}}
+</style>
+</head>
+<body>
+<div class="scene" aria-hidden="true" id="scene"><div class="moon"></div><div class="hill a"></div><div class="hill b"></div></div>
+<a class="home" href="../../">→ כל המשחקים והשיעורים</a>
+<div class="corner"><div class="stars"><i>★</i><span id="starN">0</span></div><button class="stars" id="sfx" style="font-size:16px"></button></div>
+
+<div class="screen" id="menu">
+  <div class="card">
+    <div id="heroOwl"></div>
+    <h1>ינשופי השעון</h1>
+    <p class="sub">ינשופון קטן גר במגדל השעון. בכל שעה עגולה הוא יוצא החוצה וקורא &quot;הוּ!&quot; לפי מספר השעה. עזרו לו לקרוא את השעון, ותגלו עוד ינשופים!</p>
+    <div class="levels" id="levels"></div>
+    <div class="row"><button class="big soft" id="toFree">שעון חופשי: משחקים עם המחוגים</button></div>
+  </div>
+</div>
+
+<div class="screen" id="play" hidden>
+  <div class="bar"><button class="ghost" id="toMenu">תפריט</button><b id="lvName" style="color:#fff"></b><div class="pearls" id="pearls"></div><button class="ghost" id="hintBtn">רמז</button></div>
+  <div class="qcard" id="q" aria-live="polite"></div>
+  <div class="tower" id="tower">
+    <div class="roof"></div>
+    <div class="box">
+      <div class="window" id="win"><div class="wo" id="winOwl"></div><div class="door"></div></div>
+      <div class="hoots" id="hoots"></div>
+      <svg id="clock" viewBox="0 0 200 200" role="img" aria-label="שעון מחוגים"></svg>
+    </div>
+    <div class="pend"></div>
+  </div>
+  <div class="fb" id="fb" aria-live="polite"></div>
+  <div class="opts" id="opts"></div>
+  <div class="row" id="setRow" hidden><button class="big go" id="check">בדקו!</button></div>
+  <div class="free" id="freeOut" hidden><div class="words" id="freeWords"></div><div class="dig" id="freeDig"></div></div>
+</div>
+
+<div class="overlay" id="intro" hidden>
+  <div class="card">
+    <h1 id="introTitle" style="font-size:30px"></h1>
+    <svg id="demo" viewBox="0 0 200 200" aria-hidden="true"></svg>
+    <p class="sub" id="introText" style="font-size:19px;color:var(--ink)"></p>
+    <button class="big" id="introGo">הבנתי, בואו נשחק!</button>
+  </div>
+</div>
+
+<div class="screen" id="done" hidden style="justify-content:center">
+  <div class="card">
+    <h1 id="doneTitle" style="font-size:32px"></h1>
+    <div style="font-size:52px;color:#E2DEF2;letter-spacing:6px;line-height:1" id="bigStars"><span>★</span><span>★</span><span>★</span></div>
+    <div id="newOwl" style="width:130px;height:130px"></div>
+    <p class="sub" id="newName"></p>
+    <div class="row"><button class="big" id="next">לשלב הבא ←</button><button class="big soft" id="again">שוב</button><button class="big soft" id="doneMenu">תפריט</button></div>
+  </div>
+</div>
+<script>
+/* Clock logic: no DOM here, so it can be tested on its own. */
+const HOURS=['','אחת','שתיים','שלוש','ארבע','חמש','שש','שבע','שמונה','תשע','עשר','אחת עשרה','שתים עשרה'];
+const nextH=h=>h%12+1;
+/* How a child says the time in Hebrew: "שלוש וחצי", "רבע לארבע", "עשרים לשמונה". */
+function timeWords(h,m){
+  const H=HOURS[h],N=HOURS[nextH(h)];
+  switch(m){
+    case 0:return'השעה '+H;case 5:return H+' וחמש';case 10:return H+' ועשרה';case 15:return H+' ורבע';
+    case 20:return H+' ועשרים';case 25:return H+' עשרים וחמש';case 30:return H+' וחצי';case 35:return'עשרים וחמש ל'+N;
+    case 40:return'עשרים ל'+N;case 45:return'רבע ל'+N;case 50:return'עשרה ל'+N;case 55:return'חמש ל'+N;
+  }
+}
+const digital=(h,m)=>h+':'+String(m).padStart(2,'0');
+const timeId=(h,m)=>'t_'+h+'_'+String(m).padStart(2,'0');
+const handAngles=(h,m)=>({hour:((h%12)+m/60)*30,minute:m*6});
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const wrapH=h=>((h-1)%12+12)%12+1;
+/* Wrong answers children really give: the next or previous hour, or reading the hands the wrong way round. */
+function distractors(h,m,mins){
+  const c=[],add=(a,b)=>{if(!(a===h&&b===m)&&mins.includes(b)&&!c.some(x=>x[0]===a&&x[1]===b))c.push([a,b])};
+  if(m>=30)add(wrapH(h+1),m);else add(wrapH(h-1),m);
+  const sw=m/5;if(sw>=1&&sw<=12&&Number.isInteger(sw))add(sw,mins.includes(h*5%60)?h*5%60:m);
+  add(wrapH(h+1),m);add(wrapH(h-1),m);
+  for(const mm of mins)if(mm!==m)add(h,mm);
+  while(c.length<4)add(rnd(1,12),mins[rnd(0,mins.length-1)]);
+  return c;
+}
+function optionsFor(h,m,mins){return shuffle([[h,m],...shuffle(distractors(h,m,mins)).slice(0,2)])}
+/* Turning the minute hand drags the hour hand with it, like real gears. */
+function dragMinute(st,angle,step,prev){
+  const a=((angle%360)+360)%360;let m=Math.round(a/6/step)*step%60;
+  /* crossing 12 is read from the finger's path, so it also works when the hand snaps in big steps */
+  if(prev!=null){if(prev>270&&a<90)st.h=wrapH(st.h+1);else if(prev<90&&a>270)st.h=wrapH(st.h-1)}
+  st.m=m;return st;
+}
+function dragHour(st,angle){
+  const a=((angle%360)+360)%360,f=a/30-st.m/60;let h=Math.round(f);h=wrapH(h===0?12:h);st.h=h;return st;
+}
+const ROUTINE=[
+  {id:'r_breakfast',icon:'🥣',h:7,m:0,text:'בשבע בבוקר אוכלים ארוחת בוקר'},
+  {id:'r_school',icon:'🎒',h:8,m:0,text:'בשמונה הולכים לבית הספר'},
+  {id:'r_recess',icon:'⚽',h:10,m:30,text:'בעשר וחצי יוצאים להפסקה'},
+  {id:'r_home',icon:'🏠',h:1,m:15,text:'באחת ורבע חוזרים הביתה'},
+  {id:'r_park',icon:'🛝',h:4,m:30,text:'בארבע וחצי הולכים לגן השעשועים'},
+  {id:'r_bath',icon:'🛁',h:6,m:45,text:'ברבע לשבע מתקלחים'},
+  {id:'r_bed',icon:'🌙',h:8,m:30,text:'בשמונה וחצי הולכים לישון'}
+];
+const LEVELS=[
+  {name:'שעה עגולה',mode:'read',mins:[0],step:60,intro:'L1',owl:'#FF8A3D'},
+  {name:'מכוונים שעה',mode:'set',mins:[0],step:60,hourOnly:true,intro:'L2',owl:'#3FB6F0'},
+  {name:'וחצי',mode:'read',mins:[0,30],step:30,intro:'L3',owl:'#F25F8B'},
+  {name:'מכוונים וחצי',mode:'set',mins:[0,30],step:30,intro:'L4',owl:'#8D6BF2'},
+  {name:'ורבע',mode:'mix',mins:[0,15,30],step:15,intro:'L5',owl:'#32C27A'},
+  {name:'רבע ל...',mode:'mix',mins:[0,15,30,45],step:15,intro:'L6',owl:'#F2B632'},
+  {name:'סדר היום',mode:'routine',mins:[0,15,30,45],step:15,intro:'L7',owl:'#E5484D'},
+  {name:'כל 5 דקות',mode:'mix',mins:[0,5,10,15,20,25,30,35,40,45,50,55],step:5,intro:'L8',ring:true,owl:'#2E8FA8'},
+  {name:'אלופי השעון',mode:'mix',mins:[0,15,30,45,5,10,20,40,50],step:5,intro:'L9',ring:true,owl:'#B38B2E'}
+];
+const ROUNDS=6;
+function makeLevel(i){
+  const L=LEVELS[i];
+  if(L.mode==='routine')return shuffle(ROUTINE).slice(0,ROUNDS).map(r=>({type:'set',h:r.h,m:r.m,routine:r}));
+  const used=new Set(),out=[];
+  while(out.length<ROUNDS){
+    const h=rnd(1,12),m=L.mins[out.length<2&&L.mins.length>1?L.mins.length-1-(out.length%2):rnd(0,L.mins.length-1)];
+    const k=h+':'+m;if(used.has(k))continue;used.add(k);
+    const type=L.mode==='mix'?(out.length%2?'set':'read'):L.mode;
+    out.push({type,h,m,opts:type==='read'?optionsFor(h,m,L.mins):null});
+  }
+  return out;
+}
+const starsFor=miss=>miss<=1?3:miss<=3?2:1;
+
+/* Page behaviour */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const KEY='clockOwls';
+const save=Object.assign({stars:0,levels:{},sfx:true,seen:{}},(()=>{try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}})());
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}};
+const reduce=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+const wait=ms=>new Promise(r=>setTimeout(r,reduce?Math.min(ms,250):ms));
+const dig=(h,m)=>'<span class="dig">'+digital(h,m)+'</span>';
+const NS='http://www.w3.org/2000/svg';
+
+/* sound: a soft owl hoot, clicks for the hands, and a small tune for right answers */
+let AC=null;
+function ac(){if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,t0=0,d=.12,type='sine',v=.14,slide=0){const a=AC;if(!a||!save.sfx)return;const t=a.currentTime+t0,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(f*slide,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.03);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d+.02)}
+const sHoot=()=>{tone(440,0,.22,'sine',.16,.78);tone(392,.26,.34,'sine',.14,.82)};
+const sTick=()=>tone(1800,0,.025,'square',.03);
+const sGood=()=>[523,659,784,1047].forEach((f,i)=>tone(f,i*.09,.16,'triangle',.13));
+const sBad=()=>tone(250,0,.25,'sine',.12,.7);
+
+/* the owls */
+function owl(c,extra=''){
+  const d=(Math.random()*4).toFixed(2);
+  return '<svg class="owl '+extra+'" viewBox="0 0 100 100" aria-hidden="true" style="--d:'+d+'s">'+
+  '<path d="M26 22 L34 36 L22 38 Z M74 22 L66 36 L78 38 Z" fill="'+c+'"/>'+
+  '<ellipse cx="50" cy="60" rx="32" ry="34" fill="'+c+'"/>'+
+  '<g class="wing l"><path d="M20 52 C 8 64, 10 80, 22 88 C 24 74, 26 62, 26 52 Z" fill="'+c+'" stroke="rgba(0,0,0,.15)" stroke-width="1.5"/></g>'+
+  '<g class="wing r"><path d="M80 52 C 92 64, 90 80, 78 88 C 76 74, 74 62, 74 52 Z" fill="'+c+'" stroke="rgba(0,0,0,.15)" stroke-width="1.5"/></g>'+
+  '<ellipse cx="50" cy="72" rx="19" ry="19" fill="#FFF4DE"/>'+
+  '<path d="M40 66 q3 3 6 0 M48 72 q3 3 6 0 M40 78 q3 3 6 0 M56 66 q3 3 6 0 M56 78 q3 3 6 0" fill="none" stroke="#E7C9A0" stroke-width="1.6" stroke-linecap="round"/>'+
+  '<circle cx="37" cy="44" r="13" fill="#fff"/><circle cx="63" cy="44" r="13" fill="#fff"/>'+
+  '<circle cx="38" cy="45" r="6.5" fill="#2B2A44"/><circle cx="62" cy="45" r="6.5" fill="#2B2A44"/><circle cx="40" cy="42.5" r="2.2" fill="#fff"/><circle cx="64" cy="42.5" r="2.2" fill="#fff"/>'+
+  '<rect class="lid" x="24" y="31" width="26" height="26" rx="13" fill="'+c+'"/><rect class="lid" x="50" y="31" width="26" height="26" rx="13" fill="'+c+'"/>'+
+  '<path d="M46 52 L54 52 L50 59 Z" fill="#FFB02E"/>'+
+  '<path d="M40 93 l-3 5 M44 93 l0 5 M56 93 l0 5 M60 93 l3 5" stroke="#FFB02E" stroke-width="3" stroke-linecap="round"/>'+
+  '<ellipse cx="27" cy="54" rx="4" ry="2.6" fill="#FF9EAE" opacity=".65"/><ellipse cx="73" cy="54" rx="4" ry="2.6" fill="#FF9EAE" opacity=".65"/></svg>';
+}
+const OWL_NAMES=['כתומי','תכלתי','ורודי','סגלגל','ירקון','זהבי','אדומי','ימי','חכמולוג'];
+
+/* drawing the clock: ticks, numbers, an optional minutes ring, a shaded slice for rabaa and hetzi, and two hands */
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+const pt=(deg,r)=>[100+r*Math.sin(deg*Math.PI/180),100-r*Math.cos(deg*Math.PI/180)];
+function drawClock(svg,st,o={}){
+  svg.innerHTML='';
+  el('circle',{cx:100,cy:100,r:96,fill:'#FFE9C7'},svg);el('circle',{cx:100,cy:100,r:90,fill:'var(--face)',stroke:'#2B2A44','stroke-width':3},svg);
+  if(o.shade!=null&&o.shade>0){const a=o.shade*6,[x,y]=pt(a,86);el('path',{d:'M100 100 L100 14 A86 86 0 '+(a>180?1:0)+' 1 '+x+' '+y+' Z',fill:o.shadeColor||'var(--shade)',opacity:.55},svg)}
+  for(let i=0;i<60;i++){const big=i%5===0,[x1,y1]=pt(i*6,big?78:83),[x2,y2]=pt(i*6,87);el('line',{x1,y1,x2,y2,stroke:'#2B2A44','stroke-width':big?2.6:1,'stroke-linecap':'round'},svg)}
+  for(let n=1;n<=12;n++){const [x,y]=pt(n*30,o.ring?58:66),hl=o.hl===n;if(hl)el('circle',{cx:x,cy:y,r:12,fill:'var(--sun)',class:'pulse'},svg);const t=el('text',{x,y:y+7,'text-anchor':'middle','font-size':o.ring?17:21,'font-family':'Fredoka, Rubik, sans-serif','font-weight':700,fill:'#2B2A44'},svg);t.textContent=n}
+  if(o.ring)for(let n=0;n<12;n++){const [x,y]=pt(n*30,73);const t=el('text',{x,y:y+3.5,'text-anchor':'middle','font-size':9,'font-family':'Fredoka, Rubik, sans-serif','font-weight':700,fill:'var(--minh)'},svg);t.textContent=n===0?'00':String(n*5)}
+  const a=handAngles(st.h,st.m);
+  if(st.show!=='minute'){const g=el('g',{transform:'rotate('+a.hour+' 100 100)',class:o.focus==='hour'?'focus':''},svg);el('line',{x1:100,y1:108,x2:100,y2:52,stroke:'var(--hourh)','stroke-width':9,'stroke-linecap':'round'},g)}
+  const g2=el('g',{transform:'rotate('+a.minute+' 100 100)'},svg);el('line',{x1:100,y1:112,x2:100,y2:22,stroke:'var(--minh)','stroke-width':5,'stroke-linecap':'round'},g2);el('circle',{cx:100,cy:24,r:4,fill:'var(--minh)'},g2);
+  if(o.focus){const f=o.focus==='hour'?[a.hour,54]:[a.minute,24];const[x,y]=pt(f[0],f[1]-0);el('circle',{cx:x,cy:y,r:10,fill:'none',stroke:'var(--sun)','stroke-width':4},svg)}
+  el('circle',{cx:100,cy:100,r:6,fill:'#2B2A44'},svg);
+}
+
+/* state */
+let LV=0,list=[],qi=0,miss=0,cur=null,tries=0,busy=false,mode='play',setSt={h:12,m:0},drag=null,lastA=null;
+const clock=$('#clock');
+function layout(){const h=window.innerHeight,w=window.innerWidth,c=Math.floor(Math.max(190,Math.min(w-80,(h-(w<500?380:350))/1.0,400)));document.documentElement.style.setProperty('--clock',c+'px')}
+window.addEventListener('resize',layout);layout();
+function show(id){['menu','play','done'].forEach(k=>$('#'+k).hidden=k!==id)}
+const say=(t,c='')=>{const f=$('#fb');f.innerHTML=t;f.className='fb '+c};
+function pearls(){$('#pearls').innerHTML=list.map((q,i)=>'<i class="'+(i<qi?'on':i===qi?'cur':'')+'"></i>').join('')}
+function opts(){const L=LEVELS[LV];return{ring:!!L.ring}}
+
+/* intros: a short animated explanation before each new idea */
+const INTRO=[
+  {t:'שעה עגולה',x:'המחוג הקצר והכחול מראה את השעה. כשהמחוג הארוך והכתום עומד על 12, זאת שעה עגולה.',run:t=>({st:{h:1+Math.floor(t/1.1)%12,m:0},o:{}})},
+  {t:'עכשיו אתם מזיזים',x:'גררו את המחוג הקצר אל המספר הנכון. המחוג הארוך נשאר למעלה, על 12.',run:t=>({st:{h:1+Math.floor(t/1.1)%12,m:0},o:{focus:'hour'}})},
+  {t:'וחצי',x:'כשהמחוג הארוך מגיע ל-6, עברה חצי שעה: חצי עיגול. המחוג הקצר זז לאמצע, בין שני מספרים.',run:t=>{const m=Math.min(30,Math.floor((t%4)/3*30));return{st:{h:3,m},o:{shade:m}}}},
+  {t:'מכוונים וחצי',x:'גררו את המחוג הארוך. שימו לב: המחוג הקצר זז איתו, לאט לאט.',run:t=>{const m=Math.floor((t*10)%60);return{st:{h:3+Math.floor(t*10/60)%12,m},o:{focus:'minute'}}}},
+  {t:'ורבע',x:'כשהמחוג הארוך על 3, עבר רבע שעה: רבע עיגול, כמו משולש של פיצה.',run:t=>{const m=Math.min(15,Math.floor((t%3)/2*15));return{st:{h:4,m},o:{shade:m}}}},
+  {t:'רבע ל...',x:'כשהמחוג הארוך על 9, נשאר רק רבע עד השעה הבאה. לכן אומרים &quot;רבע ל&quot; והשעה הבאה: רבע לחמש.',run:t=>({st:{h:4,m:45},o:{shade:45,shadeColor:'var(--shade2)'}})},
+  {t:'סדר היום',x:'עכשיו השעון עוזר לנו לדעת מתי עושים כל דבר ביום. כוונו את השעון לכל משימה.',run:t=>({st:{h:7,m:0},o:{}})},
+  {t:'כל 5 דקות',x:'כל מספר על השעון שווה 5 דקות למחוג הארוך: 1 זה 5, 2 זה 10, 3 זה 15. סופרים בקפיצות של 5!',run:t=>{const m=Math.floor(t/0.8)%12*5;return{st:{h:2,m},o:{ring:true}}}},
+  {t:'אלופי השעון',x:'הכול ביחד: שעות, חצאים, רבעים וקפיצות של 5. אתם יכולים!',run:t=>({st:{h:10,m:10},o:{ring:true}})}
+];
+let demoRaf=0;
+function intro(i){return new Promise(res=>{
+  const I=INTRO[i];$('#introTitle').textContent=I.t;$('#introText').innerHTML=I.x;$('#intro').hidden=false;const t0=performance.now();
+  const loop=now=>{const {st,o}=I.run((now-t0)/1000);drawClock($('#demo'),st,o);demoRaf=requestAnimationFrame(loop)};demoRaf=requestAnimationFrame(loop);
+  $('#introGo').onclick=()=>{cancelAnimationFrame(demoRaf);$('#intro').hidden=true;save.seen[i]=1;persist();res()};
+})}
+
+async function startLevel(i){ac();LV=i;mode='play';list=makeLevel(i);qi=0;miss=0;show('play');$('#freeOut').hidden=true;$('#lvName').textContent=LEVELS[i].name;$('#hintBtn').hidden=false;layout();
+  setWin(false);drawClock(clock,{h:12,m:0},opts());if(!save.seen[i]||i<1&&!save.levels[i])await intro(i);ask()}
+function ask(){
+  cur=list[qi];tries=0;busy=false;pearls();say('');$('#opts').innerHTML='';$('#hoots').innerHTML='';setWin(false);
+  const {type,h,m,routine}=cur,L=LEVELS[LV];
+  if(type==='read'){
+    clock.classList.remove('draggable');drawClock(clock,{h,m},opts());$('#setRow').hidden=true;
+    $('#q').innerHTML='<div class="ask">מה השעה?</div>';
+    cur.opts.forEach(([a,b])=>{const e=document.createElement('button');e.className='opt';e.innerHTML='<span>'+timeWords(a,b)+'</span>'+dig(a,b);e.addEventListener('click',()=>pick(e,a,b));$('#opts').appendChild(e)});
+  }else{
+    clock.classList.add('draggable');$('#setRow').hidden=false;
+    setSt=L.hourOnly?{h:h===12?6:12,m:0}:{h:12,m:0};if(setSt.h===h&&setSt.m===m)setSt={h:6,m:0};
+    drawClock(clock,setSt,opts());
+    const what=routine?'<div class="icon">'+routine.icon+'</div><div class="ask">'+routine.text+'</div>':'<div class="ask">כוונו את השעון ל<b>'+timeWords(h,m).replace(/^השעה /,'')+'</b></div>';
+    $('#q').innerHTML=what+dig(h,m)+(L.hourOnly?'<div class="sub" style="font-size:14px">גררו את המחוג הקצר והכחול</div>':'<div class="sub" style="font-size:14px">גררו את המחוגים: את הארוך והכתום, ואת הקצר והכחול</div>');
+  }
+}
+/* how to read this exact time, in a child's words */
+function hintText(h,m){
+  const n=nextH(h);
+  const hp=m===0?'המחוג הקצר על '+h+'.':m===30?'המחוג הקצר באמצע, בין '+h+' ל-'+n+'.':m<30?'המחוג הקצר עבר קצת את ה-'+h+'.':'המחוג הקצר כמעט הגיע ל-'+n+', אבל עוד לא.';
+  const mp=m===0?'הארוך על 12: שעה עגולה.':m===15?'הארוך על 3: רבע.':m===30?'הארוך על 6: חצי.':m===45?'הארוך על 9: רבע ל-'+n+'.':'הארוך על '+m/5+': זה '+m+' דקות.';
+  return hp+' '+mp;
+}
+$('#hintBtn').addEventListener('click',()=>{if(!cur||busy)return;ac();showHint()});
+function showHint(pre=''){const{h,m,type}=cur;say(pre+'רמז: '+hintText(h,m),'tip');
+  if(type==='read'){drawClock(clock,{h,m},Object.assign(opts(),{focus:'hour',hl:m<30||m===30?h:null,shade:m===0?null:m,shadeColor:m===45?'var(--shade2)':null}))}
+}
+async function pick(btn,a,b){if(busy)return;ac();
+  if(a===cur.h&&b===cur.m){busy=true;btn.classList.add('right');await win()}
+  else{btn.classList.add('wrong');btn.disabled=true;sBad();if(!tries)miss++;tries++;showHint('זה '+timeWords(a,b)+'. נסו שוב! ')}
+}
+$('#check').addEventListener('click',async()=>{if(busy||!cur||cur.type!=='set')return;ac();
+  if(setSt.h===cur.h&&setSt.m===cur.m){busy=true;await win()}
+  else{sBad();if(!tries)miss++;tries++;const L=LEVELS[LV];
+    let t='כיוונתם ל'+timeWords(setSt.h,setSt.m).replace(/^השעה /,'')+'. ';
+    t+=setSt.m!==cur.m?'בדקו את המחוג הארוך: '+(cur.m===0?'הוא צריך לעמוד על 12.':'הוא צריך לעמוד על '+cur.m/5+'.'):'המחוג הארוך במקום! עכשיו המחוג הקצר: '+(cur.m===0?'על '+cur.h+'.':cur.m===30?'באמצע בין '+cur.h+' ל-'+nextH(cur.h)+'.':cur.m<30?'קצת אחרי ה-'+cur.h+'.':'קצת לפני ה-'+nextH(cur.h)+'.');
+    say(t,'bad')}});
+function setWin(open){$('#win').classList.toggle('open',open)}
+async function win(){
+  const{h,m}=cur,L=LEVELS[LV];sGood();if(!tries){save.stars++;persist();$('#starN').textContent=save.stars}
+  drawClock(clock,{h,m},opts());clock.classList.remove('draggable');
+  $('#winOwl').innerHTML=owl(L.owl,'flap');setWin(true);await wait(420);
+  say('נכון! '+timeWords(h,m)+' '+dig(h,m),'good');
+  if(m===0){const hb=$('#hoots');hb.innerHTML='';for(let i=1;i<=h;i++){sHoot();const e=document.createElement('div');e.className='hoot';e.textContent='הוּ '+i;hb.appendChild(e);if(hb.children.length>6)hb.firstElementChild.remove();await wait(560)}await wait(400)}
+  else{sHoot();await wait(1100)}
+  setWin(false);await wait(300);qi++;if(qi<list.length)ask();else levelDone();
+}
+function levelDone(){const s=starsFor(miss),L=LEVELS[LV];save.levels[LV]=Math.max(save.levels[LV]||0,s);persist();show('done');
+  $('#doneTitle').textContent=L.name+': הצלחתם!';$$('#bigStars span').forEach((e,i)=>e.style.color=i<s?'#F5B400':'');
+  $('#newOwl').innerHTML=owl(L.owl,'bob');$('#newName').textContent='הינשוף '+OWL_NAMES[LV]+' הצטרף למגדל!';$('#next').hidden=LV>=LEVELS.length-1;confetti();[523,659,784,1047,1319].forEach((f,i)=>tone(f,i*.12,.25,'triangle',.13))}
+function confetti(){if(reduce)return;for(let i=0;i<24;i++){const c=document.createElement('i');c.className='conf';c.textContent=['★','🦉','♥'][i%3];c.style.cssText='left:'+Math.random()*100+'%;animation-delay:'+Math.random()*.8+'s;color:'+['#FFD15C','#FF7A2F','#FF7BA0'][i%3];document.body.appendChild(c);setTimeout(()=>c.remove(),3400)}}
+
+/* dragging the hands */
+function angleOf(e){const r=clock.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*200-100,y=(e.clientY-r.top)/r.height*200-100;return{a:(Math.atan2(x,-y)*180/Math.PI+360)%360,d:Math.hypot(x,y)}}
+const canDrag=()=>mode==='free'||(cur&&cur.type==='set'&&!busy&&!$('#play').hidden);
+clock.addEventListener('pointerdown',e=>{if(!canDrag())return;ac();const{a,d}=angleOf(e),L=LEVELS[LV];
+  if(mode!=='free'&&L.hourOnly)drag='hour';
+  else{const ang=handAngles(setSt.h,setSt.m),dif=(x,y)=>Math.min(Math.abs(x-y),360-Math.abs(x-y));drag=d>60?'minute':d<40?'hour':(dif(a,ang.minute)<dif(a,ang.hour)?'minute':'hour')}
+  clock.setPointerCapture(e.pointerId);lastA=a;move(e);e.preventDefault()});
+clock.addEventListener('pointermove',e=>{if(drag)move(e)});
+['pointerup','pointercancel'].forEach(n=>clock.addEventListener(n,()=>{drag=null}));
+function move(e){const{a}=angleOf(e),before=setSt.h+':'+setSt.m,step=mode==='free'?5:LEVELS[LV].step;
+  if(drag==='hour'){if(mode!=='free'&&LEVELS[LV].hourOnly){setSt.m=0;let h=Math.round(a/30);setSt.h=h===0?12:h}else dragHour(setSt,a)}
+  else dragMinute(setSt,a,step===60?15:step,lastA);
+  lastA=a;
+  if(setSt.h+':'+setSt.m!==before){sTick();drawClock(clock,setSt,mode==='free'?{ring:true,shade:setSt.m||null}:opts());if(mode==='free')freeShow()}}
+function freeShow(){$('#freeWords').textContent=timeWords(setSt.h,setSt.m);$('#freeDig').textContent=digital(setSt.h,setSt.m)}
+$('#toFree').addEventListener('click',()=>{ac();mode='free';cur=null;show('play');layout();$('#lvName').textContent='שעון חופשי';$('#pearls').innerHTML='';$('#q').innerHTML='<div class="ask">גררו את המחוגים לכל שעה שתרצו</div>';$('#opts').innerHTML='';$('#setRow').hidden=true;$('#hintBtn').hidden=true;say('');$('#freeOut').hidden=false;setSt={h:3,m:0};clock.classList.add('draggable');drawClock(clock,setSt,{ring:true});freeShow()});
+
+/* menu */
+function renderMenu(){$('#starN').textContent=save.stars;
+  $('#levels').innerHTML=LEVELS.map((l,i)=>{const s=save.levels[i]||0;return'<button class="lvl'+(s?' won':'')+'" data-i="'+i+'">'+owl(l.owl)+'<b>'+l.name+'</b><span>'+'★'.repeat(s)+'<u>'+'★'.repeat(3-s)+'</u></span></button>'}).join('');
+  $$('#levels .lvl').forEach(b=>b.addEventListener('click',()=>startLevel(+b.dataset.i)));$('#heroOwl').innerHTML=owl('#8D6BF2','bob')}
+const home=()=>{busy=true;mode='play';cur=null;renderMenu();show('menu')};
+$('#toMenu').addEventListener('click',home);$('#doneMenu').addEventListener('click',home);
+$('#next').addEventListener('click',()=>startLevel(Math.min(LV+1,LEVELS.length-1)));$('#again').addEventListener('click',()=>startLevel(LV));
+const sfx=$('#sfx');const sfxUi=()=>{sfx.textContent=save.sfx?'🔊':'🔇';sfx.setAttribute('aria-label',save.sfx?'השתק צלילים':'הפעל צלילים')};sfx.addEventListener('click',()=>{save.sfx=!save.sfx;persist();sfxUi();ac()});sfxUi();
+(()=>{const sc=$('#scene');for(let i=0;i<28;i++){const s=document.createElement('i');s.className='star';s.style.cssText='left:'+(i*37%100)+'%;top:'+(i*23%45)+'%;animation-delay:'+(i%7)*.4+'s';sc.appendChild(s)}})();
+renderMenu();show('menu');
+if(location.search.includes('test'))window.__clk={startLevel,get cur(){return cur},get qi(){return qi},get set(){return setSt},set set(v){setSt=v}};
+</script>
+</body>
+</html>

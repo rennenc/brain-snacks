@@ -16,6 +16,7 @@ tracking.
 | 🎮 Game | [Rotem's Sky Letters](https://brainsnacks.pages.dev/games/rotem-sky/) | 4–7 | עברית + English | Reading aloud: English syllables (BA, DE…) and Hebrew words with nikud | [docs](docs/games/rotem-sky.md) |
 | 🎮 Game | [דגי המספרים · Number Fish](https://brainsnacks.pages.dev/games/number-fish/) | 4–7 | עברית | Numbers to 20, counting, adding and subtracting within 10 | [docs](docs/games/number-fish.md) |
 | 🎮 Game | [ארנבי הכפל · Times Bunnies](https://brainsnacks.pages.dev/games/times-bunnies/) | 7–10 | עברית | The times table to 10 × 10, and that multiplication is area | [docs](docs/games/times-bunnies.md) |
+| 🎮 Game | [ינשופי השעון · Clock Owls](https://brainsnacks.pages.dev/games/clock-owls/) | 6–7 | עברית | Reading an analog clock: o'clock, half past, quarter past and to, five-minute steps | [docs](docs/games/clock-owls.md) |
 | 🧪 Lesson | [מעבדת הנייר המעופף · The Flying Paper Lab](https://brainsnacks.pages.dev/lessons/flying-paper-lab/) | 8–12 | עברית | Air pressure, Bernoulli, lift and drag, fair experiments | [docs](docs/lessons/flying-paper-lab.md) |
 | 🧪 Lesson | [מעבדת האוויר הדק · The Thin Air Lab](https://brainsnacks.pages.dev/lessons/thin-air-lab/) | 12–15 | עברית | Bernoulli with numbers, the lift equation, drag and vortices | [docs](docs/lessons/thin-air-lab.md) |
 | 🧪 Lesson | [טיסה במאדים · Flying on Mars](https://brainsnacks.pages.dev/lessons/mars-flight/) | 12–15 | עברית | Testing the lift equation, how air density changes flight | [docs](docs/lessons/thin-air-lab.md) |
@@ -55,6 +56,7 @@ site/                                   published as-is to Cloudflare Pages (no 
   games/rotem-sky/index.html            Rotem's Sky Letters (one self-contained file)
   games/number-fish/index.html          Number Fish
   games/times-bunnies/index.html        Times Bunnies
+  games/clock-owls/index.html           Clock Owls
   lessons/flying-paper-lab/index.html   The Flying Paper Lab
   lessons/thin-air-lab/index.html       The Thin Air Lab
   lessons/mars-flight/index.html        Flying on Mars

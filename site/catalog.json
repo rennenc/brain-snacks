@@ -74,6 +74,29 @@
       "summary": "The 10×10 times table as a garden: drag out a rectangle and bunnies pop out of every square, so multiplication is area. Ten levels, a rotate-the-garden trick, splitting hard facts, a timed race, a bunny family to collect and a personal board that fills up."
     },
     {
+      "id": "clock-owls",
+      "kind": "game",
+      "title": "ינשופי השעון",
+      "title_en": "Clock Owls",
+      "path": "games/clock-owls/",
+      "ages": [
+        6,
+        7
+      ],
+      "languages": [
+        "he"
+      ],
+      "skills": [
+        "reading an analog clock",
+        "o'clock, half past, quarter past and quarter to",
+        "counting minutes in fives",
+        "setting the time by moving the hands"
+      ],
+      "uses_microphone": false,
+      "docs": "docs/games/clock-owls.md",
+      "summary": "An analog clock in an owl's clock tower: read the time or drag the hands to set it. Nine levels from o'clock to five-minute steps, each opened by a short animated explanation; on the hour the owl hoots once per hour. A free-play clock shows any time in words."
+    },
+    {
       "id": "flying-paper-lab",
       "kind": "lesson",
       "title": "מעבדת הנייר המעופף",
