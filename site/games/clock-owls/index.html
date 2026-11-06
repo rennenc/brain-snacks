@@ -91,6 +91,16 @@ h1{font:800 clamp(34px,8vw,52px) var(--text);margin:0;color:var(--hourh);line-he
 .free{display:flex;flex-direction:column;align-items:center;gap:4px}
 .free .words{font:800 28px var(--text);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.2)}
 @media (prefers-reduced-motion:reduce){.owl .lid,.owl.bob,.pend,.star{animation:none}}
+/* short screens: no roof or pendulum, a slimmer window and tighter spacing */
+.compact .roof,.compact .pend{display:none}
+.compact .window{height:calc(var(--clock)*.2);margin-bottom:4px}
+.compact .box{padding-top:8px;padding-bottom:10px}
+.compact #play{gap:5px}
+.compact .qcard{min-height:0;padding:6px 14px}
+.compact .qcard .sub{display:none}
+.compact .opt{padding:6px 12px}
+/* nothing in a screen may be squeezed; if space runs out the clock shrinks instead */
+.screen>*{flex-shrink:0}
 </style>
 </head>
 <body>
@@ -277,10 +287,18 @@ function drawClock(svg,st,o={}){
 /* state */
 let LV=0,list=[],qi=0,miss=0,cur=null,tries=0,busy=false,mode='play',setSt={h:12,m:0},drag=null,lastA=null;
 const clock=$('#clock');
-function layout(){const h=window.innerHeight,w=window.innerWidth,c=Math.floor(Math.max(190,Math.min(w-80,(h-(w<500?380:350))/1.0,400)));document.documentElement.style.setProperty('--clock',c+'px')}
-window.addEventListener('resize',layout);layout();
+/* The clock takes whatever height is left, so the answer buttons always stay on screen. Short screens drop the roof and pendulum. */
+const setC=c=>document.documentElement.style.setProperty('--clock',Math.round(c)+'px');
+function layout(){
+  const h=window.innerHeight,w=window.innerWidth,play=$('#play');
+  document.body.classList.toggle('compact',h<760);
+  let c=Math.min(w-64,400,h*.6);setC(c);
+  if(play.hidden)return;
+  for(let i=0;i<4;i++){const over=play.scrollHeight-play.clientHeight;if(over<=0)break;c=Math.max(128,c-over/1.35-2);setC(c)}
+}
+window.addEventListener('resize',layout);
 function show(id){['menu','play','done'].forEach(k=>$('#'+k).hidden=k!==id)}
-const say=(t,c='')=>{const f=$('#fb');f.innerHTML=t;f.className='fb '+c};
+const say=(t,c='')=>{const f=$('#fb');f.innerHTML=t;f.className='fb '+c;requestAnimationFrame(layout)};
 function pearls(){$('#pearls').innerHTML=list.map((q,i)=>'<i class="'+(i<qi?'on':i===qi?'cur':'')+'"></i>').join('')}
 function opts(){const L=LEVELS[LV];return{ring:!!L.ring}}
 
@@ -306,6 +324,7 @@ function intro(i){return new Promise(res=>{
 async function startLevel(i){ac();LV=i;mode='play';list=makeLevel(i);qi=0;miss=0;show('play');$('#freeOut').hidden=true;$('#lvName').textContent=LEVELS[i].name;$('#hintBtn').hidden=false;layout();
   setWin(false);drawClock(clock,{h:12,m:0},opts());if(!save.seen[i]||i<1&&!save.levels[i])await intro(i);ask()}
 function ask(){
+  requestAnimationFrame(layout);
   cur=list[qi];tries=0;busy=false;pearls();say('');$('#opts').innerHTML='';$('#hoots').innerHTML='';setWin(false);
   const {type,h,m,routine}=cur,L=LEVELS[LV];
   if(type==='read'){
@@ -371,7 +390,7 @@ function move(e){const{a}=angleOf(e),before=setSt.h+':'+setSt.m,step=mode==='fre
   lastA=a;
   if(setSt.h+':'+setSt.m!==before){sTick();drawClock(clock,setSt,mode==='free'?{ring:true,shade:setSt.m||null}:opts());if(mode==='free')freeShow()}}
 function freeShow(){$('#freeWords').textContent=timeWords(setSt.h,setSt.m);$('#freeDig').textContent=digital(setSt.h,setSt.m)}
-$('#toFree').addEventListener('click',()=>{ac();mode='free';cur=null;show('play');layout();$('#lvName').textContent='שעון חופשי';$('#pearls').innerHTML='';$('#q').innerHTML='<div class="ask">גררו את המחוגים לכל שעה שתרצו</div>';$('#opts').innerHTML='';$('#setRow').hidden=true;$('#hintBtn').hidden=true;say('');$('#freeOut').hidden=false;setSt={h:3,m:0};clock.classList.add('draggable');drawClock(clock,setSt,{ring:true});freeShow()});
+$('#toFree').addEventListener('click',()=>{ac();mode='free';cur=null;show('play');requestAnimationFrame(layout);$('#lvName').textContent='שעון חופשי';$('#pearls').innerHTML='';$('#q').innerHTML='<div class="ask">גררו את המחוגים לכל שעה שתרצו</div>';$('#opts').innerHTML='';$('#setRow').hidden=true;$('#hintBtn').hidden=true;say('');$('#freeOut').hidden=false;setSt={h:3,m:0};clock.classList.add('draggable');drawClock(clock,setSt,{ring:true});freeShow()});
 
 /* menu */
 function renderMenu(){$('#starN').textContent=save.stars;
@@ -382,7 +401,7 @@ $('#toMenu').addEventListener('click',home);$('#doneMenu').addEventListener('cli
 $('#next').addEventListener('click',()=>startLevel(Math.min(LV+1,LEVELS.length-1)));$('#again').addEventListener('click',()=>startLevel(LV));
 const sfx=$('#sfx');const sfxUi=()=>{sfx.textContent=save.sfx?'🔊':'🔇';sfx.setAttribute('aria-label',save.sfx?'השתק צלילים':'הפעל צלילים')};sfx.addEventListener('click',()=>{save.sfx=!save.sfx;persist();sfxUi();ac()});sfxUi();
 (()=>{const sc=$('#scene');for(let i=0;i<28;i++){const s=document.createElement('i');s.className='star';s.style.cssText='left:'+(i*37%100)+'%;top:'+(i*23%45)+'%;animation-delay:'+(i%7)*.4+'s';sc.appendChild(s)}})();
-renderMenu();show('menu');
+renderMenu();show('menu');layout();
 if(location.search.includes('test'))window.__clk={startLevel,get cur(){return cur},get qi(){return qi},get set(){return setSt},set set(v){setSt=v}};
 </script>
 </body>
